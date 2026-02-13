@@ -1,6 +1,6 @@
+import type { V1ContainerStatus, V1Pod, V1PodCondition } from "@kubernetes/client-node";
 import { Router } from "express";
 import { randomBytes } from "node:crypto";
-import type { V1ContainerStatus, V1Pod, V1PodCondition } from "@kubernetes/client-node";
 import { config } from "../config.js";
 import * as k8s from "../services/k8s-client.js";
 import {
@@ -18,37 +18,75 @@ import {
 } from "../services/k8s-resource-builder.js";
 
 function containerState(cs?: V1ContainerStatus) {
-  if (!cs?.state) return null;
-  if (cs.state.running) return { status: "running" as const, startedAt: cs.state.running.startedAt };
-  if (cs.state.waiting) return { status: "waiting" as const, reason: cs.state.waiting.reason, message: cs.state.waiting.message };
-  if (cs.state.terminated) return { status: "terminated" as const, reason: cs.state.terminated.reason, exitCode: cs.state.terminated.exitCode };
+  if (!cs?.state) {
+    return null;
+  }
+  if (cs.state.running) {
+    return { status: "running" as const, startedAt: cs.state.running.startedAt };
+  }
+  if (cs.state.waiting) {
+    return {
+      status: "waiting" as const,
+      reason: cs.state.waiting.reason,
+      message: cs.state.waiting.message,
+    };
+  }
+  if (cs.state.terminated) {
+    return {
+      status: "terminated" as const,
+      reason: cs.state.terminated.reason,
+      exitCode: cs.state.terminated.exitCode,
+    };
+  }
   return null;
 }
 
 function podConditions(conditions?: V1PodCondition[]) {
-  if (!conditions) return {};
+  if (!conditions) {
+    return {};
+  }
   const map: Record<string, boolean> = {};
   for (const c of conditions) {
-    const key = c.type === "PodScheduled" ? "scheduled"
-      : c.type === "Initialized" ? "initialized"
-      : c.type === "ContainersReady" ? "containersReady"
-      : c.type === "Ready" ? "ready"
-      : null;
-    if (key) map[key] = c.status === "True";
+    const key =
+      c.type === "PodScheduled"
+        ? "scheduled"
+        : c.type === "Initialized"
+          ? "initialized"
+          : c.type === "ContainersReady"
+            ? "containersReady"
+            : c.type === "Ready"
+              ? "ready"
+              : null;
+    if (key) {
+      map[key] = c.status === "True";
+    }
   }
   return map;
 }
 
-const ERROR_REASONS = ["CrashLoopBackOff", "ImagePullBackOff", "ErrImagePull", "CreateContainerConfigError"];
+const ERROR_REASONS = new Set([
+  "CrashLoopBackOff",
+  "ImagePullBackOff",
+  "ErrImagePull",
+  "CreateContainerConfigError",
+]);
 
 function instancePhase(pods: V1Pod[]): string {
   if (pods.length === 0) return "unknown";
   const pod = pods[0];
   const cs = pod.status?.containerStatuses?.[0];
-  if (cs?.state?.waiting?.reason && ERROR_REASONS.includes(cs.state.waiting.reason)) return "error";
-  if (cs?.ready) return "running";
-  if (cs?.state?.running) return "starting";
-  if (pod.status?.phase === "Pending" || cs?.state?.waiting) return "pending";
+  if (cs?.state?.waiting?.reason && ERROR_REASONS.has(cs.state.waiting.reason)) {
+    return "error";
+  }
+  if (cs?.ready) {
+    return "running";
+  }
+  if (cs?.state?.running) {
+    return "starting";
+  }
+  if (pod.status?.phase === "Pending" || cs?.state?.waiting) {
+    return "pending";
+  }
   return "unknown";
 }
 
@@ -57,7 +95,12 @@ export const instancesRouter = Router();
 // ── POST /api/instances ──
 instancesRouter.post("/", async (req, res) => {
   try {
-    const { userId, secrets = {}, persistence, imageTag } = req.body as {
+    const {
+      userId,
+      secrets = {},
+      persistence,
+      imageTag,
+    } = req.body as {
       userId?: string;
       secrets?: Record<string, string>;
       persistence?: { size?: string };
@@ -80,9 +123,7 @@ instancesRouter.post("/", async (req, res) => {
     }
 
     // Auto-generate gateway token if not provided
-    const gatewayToken =
-      secrets.OPENCLAW_GATEWAY_TOKEN ||
-      randomBytes(32).toString("base64url");
+    const gatewayToken = secrets.OPENCLAW_GATEWAY_TOKEN || randomBytes(32).toString("base64url");
     secrets.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
 
     const params: CreateInstanceParams = {
@@ -93,8 +134,9 @@ instancesRouter.post("/", async (req, res) => {
     };
 
     // Create resources in order: Secret, ConfigMap, PVC first, then Deployment, Service
-    await k8s.createSecret(buildSecret(params));
-    await k8s.createConfigMap(buildConfigMap(params));
+    // Use createOrReplace for Secret/ConfigMap to handle orphaned resources from partial deletions
+    await k8s.createOrReplaceSecret(buildSecret(params));
+    await k8s.createOrReplaceConfigMap(buildConfigMap(params));
     await k8s.createPVC(buildPVC(params));
     await k8s.createDeployment(buildDeployment(params));
     await k8s.createService(buildService(params));
@@ -117,16 +159,13 @@ instancesRouter.post("/", async (req, res) => {
 
     if (config.ingress.enabled) {
       response.gatewayUrl = `https://${host(userId)}`;
-      (response.resources as Record<string, string>).ingress =
-        resourceName(userId);
+      (response.resources as Record<string, string>).ingress = resourceName(userId);
     }
 
     res.status(201).json(response);
   } catch (err) {
     console.error("Failed to create instance:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to create instance", details: String(err) });
+    res.status(500).json({ error: "Failed to create instance", details: String(err) });
   }
 });
 
@@ -149,9 +188,7 @@ instancesRouter.get("/", async (_req, res) => {
     res.json({ instances });
   } catch (err) {
     console.error("Failed to list instances:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to list instances", details: String(err) });
+    res.status(500).json({ error: "Failed to list instances", details: String(err) });
   }
 });
 
@@ -165,9 +202,7 @@ instancesRouter.get("/:userId", async (req, res) => {
       return;
     }
 
-    const pods = await k8s.listPods(
-      `openclaw.ai/user=${userId}`,
-    );
+    const pods = await k8s.listPods(`openclaw.ai/user=${userId}`);
 
     const podStatuses = pods.map((p) => {
       const cs = p.status?.containerStatuses?.[0];
@@ -193,22 +228,20 @@ instancesRouter.get("/:userId", async (req, res) => {
 
     if (phase === "error") {
       const cs = pods[0]?.status?.containerStatuses?.[0];
-      response.message = cs?.state?.waiting?.message || cs?.state?.waiting?.reason || "Unknown error";
+      response.message =
+        cs?.state?.waiting?.message || cs?.state?.waiting?.reason || "Unknown error";
     }
 
     if (config.ingress.enabled) {
       response.gatewayUrl = `https://${host(userId)}`;
       const ingress = await k8s.getIngress(resourceName(userId));
-      response.ingressIp =
-        ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
+      response.ingressIp = ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
     }
 
     res.json(response);
   } catch (err) {
     console.error("Failed to get instance:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to get instance", details: String(err) });
+    res.status(500).json({ error: "Failed to get instance", details: String(err) });
   }
 });
 
@@ -228,15 +261,43 @@ instancesRouter.delete("/:userId", async (req, res) => {
 
     // Delete in reverse order
     if (config.ingress.enabled) {
-      try { await k8s.deleteManagedCertificate(name); } catch (e) { k8s.ignoreNotFound(e); }
-      try { await k8s.deleteIngress(name); } catch (e) { k8s.ignoreNotFound(e); }
+      try {
+        await k8s.deleteManagedCertificate(name);
+      } catch (e) {
+        k8s.ignoreNotFound(e);
+      }
+      try {
+        await k8s.deleteIngress(name);
+      } catch (e) {
+        k8s.ignoreNotFound(e);
+      }
     }
-    try { await k8s.deleteService(name); } catch (e) { k8s.ignoreNotFound(e); }
-    try { await k8s.deleteDeployment(name); } catch (e) { k8s.ignoreNotFound(e); }
-    try { await k8s.deleteConfigMap(name); } catch (e) { k8s.ignoreNotFound(e); }
-    try { await k8s.deleteSecret(name); } catch (e) { k8s.ignoreNotFound(e); }
+    try {
+      await k8s.deleteService(name);
+    } catch (e) {
+      k8s.ignoreNotFound(e);
+    }
+    try {
+      await k8s.deleteDeployment(name);
+    } catch (e) {
+      k8s.ignoreNotFound(e);
+    }
+    try {
+      await k8s.deleteConfigMap(name);
+    } catch (e) {
+      k8s.ignoreNotFound(e);
+    }
+    try {
+      await k8s.deleteSecret(name);
+    } catch (e) {
+      k8s.ignoreNotFound(e);
+    }
     if (!preservePvc) {
-      try { await k8s.deletePVC(pvcName(userId)); } catch (e) { k8s.ignoreNotFound(e); }
+      try {
+        await k8s.deletePVC(pvcName(userId));
+      } catch (e) {
+        k8s.ignoreNotFound(e);
+      }
     }
 
     res.json({
@@ -246,8 +307,6 @@ instancesRouter.delete("/:userId", async (req, res) => {
     });
   } catch (err) {
     console.error("Failed to delete instance:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to delete instance", details: String(err) });
+    res.status(500).json({ error: "Failed to delete instance", details: String(err) });
   }
 });

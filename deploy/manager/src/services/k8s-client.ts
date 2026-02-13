@@ -13,20 +13,18 @@ const ns = config.namespace;
 
 // ── Deployments ──
 
-export async function createDeployment(
-  body: k8s.V1Deployment,
-): Promise<k8s.V1Deployment> {
+export async function createDeployment(body: k8s.V1Deployment): Promise<k8s.V1Deployment> {
   const res = await appsApi.createNamespacedDeployment({ namespace: ns, body });
   return res;
 }
 
-export async function getDeployment(
-  name: string,
-): Promise<k8s.V1Deployment | null> {
+export async function getDeployment(name: string): Promise<k8s.V1Deployment | null> {
   try {
     return await appsApi.readNamespacedDeployment({ name, namespace: ns });
   } catch (e: unknown) {
-    if (isNotFound(e)) return null;
+    if (isNotFound(e)) {
+      return null;
+    }
     throw e;
   }
 }
@@ -37,9 +35,7 @@ export async function deleteDeployment(name: string): Promise<void> {
 
 // ── Services ──
 
-export async function createService(
-  body: k8s.V1Service,
-): Promise<k8s.V1Service> {
+export async function createService(body: k8s.V1Service): Promise<k8s.V1Service> {
   return await coreApi.createNamespacedService({ namespace: ns, body });
 }
 
@@ -64,10 +60,27 @@ export async function deletePVC(name: string): Promise<void> {
 
 // ── Secrets ──
 
-export async function createSecret(
-  body: k8s.V1Secret,
-): Promise<k8s.V1Secret> {
+export async function createSecret(body: k8s.V1Secret): Promise<k8s.V1Secret> {
   return await coreApi.createNamespacedSecret({ namespace: ns, body });
+}
+
+export async function replaceSecret(name: string, body: k8s.V1Secret): Promise<k8s.V1Secret> {
+  return await coreApi.replaceNamespacedSecret({ name, namespace: ns, body });
+}
+
+export async function createOrReplaceSecret(body: k8s.V1Secret): Promise<k8s.V1Secret> {
+  const name = body.metadata?.name;
+  if (!name) {
+    throw new Error("Secret must have a name");
+  }
+  try {
+    return await createSecret(body);
+  } catch (e: unknown) {
+    if (isConflict(e)) {
+      return await replaceSecret(name, body);
+    }
+    throw e;
+  }
 }
 
 export async function deleteSecret(name: string): Promise<void> {
@@ -76,10 +89,30 @@ export async function deleteSecret(name: string): Promise<void> {
 
 // ── ConfigMaps ──
 
-export async function createConfigMap(
+export async function createConfigMap(body: k8s.V1ConfigMap): Promise<k8s.V1ConfigMap> {
+  return await coreApi.createNamespacedConfigMap({ namespace: ns, body });
+}
+
+export async function replaceConfigMap(
+  name: string,
   body: k8s.V1ConfigMap,
 ): Promise<k8s.V1ConfigMap> {
-  return await coreApi.createNamespacedConfigMap({ namespace: ns, body });
+  return await coreApi.replaceNamespacedConfigMap({ name, namespace: ns, body });
+}
+
+export async function createOrReplaceConfigMap(body: k8s.V1ConfigMap): Promise<k8s.V1ConfigMap> {
+  const name = body.metadata?.name;
+  if (!name) {
+    throw new Error("ConfigMap must have a name");
+  }
+  try {
+    return await createConfigMap(body);
+  } catch (e: unknown) {
+    if (isConflict(e)) {
+      return await replaceConfigMap(name, body);
+    }
+    throw e;
+  }
 }
 
 export async function deleteConfigMap(name: string): Promise<void> {
@@ -88,19 +121,17 @@ export async function deleteConfigMap(name: string): Promise<void> {
 
 // ── Ingress ──
 
-export async function createIngress(
-  body: k8s.V1Ingress,
-): Promise<k8s.V1Ingress> {
+export async function createIngress(body: k8s.V1Ingress): Promise<k8s.V1Ingress> {
   return await networkingApi.createNamespacedIngress({ namespace: ns, body });
 }
 
-export async function getIngress(
-  name: string,
-): Promise<k8s.V1Ingress | null> {
+export async function getIngress(name: string): Promise<k8s.V1Ingress | null> {
   try {
     return await networkingApi.readNamespacedIngress({ name, namespace: ns });
   } catch (e: unknown) {
-    if (isNotFound(e)) return null;
+    if (isNotFound(e)) {
+      return null;
+    }
     throw e;
   }
 }
@@ -137,9 +168,7 @@ export async function deleteManagedCertificate(name: string): Promise<void> {
 
 // ── Pods (read-only) ──
 
-export async function listPods(
-  labelSelector: string,
-): Promise<k8s.V1Pod[]> {
+export async function listPods(labelSelector: string): Promise<k8s.V1Pod[]> {
   const res = await coreApi.listNamespacedPod({
     namespace: ns,
     labelSelector,
@@ -166,6 +195,15 @@ function isNotFound(e: unknown): boolean {
   return false;
 }
 
+function isConflict(e: unknown): boolean {
+  if (e && typeof e === "object" && "code" in e) {
+    return (e as { code: number }).code === 409;
+  }
+  return false;
+}
+
 export function ignoreNotFound(e: unknown): void {
-  if (!isNotFound(e)) throw e;
+  if (!isNotFound(e)) {
+    throw e;
+  }
 }
