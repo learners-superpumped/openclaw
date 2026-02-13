@@ -50,9 +50,7 @@ export function buildSecret(params: CreateInstanceParams): k8s.V1Secret {
   };
 }
 
-export function buildConfigMap(
-  params: CreateInstanceParams,
-): k8s.V1ConfigMap {
+export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
   const name = resourceName(params.userId);
   return {
     apiVersion: "v1",
@@ -69,14 +67,17 @@ export function buildConfigMap(
       "openclaw.json": JSON.stringify({
         gateway: { mode: "local" },
         browser: { noSandbox: true },
+        plugins: {
+          entries: {
+            whatsapp: { enabled: true },
+          },
+        },
       }),
     },
   };
 }
 
-export function buildPVC(
-  params: CreateInstanceParams,
-): k8s.V1PersistentVolumeClaim {
+export function buildPVC(params: CreateInstanceParams): k8s.V1PersistentVolumeClaim {
   const name = pvcName(params.userId);
   return {
     apiVersion: "v1",
@@ -98,9 +99,7 @@ export function buildPVC(
   };
 }
 
-export function buildDeployment(
-  params: CreateInstanceParams,
-): k8s.V1Deployment {
+export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment {
   const name = resourceName(params.userId);
   const tag = params.imageTag || config.image.tag;
   return {
@@ -154,10 +153,7 @@ export function buildDeployment(
                   protocol: "TCP",
                 },
               ],
-              envFrom: [
-                { configMapRef: { name } },
-                { secretRef: { name } },
-              ],
+              envFrom: [{ configMapRef: { name } }, { secretRef: { name } }],
               volumeMounts: [
                 { name: "data", mountPath: "/data" },
                 { name: "dshm", mountPath: "/dev/shm" },
@@ -286,9 +282,7 @@ export function buildIngress(params: CreateInstanceParams): k8s.V1Ingress {
   };
 }
 
-export function buildManagedCertificate(
-  params: CreateInstanceParams,
-): object {
+export function buildManagedCertificate(params: CreateInstanceParams): object {
   const name = resourceName(params.userId);
   return {
     apiVersion: "networking.gke.io/v1",
