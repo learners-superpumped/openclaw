@@ -34,6 +34,7 @@ persistence:
 secrets:
   OPENCLAW_GATEWAY_TOKEN: ""
   # ANTHROPIC_API_KEY: ""
+  # OPENAI_API_KEY: ""
   # OPENCLAW_GATEWAY_PASSWORD: ""
 
 # -- Extra environment variables (non-secret)
