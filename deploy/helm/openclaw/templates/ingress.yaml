@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "openclaw.name" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "openclaw.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
+    networking.gke.io/managed-certificates: {{ include "openclaw.name" . }}
+spec:
+  rules:
+    - host: {{ include "openclaw.host" . }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "openclaw.name" . }}
+                port:
+                  number: {{ .Values.gateway.port }}

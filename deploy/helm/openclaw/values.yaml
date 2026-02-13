@@ -1,0 +1,56 @@
+# -- User identifier (required). Used for resource naming and subdomain.
+userId: ""
+
+image:
+  repository: us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke
+  tag: latest
+  pullPolicy: IfNotPresent
+
+gateway:
+  port: 18789
+  command:
+    - node
+    - dist/index.js
+    - gateway
+    - --bind
+    - lan
+    - --port
+    - "18789"
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+persistence:
+  size: 10Gi
+  storageClass: standard-rwo
+
+# -- Secret key-value pairs injected as environment variables.
+# At minimum, set OPENCLAW_GATEWAY_TOKEN.
+secrets:
+  OPENCLAW_GATEWAY_TOKEN: ""
+  # ANTHROPIC_API_KEY: ""
+  # OPENCLAW_GATEWAY_PASSWORD: ""
+
+# -- Extra environment variables (non-secret)
+env:
+  NODE_ENV: production
+  OPENCLAW_STATE_DIR: /data
+  OPENCLAW_PREFER_PNPM: "1"
+
+# -- Browser: always non-headless via Xvfb. NoVNC port for remote viewing.
+browser:
+  noSandbox: true
+  novncPort: 6080
+
+domain:
+  base: openclaw.zazz.buzz
+
+ingress:
+  className: gce
+
+namespace: openclaw

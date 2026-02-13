@@ -1,0 +1,14 @@
+# Example user values file
+# Usage: helm install alice deploy/helm/openclaw/ -f deploy/helm/users/user-example.yaml -n openclaw
+
+userId: alice
+
+secrets:
+  OPENCLAW_GATEWAY_TOKEN: "change-me-to-a-secure-token"
+  ANTHROPIC_API_KEY: "sk-ant-..."
+
+persistence:
+  size: 10Gi
+
+image:
+  tag: latest

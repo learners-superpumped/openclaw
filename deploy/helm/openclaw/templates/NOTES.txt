@@ -1,0 +1,12 @@
+OpenClaw instance deployed for user: {{ .Values.userId }}
+
+Gateway URL: https://{{ include "openclaw.host" . }}
+Service:     {{ include "openclaw.name" . }}.{{ .Values.namespace }}.svc.cluster.local:{{ .Values.gateway.port }}
+
+Check pod status:
+  kubectl get pods -n {{ .Values.namespace }} -l openclaw.ai/user={{ .Values.userId }}
+
+View logs:
+  kubectl logs -n {{ .Values.namespace }} -l openclaw.ai/user={{ .Values.userId }} -f
+
+Note: ManagedCertificate provisioning may take 10-15 minutes.

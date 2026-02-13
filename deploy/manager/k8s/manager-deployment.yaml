@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw-manager
+  namespace: openclaw
+  labels:
+    app.kubernetes.io/name: openclaw-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openclaw-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openclaw-manager
+    spec:
+      serviceAccountName: openclaw-manager
+      tolerations:
+        - key: kubernetes.io/arch
+          operator: Equal
+          value: amd64
+          effect: NoSchedule
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: manager
+          image: us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:latest
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "3000"
+            - name: OPENCLAW_NAMESPACE
+              value: openclaw
+            - name: OPENCLAW_IMAGE_REPO
+              value: us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke
+            - name: OPENCLAW_IMAGE_TAG
+              value: latest
+            - name: OPENCLAW_DOMAIN_BASE
+              value: openclaw.zazz.buzz
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - NET_RAW
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openclaw-manager
+  namespace: openclaw
+  labels:
+    app.kubernetes.io/name: openclaw-manager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: openclaw-manager
