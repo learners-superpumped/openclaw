@@ -76,7 +76,7 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
         },
         agents: {
           defaults: {
-            model: { primary: "openai/gpt-4.1-nano" },
+            model: { primary: "openrouter/openai/gpt-5-nano" },
           },
         },
       }),
@@ -138,6 +138,25 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
             fsGroup: 1000,
             seccompProfile: { type: "RuntimeDefault" },
           },
+          initContainers: [
+            {
+              name: "init-config",
+              image: "busybox:1.36",
+              command: [
+                "sh",
+                "-c",
+                "if [ ! -f /data/openclaw.json ]; then cp /config-defaults/openclaw.json /data/openclaw.json; echo 'Copied default config'; else echo 'Config already exists, skipping'; fi",
+              ],
+              volumeMounts: [
+                { name: "data", mountPath: "/data" },
+                { name: "config", mountPath: "/config-defaults", readOnly: true },
+              ],
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                capabilities: { drop: ["ALL"] },
+              },
+            },
+          ],
           containers: [
             {
               name: "gateway",
@@ -164,12 +183,6 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
               volumeMounts: [
                 { name: "data", mountPath: "/data" },
                 { name: "dshm", mountPath: "/dev/shm" },
-                {
-                  name: "config",
-                  mountPath: "/data/openclaw.json",
-                  subPath: "openclaw.json",
-                  readOnly: true,
-                },
               ],
               resources: {
                 requests: {

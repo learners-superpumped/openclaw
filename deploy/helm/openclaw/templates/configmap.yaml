@@ -17,10 +17,16 @@ data:
       "browser": {
         "noSandbox": {{ .Values.browser.noSandbox }}
       },
+      "plugins": {
+        "entries": {
+          "whatsapp": { "enabled": true },
+          "telegram": { "enabled": true }
+        }
+      },
       "agents": {
         "defaults": {
           "model": {
-            "primary": "openai/gpt-5-nano"
+            "primary": "openrouter/openai/gpt-5-nano"
           }
         }
       }
