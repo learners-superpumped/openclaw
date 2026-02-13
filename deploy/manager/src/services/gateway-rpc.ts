@@ -74,8 +74,8 @@ export async function gatewayRpc(
             id: connectId,
             method: "connect",
             params: {
-              minProtocol: 2,
-              maxProtocol: 2,
+              minProtocol: 3,
+              maxProtocol: 3,
               client: {
                 id: "gateway-client",
                 displayName: "OpenClaw Manager",
