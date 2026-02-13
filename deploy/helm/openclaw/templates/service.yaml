@@ -12,5 +12,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: {{ .Values.browser.novncPort }}
+      targetPort: {{ .Values.browser.novncPort }}
+      protocol: TCP
+      name: novnc
   selector:
     {{- include "openclaw.selectorLabels" . | nindent 4 }}

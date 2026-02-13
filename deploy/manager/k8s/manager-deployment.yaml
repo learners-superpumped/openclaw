@@ -44,6 +44,14 @@ spec:
               value: latest
             - name: OPENCLAW_DOMAIN_BASE
               value: openclaw.zazz.buzz
+            - name: OPENCLAW_MANAGER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-manager
+                  key: API_KEY
+            # Ingress 비활성화 (기본값). 공개 노출이 필요하면 "true"로 변경.
+            - name: OPENCLAW_INGRESS_ENABLED
+              value: "false"
           resources:
             requests:
               cpu: 250m

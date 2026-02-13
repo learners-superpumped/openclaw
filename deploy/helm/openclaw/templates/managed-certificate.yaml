@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
@@ -8,3 +9,4 @@ metadata:
 spec:
   domains:
     - {{ include "openclaw.host" . }}
+{{- end }}

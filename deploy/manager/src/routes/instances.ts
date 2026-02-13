@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { randomBytes } from "node:crypto";
+import { config } from "../config.js";
 import * as k8s from "../services/k8s-client.js";
 import {
   buildConfigMap,
@@ -55,27 +56,36 @@ instancesRouter.post("/", async (req, res) => {
       imageTag,
     };
 
-    // Create resources in order: Secret, ConfigMap, PVC first, then Deployment, Service, Ingress, Cert
+    // Create resources in order: Secret, ConfigMap, PVC first, then Deployment, Service
     await k8s.createSecret(buildSecret(params));
     await k8s.createConfigMap(buildConfigMap(params));
     await k8s.createPVC(buildPVC(params));
     await k8s.createDeployment(buildDeployment(params));
     await k8s.createService(buildService(params));
-    await k8s.createIngress(buildIngress(params));
-    await k8s.createManagedCertificate(buildManagedCertificate(params));
 
-    res.status(201).json({
+    // Conditionally create Ingress + ManagedCertificate
+    if (config.ingress.enabled) {
+      await k8s.createIngress(buildIngress(params));
+      await k8s.createManagedCertificate(buildManagedCertificate(params));
+    }
+
+    const response: Record<string, unknown> = {
       userId,
-      gatewayUrl: `https://${host(userId)}`,
-      gatewayToken,
       status: "creating",
       resources: {
         deployment: resourceName(userId),
         service: resourceName(userId),
-        ingress: resourceName(userId),
         pvc: pvcName(userId),
       },
-    });
+    };
+
+    if (config.ingress.enabled) {
+      response.gatewayUrl = `https://${host(userId)}`;
+      (response.resources as Record<string, string>).ingress =
+        resourceName(userId);
+    }
+
+    res.status(201).json(response);
   } catch (err) {
     console.error("Failed to create instance:", err);
     res
@@ -90,13 +100,15 @@ instancesRouter.get("/", async (_req, res) => {
     const deployments = await k8s.listDeployments();
     const instances = deployments.map((d) => {
       const userId = d.metadata?.labels?.["openclaw.ai/user"] || "unknown";
-      return {
+      const instance: Record<string, unknown> = {
         userId,
         name: d.metadata?.name,
-        ready:
-          (d.status?.readyReplicas ?? 0) > 0,
-        gatewayUrl: `https://${host(userId)}`,
+        ready: (d.status?.readyReplicas ?? 0) > 0,
       };
+      if (config.ingress.enabled) {
+        instance.gatewayUrl = `https://${host(userId)}`;
+      }
+      return instance;
     });
     res.json({ instances });
   } catch (err) {
@@ -120,9 +132,6 @@ instancesRouter.get("/:userId", async (req, res) => {
     const pods = await k8s.listPods(
       `openclaw.ai/user=${userId}`,
     );
-    const ingress = await k8s.getIngress(resourceName(userId));
-    const ingressIp =
-      ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
 
     const podStatuses = pods.map((p) => ({
       name: p.metadata?.name,
@@ -130,13 +139,20 @@ instancesRouter.get("/:userId", async (req, res) => {
       ready: p.status?.containerStatuses?.[0]?.ready ?? false,
     }));
 
-    res.json({
+    const response: Record<string, unknown> = {
       userId,
-      gatewayUrl: `https://${host(userId)}`,
-      ingressIp,
       ready: (deployment.status?.readyReplicas ?? 0) > 0,
       pods: podStatuses,
-    });
+    };
+
+    if (config.ingress.enabled) {
+      response.gatewayUrl = `https://${host(userId)}`;
+      const ingress = await k8s.getIngress(resourceName(userId));
+      response.ingressIp =
+        ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
+    }
+
+    res.json(response);
   } catch (err) {
     console.error("Failed to get instance:", err);
     res
@@ -160,8 +176,10 @@ instancesRouter.delete("/:userId", async (req, res) => {
     const name = resourceName(userId);
 
     // Delete in reverse order
-    try { await k8s.deleteManagedCertificate(name); } catch (e) { k8s.ignoreNotFound(e); }
-    try { await k8s.deleteIngress(name); } catch (e) { k8s.ignoreNotFound(e); }
+    if (config.ingress.enabled) {
+      try { await k8s.deleteManagedCertificate(name); } catch (e) { k8s.ignoreNotFound(e); }
+      try { await k8s.deleteIngress(name); } catch (e) { k8s.ignoreNotFound(e); }
+    }
     try { await k8s.deleteService(name); } catch (e) { k8s.ignoreNotFound(e); }
     try { await k8s.deleteDeployment(name); } catch (e) { k8s.ignoreNotFound(e); }
     try { await k8s.deleteConfigMap(name); } catch (e) { k8s.ignoreNotFound(e); }

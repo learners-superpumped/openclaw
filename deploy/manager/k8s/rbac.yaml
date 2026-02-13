@@ -20,7 +20,7 @@ rules:
     resources: ["deployments"]
     verbs: ["create", "get", "list", "delete", "update"]
   - apiGroups: ["networking.k8s.io"]
-    resources: ["ingresses"]
+    resources: ["ingresses", "networkpolicies"]
     verbs: ["create", "get", "list", "delete"]
   - apiGroups: ["networking.gke.io"]
     resources: ["managedcertificates"]

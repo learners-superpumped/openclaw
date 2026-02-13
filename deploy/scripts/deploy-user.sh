@@ -60,7 +60,7 @@ case "$COMMAND" in
     ;;
   status)
     echo "Status for user: ${USER_ID}"
-    kubectl get pods,svc,ingress,managedcertificate -n "$NAMESPACE" -l "openclaw.ai/user=${USER_ID}"
+    kubectl get pods,svc,networkpolicy -n "$NAMESPACE" -l "openclaw.ai/user=${USER_ID}"
     ;;
   *)
     usage

@@ -234,6 +234,12 @@ export function buildService(params: CreateInstanceParams): k8s.V1Service {
           protocol: "TCP",
           name: "http",
         },
+        {
+          port: config.browser.novncPort,
+          targetPort: "novnc",
+          protocol: "TCP",
+          name: "novnc",
+        },
       ],
       selector: selectorLabels(params.userId),
     },

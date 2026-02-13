@@ -51,6 +51,7 @@ domain:
   base: openclaw.zazz.buzz
 
 ingress:
+  enabled: false
   className: gce
 
 namespace: openclaw
