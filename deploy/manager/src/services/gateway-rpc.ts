@@ -67,12 +67,6 @@ export async function gatewayRpc(
 
       // Step 1: server sends connect.challenge event
       if (msg.type === "event" && msg.event === "connect.challenge") {
-        const nonce =
-          msg.payload &&
-          typeof msg.payload === "object" &&
-          "nonce" in msg.payload
-            ? (msg.payload as { nonce: string }).nonce
-            : undefined;
         // Step 2: send connect request
         ws.send(
           JSON.stringify({
@@ -83,7 +77,7 @@ export async function gatewayRpc(
               minProtocol: 2,
               maxProtocol: 2,
               client: {
-                id: "openclaw-manager",
+                id: "gateway-client",
                 displayName: "OpenClaw Manager",
                 version: "0.1.0",
                 platform: "server",
@@ -92,7 +86,6 @@ export async function gatewayRpc(
               role: "operator",
               scopes: ["operator.admin"],
               auth: { token: gatewayToken },
-              ...(nonce ? { device: { nonce } } : {}),
             },
           }),
         );
