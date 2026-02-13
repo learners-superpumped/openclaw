@@ -74,6 +74,11 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
             telegram: { enabled: true },
           },
         },
+        agents: {
+          defaults: {
+            model: { primary: "openai/gpt-4.1-nano" },
+          },
+        },
       }),
     },
   };
