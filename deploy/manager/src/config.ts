@@ -25,7 +25,7 @@ export const config = {
     storageClass: process.env.OPENCLAW_STORAGE_CLASS || "standard-rwo",
   },
   resources: {
-    cpu: process.env.OPENCLAW_CPU || "500m",
-    memory: process.env.OPENCLAW_MEMORY || "512Mi",
+    cpu: process.env.OPENCLAW_CPU || "1000m",
+    memory: process.env.OPENCLAW_MEMORY || "1Gi",
   },
 } as const;
