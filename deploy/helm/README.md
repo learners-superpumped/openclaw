@@ -176,8 +176,13 @@ curl -X POST http://localhost:3000/api/instances \
 Pod이 Ready 될 때까지 대기:
 
 ```bash
+# kubectl로 직접 확인
 kubectl get pods -n openclaw -l openclaw.ai/user=alice -w
 # STATUS가 Running, READY 1/1이면 완료
+
+# 또는 Manager API로 폴링 (앱에서 사용)
+curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/instances/alice
+# phase가 "pending" → "starting" → "running" 순서로 변화
 ```
 
 ### 방법 B: Helm 사용
@@ -294,6 +299,56 @@ kubectl logs -n openclaw -l openclaw.ai/user=alice -f
 curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/instances
 ```
 
+### 인스턴스 상태 상세 조회
+
+인스턴스 생성 후 폴링하여 진행 상태를 확인할 수 있습니다:
+
+```bash
+curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/instances/alice
+```
+
+응답 예시:
+
+```json
+{
+  "userId": "alice",
+  "ready": true,
+  "phase": "running",
+  "pods": [
+    {
+      "name": "alice-openclaw-xxxx",
+      "phase": "Running",
+      "ready": true,
+      "restartCount": 0,
+      "state": { "status": "running", "startedAt": "2026-02-13T05:30:00Z" },
+      "conditions": {
+        "scheduled": true,
+        "initialized": true,
+        "containersReady": true,
+        "ready": true
+      },
+      "createdAt": "2026-02-13T05:29:50Z"
+    }
+  ]
+}
+```
+
+**`phase` 필드** (앱에서 사용할 요약 상태):
+
+| phase        | 의미                                  | 앱 표시 예시            |
+| ------------ | ------------------------------------- | ----------------------- |
+| `"pending"`  | Pod 스케줄링/이미지 풀 대기 중        | "인스턴스 준비 중..."   |
+| `"starting"` | 컨테이너 시작됨, readiness probe 대기 | "게이트웨이 시작 중..." |
+| `"running"`  | Ready, 정상 동작                      | "실행 중"               |
+| `"error"`    | CrashLoopBackOff, ImagePullBackOff 등 | "오류 발생: {message}"  |
+| `"unknown"`  | Pod 없음 또는 알 수 없는 상태         | "상태 확인 중..."       |
+
+에러 상태일 때 최상위에 `message` 필드가 추가됩니다:
+
+```json
+{ "phase": "error", "message": "back-off 5m0s restarting failed container..." }
+```
+
 ### 인스턴스 삭제
 
 ```bash
@@ -348,7 +403,7 @@ bash deploy/scripts/deploy-user.sh purge alice     # 완전 삭제
 | ------ | ---------------------------------------- | ----------------------- |
 | POST   | `/api/instances`                         | 인스턴스 생성           |
 | GET    | `/api/instances`                         | 인스턴스 목록           |
-| GET    | `/api/instances/:userId`                 | 인스턴스 상태           |
+| GET    | `/api/instances/:userId`                 | 인스턴스 상태 상세 조회 |
 | DELETE | `/api/instances/:userId`                 | 인스턴스 삭제           |
 | POST   | `/api/instances/:userId/whatsapp/qr`     | WhatsApp QR 코드 생성   |
 | POST   | `/api/instances/:userId/whatsapp/wait`   | WhatsApp 연결 대기      |
