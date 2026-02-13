@@ -141,6 +141,7 @@ export function buildDeployment(
                 "node",
                 "dist/index.js",
                 "gateway",
+                "--allow-unconfigured",
                 "--bind",
                 "lan",
                 "--port",
