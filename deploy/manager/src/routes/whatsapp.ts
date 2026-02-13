@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import * as k8s from "../services/k8s-client.js";
 import { gatewayRpc } from "../services/gateway-rpc.js";
 import { resourceName } from "../services/k8s-resource-builder.js";
@@ -47,7 +47,7 @@ async function ensureInstanceReady(
 }
 
 // ── POST /api/instances/:userId/whatsapp/qr ──
-whatsappRouter.post("/qr", async (req, res) => {
+whatsappRouter.post("/qr", async (req: Request<{ userId: string }>, res: Response) => {
   try {
     const { userId } = req.params;
     const check = await ensureInstanceReady(userId);
@@ -93,7 +93,7 @@ whatsappRouter.post("/qr", async (req, res) => {
 });
 
 // ── POST /api/instances/:userId/whatsapp/wait ──
-whatsappRouter.post("/wait", async (req, res) => {
+whatsappRouter.post("/wait", async (req: Request<{ userId: string }>, res: Response) => {
   try {
     const { userId } = req.params;
     const check = await ensureInstanceReady(userId);
@@ -136,7 +136,7 @@ whatsappRouter.post("/wait", async (req, res) => {
 });
 
 // ── GET /api/instances/:userId/whatsapp/status ──
-whatsappRouter.get("/status", async (req, res) => {
+whatsappRouter.get("/status", async (req: Request<{ userId: string }>, res: Response) => {
   try {
     const { userId } = req.params;
     const check = await ensureInstanceReady(userId);

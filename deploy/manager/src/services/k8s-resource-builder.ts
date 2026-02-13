@@ -181,12 +181,12 @@ export function buildDeployment(
                 capabilities: { drop: ["NET_RAW"] },
               },
               readinessProbe: {
-                tcpSocket: { port: config.gateway.port as unknown as object },
+                tcpSocket: { port: config.gateway.port },
                 initialDelaySeconds: 10,
                 periodSeconds: 15,
               },
               livenessProbe: {
-                tcpSocket: { port: config.gateway.port as unknown as object },
+                tcpSocket: { port: config.gateway.port },
                 initialDelaySeconds: 30,
                 periodSeconds: 30,
               },
@@ -230,7 +230,7 @@ export function buildService(params: CreateInstanceParams): k8s.V1Service {
       ports: [
         {
           port: config.gateway.port,
-          targetPort: "http" as unknown as object,
+          targetPort: "http",
           protocol: "TCP",
           name: "http",
         },
