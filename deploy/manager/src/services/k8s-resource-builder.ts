@@ -63,6 +63,7 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
     data: {
       NODE_ENV: "production",
       OPENCLAW_STATE_DIR: "/data",
+      OPENCLAW_HOME: "/data",
       OPENCLAW_PREFER_PNPM: "1",
       "openclaw.json": JSON.stringify({
         gateway: { mode: "local" },
@@ -159,7 +160,7 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
                 { name: "dshm", mountPath: "/dev/shm" },
                 {
                   name: "config",
-                  mountPath: "/home/node/.openclaw/openclaw.json",
+                  mountPath: "/data/openclaw.json",
                   subPath: "openclaw.json",
                   readOnly: true,
                 },

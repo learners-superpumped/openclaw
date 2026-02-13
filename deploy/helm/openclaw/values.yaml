@@ -40,6 +40,7 @@ secrets:
 env:
   NODE_ENV: production
   OPENCLAW_STATE_DIR: /data
+  OPENCLAW_HOME: /data
   OPENCLAW_PREFER_PNPM: "1"
 
 # -- Browser: always non-headless via Xvfb. NoVNC port for remote viewing.
