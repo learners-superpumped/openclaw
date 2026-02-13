@@ -160,8 +160,8 @@ export async function listDeployments(): Promise<k8s.V1Deployment[]> {
 // ── Helper ──
 
 function isNotFound(e: unknown): boolean {
-  if (e && typeof e === "object" && "statusCode" in e) {
-    return (e as { statusCode: number }).statusCode === 404;
+  if (e && typeof e === "object" && "code" in e) {
+    return (e as { code: number }).code === 404;
   }
   return false;
 }
