@@ -71,6 +71,7 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
         plugins: {
           entries: {
             whatsapp: { enabled: true },
+            telegram: { enabled: true },
           },
         },
       }),

@@ -1,10 +1,12 @@
 import express from "express";
 import { config } from "./config.js";
 import { authMiddleware } from "./middleware/auth.js";
-import { instancesRouter } from "./routes/instances.js";
-import { whatsappRouter } from "./routes/whatsapp.js";
 import { gatewayProxyRouter } from "./routes/gateway-proxy.js";
+import { instancesRouter } from "./routes/instances.js";
+import { pairingRouter } from "./routes/pairing.js";
+import { telegramRouter } from "./routes/telegram.js";
 import { handleVncUpgrade } from "./routes/vnc-proxy.js";
+import { whatsappRouter } from "./routes/whatsapp.js";
 
 const app = express();
 
@@ -21,12 +23,12 @@ app.use("/api", authMiddleware);
 // Routes
 app.use("/api/instances", instancesRouter);
 app.use("/api/instances/:userId/whatsapp", whatsappRouter);
+app.use("/api/instances/:userId/telegram", telegramRouter);
+app.use("/api/instances/:userId/pairing", pairingRouter);
 app.use("/api/instances/:userId/rpc", gatewayProxyRouter);
 
 const server = app.listen(config.port, () => {
-  console.log(
-    `openclaw-manager listening on port ${config.port} (namespace: ${config.namespace})`,
-  );
+  console.log(`openclaw-manager listening on port ${config.port} (namespace: ${config.namespace})`);
 });
 
 // WebSocket upgrade handler for VNC proxy
