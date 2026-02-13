@@ -21,11 +21,11 @@ export const config = {
     novncPort: parseInt(process.env.OPENCLAW_NOVNC_PORT || "6080", 10),
   },
   persistence: {
-    defaultSize: process.env.OPENCLAW_DEFAULT_PVC_SIZE || "10Gi",
+    defaultSize: process.env.OPENCLAW_DEFAULT_PVC_SIZE || "20Gi",
     storageClass: process.env.OPENCLAW_STORAGE_CLASS || "standard-rwo",
   },
   resources: {
     cpu: process.env.OPENCLAW_CPU || "1000m",
-    memory: process.env.OPENCLAW_MEMORY || "1Gi",
+    memory: process.env.OPENCLAW_MEMORY || "2Gi",
   },
 } as const;
