@@ -67,6 +67,7 @@ export function buildConfigMap(
       OPENCLAW_STATE_DIR: "/data",
       OPENCLAW_PREFER_PNPM: "1",
       "openclaw.json": JSON.stringify({
+        gateway: { mode: "local" },
         browser: { noSandbox: true },
       }),
     },

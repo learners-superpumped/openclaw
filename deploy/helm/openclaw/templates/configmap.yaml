@@ -11,6 +11,9 @@ data:
   {{- end }}
   openclaw.json: |
     {
+      "gateway": {
+        "mode": "local"
+      },
       "browser": {
         "noSandbox": {{ .Values.browser.noSandbox }}
       }
