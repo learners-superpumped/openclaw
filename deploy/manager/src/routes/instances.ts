@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { randomBytes } from "node:crypto";
+import type { V1ContainerStatus, V1Pod, V1PodCondition } from "@kubernetes/client-node";
 import { config } from "../config.js";
 import * as k8s from "../services/k8s-client.js";
 import {
@@ -15,6 +16,41 @@ import {
   resourceName,
   type CreateInstanceParams,
 } from "../services/k8s-resource-builder.js";
+
+function containerState(cs?: V1ContainerStatus) {
+  if (!cs?.state) return null;
+  if (cs.state.running) return { status: "running" as const, startedAt: cs.state.running.startedAt };
+  if (cs.state.waiting) return { status: "waiting" as const, reason: cs.state.waiting.reason, message: cs.state.waiting.message };
+  if (cs.state.terminated) return { status: "terminated" as const, reason: cs.state.terminated.reason, exitCode: cs.state.terminated.exitCode };
+  return null;
+}
+
+function podConditions(conditions?: V1PodCondition[]) {
+  if (!conditions) return {};
+  const map: Record<string, boolean> = {};
+  for (const c of conditions) {
+    const key = c.type === "PodScheduled" ? "scheduled"
+      : c.type === "Initialized" ? "initialized"
+      : c.type === "ContainersReady" ? "containersReady"
+      : c.type === "Ready" ? "ready"
+      : null;
+    if (key) map[key] = c.status === "True";
+  }
+  return map;
+}
+
+const ERROR_REASONS = ["CrashLoopBackOff", "ImagePullBackOff", "ErrImagePull", "CreateContainerConfigError"];
+
+function instancePhase(pods: V1Pod[]): string {
+  if (pods.length === 0) return "unknown";
+  const pod = pods[0];
+  const cs = pod.status?.containerStatuses?.[0];
+  if (cs?.state?.waiting?.reason && ERROR_REASONS.includes(cs.state.waiting.reason)) return "error";
+  if (cs?.ready) return "running";
+  if (cs?.state?.running) return "starting";
+  if (pod.status?.phase === "Pending" || cs?.state?.waiting) return "pending";
+  return "unknown";
+}
 
 export const instancesRouter = Router();
 
@@ -133,17 +169,32 @@ instancesRouter.get("/:userId", async (req, res) => {
       `openclaw.ai/user=${userId}`,
     );
 
-    const podStatuses = pods.map((p) => ({
-      name: p.metadata?.name,
-      phase: p.status?.phase,
-      ready: p.status?.containerStatuses?.[0]?.ready ?? false,
-    }));
+    const podStatuses = pods.map((p) => {
+      const cs = p.status?.containerStatuses?.[0];
+      return {
+        name: p.metadata?.name,
+        phase: p.status?.phase,
+        ready: cs?.ready ?? false,
+        restartCount: cs?.restartCount ?? 0,
+        state: containerState(cs),
+        conditions: podConditions(p.status?.conditions),
+        createdAt: p.metadata?.creationTimestamp,
+      };
+    });
+
+    const phase = instancePhase(pods);
 
     const response: Record<string, unknown> = {
       userId,
       ready: (deployment.status?.readyReplicas ?? 0) > 0,
+      phase,
       pods: podStatuses,
     };
+
+    if (phase === "error") {
+      const cs = pods[0]?.status?.containerStatuses?.[0];
+      response.message = cs?.state?.waiting?.message || cs?.state?.waiting?.reason || "Unknown error";
+    }
 
     if (config.ingress.enabled) {
       response.gatewayUrl = `https://${host(userId)}`;
