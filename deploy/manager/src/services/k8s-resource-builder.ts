@@ -67,7 +67,9 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
       OPENCLAW_PREFER_PNPM: "1",
       "openclaw.json": JSON.stringify({
         gateway: { mode: "local" },
-        browser: { noSandbox: true },
+        browser: { enabled: true, noSandbox: true },
+        cron: { enabled: true },
+        commands: { native: "auto", nativeSkills: "auto" },
         plugins: {
           entries: {
             whatsapp: { enabled: true },

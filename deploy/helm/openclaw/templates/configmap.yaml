@@ -15,7 +15,15 @@ data:
         "mode": "local"
       },
       "browser": {
+        "enabled": true,
         "noSandbox": {{ .Values.browser.noSandbox }}
+      },
+      "cron": {
+        "enabled": true
+      },
+      "commands": {
+        "native": "auto",
+        "nativeSkills": "auto"
       },
       "plugins": {
         "entries": {
