@@ -4,6 +4,7 @@ import { join } from "path";
 import { Public } from "../auth/public.decorator.js";
 
 const privacyHtml = readFileSync(join(import.meta.dirname, "privacy.html"), "utf-8");
+const termsHtml = readFileSync(join(import.meta.dirname, "terms.html"), "utf-8");
 
 @Controller("legal")
 export class LegalController {
@@ -12,5 +13,12 @@ export class LegalController {
   @Header("Content-Type", "text/html")
   privacy() {
     return privacyHtml;
+  }
+
+  @Public()
+  @Get("terms")
+  @Header("Content-Type", "text/html")
+  terms() {
+    return termsHtml;
   }
 }

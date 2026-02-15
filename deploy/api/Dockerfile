@@ -8,7 +8,7 @@ RUN npx prisma generate
 COPY tsconfig.json ./
 COPY src ./src
 RUN npx tsc
-RUN cp src/legal/privacy.html dist/legal/
+RUN cp src/legal/privacy.html src/legal/terms.html dist/legal/
 
 FROM node:22-bookworm-slim
 WORKDIR /app
