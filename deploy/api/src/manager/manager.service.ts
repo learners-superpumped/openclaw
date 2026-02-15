@@ -44,6 +44,7 @@ export class ManagerService {
     const { data } = await firstValueFrom(
       this.httpService.delete(`${this.baseUrl}/api/instances/${instanceId}`, {
         headers: this.headers,
+        params: { preservePvc: "false" },
       }),
     );
     return data;
