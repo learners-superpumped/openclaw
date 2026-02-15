@@ -95,13 +95,16 @@ telegramRouter.get("/status", async (req: Request<{ userId: string }>, res: Resp
     }
 
     const payload = result.payload as {
-      channels?: { telegram?: unknown };
+      channels?: { telegram?: { configured?: boolean; running?: boolean; [key: string]: unknown } };
       channelAccounts?: { telegram?: unknown };
     };
 
+    const telegram = payload?.channels?.telegram;
+
     res.json({
       userId,
-      telegram: payload?.channels?.telegram ?? null,
+      connected: !!(telegram?.configured && telegram?.running),
+      telegram: telegram ?? null,
       accounts: payload?.channelAccounts?.telegram ?? null,
     });
   } catch (err) {
