@@ -76,6 +76,7 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         final instance = instances.first;
         if (instance.isReady) {
           state = InstanceState(status: InstanceStatus.ready, instance: instance);
+          await _checkTelegramSetup(instance);
         } else {
           state = InstanceState(status: InstanceStatus.polling, instance: instance);
           _startPolling(instance.instanceId);

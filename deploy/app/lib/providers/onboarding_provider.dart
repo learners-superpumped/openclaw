@@ -5,6 +5,7 @@ import 'instance_provider.dart';
 import 'subscription_provider.dart';
 
 enum OnboardingStep {
+  initializing,
   paywall,
   auth,
   instanceLoading,
@@ -14,12 +15,18 @@ enum OnboardingStep {
   dashboard,
 }
 
+/// 앱 초기화 완료 여부 (splash → 실제 화면 전환 제어)
+final appInitializedProvider = StateProvider<bool>((ref) => false);
+
 /// 인스턴스 ready 이후 setup 진행 상태를 추적
 final setupProgressProvider = StateProvider<OnboardingStep>((ref) {
   return OnboardingStep.telegramSetup;
 });
 
 final onboardingStepProvider = Provider<OnboardingStep>((ref) {
+  final initialized = ref.watch(appInitializedProvider);
+  if (!initialized) return OnboardingStep.initializing;
+
   final isPro = ref.watch(isProProvider);
   final authState = ref.watch(authProvider);
   final instanceState = ref.watch(instanceProvider);

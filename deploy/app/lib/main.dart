@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/auth_provider.dart';
 import 'providers/instance_provider.dart';
+import 'providers/onboarding_provider.dart';
+import 'providers/subscription_provider.dart';
 import 'router.dart';
 import 'services/revenue_cat_service.dart';
 import 'theme/app_theme.dart';
@@ -25,9 +27,17 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(authProvider.notifier).checkAuth();
-      ref.read(instanceProvider.notifier).loadExisting();
+    Future.microtask(() async {
+      await Future.wait([
+        ref.read(authProvider.notifier).checkAuth(),
+        ref.read(isProProvider.notifier).initialized,
+      ]);
+
+      if (ref.read(authProvider).status == AuthStatus.authenticated) {
+        await ref.read(instanceProvider.notifier).loadExisting();
+      }
+
+      ref.read(appInitializedProvider.notifier).state = true;
     });
   }
 

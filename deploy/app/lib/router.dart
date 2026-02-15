@@ -8,6 +8,7 @@ import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
 import 'screens/paywall_screen.dart';
 import 'screens/setup_complete_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/telegram_pairing_screen.dart';
 import 'screens/telegram_setup_screen.dart';
 
@@ -24,6 +25,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: '/paywall',
         builder: (context, state) => const PaywallScreen(),
@@ -63,6 +68,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 String _locationForStep(OnboardingStep step) {
   switch (step) {
+    case OnboardingStep.initializing:
+      return '/splash';
     case OnboardingStep.paywall:
       return '/paywall';
     case OnboardingStep.auth:

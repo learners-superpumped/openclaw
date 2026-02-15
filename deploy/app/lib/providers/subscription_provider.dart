@@ -7,6 +7,9 @@ import '../constants.dart';
 
 class SubscriptionNotifier extends StateNotifier<bool> {
   StreamSubscription<CustomerInfo>? _subscription;
+  final Completer<void> _initCompleter = Completer<void>();
+
+  Future<void> get initialized => _initCompleter.future;
 
   SubscriptionNotifier() : super(false) {
     _init();
@@ -18,6 +21,7 @@ class SubscriptionNotifier extends StateNotifier<bool> {
       state = info.entitlements.all[entitlementId]?.isActive ?? false;
     } catch (_) {}
 
+    _initCompleter.complete();
     Purchases.addCustomerInfoUpdateListener(_onUpdate);
   }
 
