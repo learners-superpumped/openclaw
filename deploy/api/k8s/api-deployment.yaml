@@ -52,6 +52,16 @@ spec:
                 secretKeyRef:
                   name: openclaw-api
                   key: MANAGER_API_KEY
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-api
+                  key: GOOGLE_CLIENT_ID
+            - name: APPLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-api
+                  key: APPLE_CLIENT_ID
             - name: OPENROUTER_MANAGEMENT_KEY
               valueFrom:
                 secretKeyRef:

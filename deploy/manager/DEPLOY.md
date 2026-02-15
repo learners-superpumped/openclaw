@@ -1,5 +1,47 @@
 # openclaw-manager 배포 가이드
 
+내부 K8s 오케스트레이션 API. **ClusterIP 서비스**로 외부에 노출되지 않으며, [App API](../api/DEPLOY.md)가 내부 DNS를 통해 프록시하여 Flutter 앱에 서비스를 제공한다.
+
+## 내부 통신 구조
+
+```
+[Flutter App]
+     ↓ HTTPS (JWT 인증)
+[openclaw-api :4000]  ← Ingress (외부 공개)
+     ↓ HTTP (Bearer API Key)
+     ↓ http://openclaw-manager.openclaw.svc.cluster.local:3000
+[openclaw-manager :3000]  ← ClusterIP (내부 전용)
+     ↓ K8s API (ServiceAccount RBAC)
+     ↓ WS RPC (내부 DNS → <instanceId>-openclaw:18789)
+[Gateway Pods]  ← ClusterIP (내부 전용)
+```
+
+### 통신 경로
+
+| 구간                    | 프로토콜  | 인증 방식                  | 내부 주소                                                |
+| ----------------------- | --------- | -------------------------- | -------------------------------------------------------- |
+| Flutter App → App API   | HTTPS     | JWT Bearer Token           | `api.openclaw.zazz.buzz:443` (Ingress)                   |
+| App API → Manager       | HTTP      | `Bearer <MANAGER_API_KEY>` | `openclaw-manager.openclaw.svc.cluster.local:3000`       |
+| Manager → K8s API       | HTTPS     | ServiceAccount Token       | `kubernetes.default.svc`                                 |
+| Manager → Gateway (RPC) | WebSocket | Gateway Token              | `<instanceId>-openclaw.openclaw.svc.cluster.local:18789` |
+
+### App API 연결 설정
+
+App API(`deploy/api/`)는 아래 환경변수로 Manager에 연결한다:
+
+```yaml
+# deploy/api/k8s/api-deployment.yaml
+- name: MANAGER_URL
+  value: "http://openclaw-manager.openclaw.svc.cluster.local:3000"
+- name: MANAGER_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: openclaw-api
+      key: MANAGER_API_KEY # openclaw-manager Secret의 API_KEY와 동일한 값
+```
+
+> `MANAGER_API_KEY`는 Manager의 `openclaw-manager` Secret에 저장된 `API_KEY`와 **반드시 동일한 값**이어야 한다.
+
 ## 사전 준비
 
 - GKE 클러스터 접근 (`kubectl` 설정 완료)
@@ -229,6 +271,51 @@ kubectl rollout status deployment/openclaw-manager -n openclaw
 
 ---
 
+## K8s Service 상세
+
+Manager는 **ClusterIP** 타입으로 배포되며, Ingress 없이 클러스터 내부에서만 접근 가능하다.
+
+```yaml
+# deploy/manager/k8s/manager-deployment.yaml (Service 부분)
+apiVersion: v1
+kind: Service
+metadata:
+  name: openclaw-manager
+  namespace: openclaw
+spec:
+  type: ClusterIP # 외부 노출 없음
+  ports:
+    - port: 3000
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: openclaw-manager
+```
+
+### 내부 접근 주소
+
+| 형태       | 주소                                               |
+| ---------- | -------------------------------------------------- |
+| Full DNS   | `openclaw-manager.openclaw.svc.cluster.local:3000` |
+| 짧은 DNS   | `openclaw-manager.openclaw:3000`                   |
+| 같은 NS 내 | `openclaw-manager:3000`                            |
+
+App API의 `MANAGER_URL`은 Full DNS를 사용한다.
+
+### 내부 통신 확인
+
+```bash
+# App API Pod에서 Manager에 접근 가능한지 확인
+kubectl exec -n openclaw deploy/openclaw-api -- \
+  wget -qO- http://openclaw-manager:3000/health
+# {"ok":true}
+
+# Manager에서 Gateway Pod에 RPC 접근 가능한지 확인
+kubectl exec -n openclaw deploy/openclaw-manager -- \
+  wget -qO- http://hyeok-openclaw:18789/health 2>/dev/null || echo "Gateway에 HTTP health 없음 (WS만 사용)"
+```
+
+---
+
 ## 트러블슈팅
 
 ### Telegram setup 실패 (502)
@@ -259,3 +346,35 @@ kubectl rollout status deployment/openclaw-manager -n openclaw
 
 - code가 정확한지 확인 (대소문자 구분)
 - Pod가 Running 상태인지 확인
+
+### App API → Manager 연결 실패 (502/504)
+
+App API에서 Manager 프록시 호출 시 오류가 발생하는 경우:
+
+```bash
+# 1. Manager Pod 상태 확인
+kubectl get pods -n openclaw -l app.kubernetes.io/name=openclaw-manager
+
+# 2. Manager Service 확인
+kubectl get svc openclaw-manager -n openclaw
+
+# 3. App API → Manager DNS 해석 확인
+kubectl exec -n openclaw deploy/openclaw-api -- \
+  nslookup openclaw-manager.openclaw.svc.cluster.local
+
+# 4. App API → Manager 직접 연결 테스트
+kubectl exec -n openclaw deploy/openclaw-api -- \
+  wget -qO- http://openclaw-manager:3000/health
+
+# 5. MANAGER_API_KEY 일치 여부 확인
+# App API Secret의 MANAGER_API_KEY
+kubectl get secret openclaw-api -n openclaw -o jsonpath='{.data.MANAGER_API_KEY}' | base64 -d
+# Manager Secret의 API_KEY (위와 동일해야 함)
+kubectl get secret openclaw-manager -n openclaw -o jsonpath='{.data.API_KEY}' | base64 -d
+```
+
+주요 원인:
+
+- Manager Pod가 CrashLoopBackOff → Manager 로그 확인
+- Service selector 불일치 → `kubectl describe svc openclaw-manager -n openclaw`
+- `MANAGER_API_KEY`가 Manager의 `API_KEY`와 다름 → Secret 재생성 필요

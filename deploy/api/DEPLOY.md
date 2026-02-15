@@ -30,16 +30,16 @@ gcloud sql instances describe <INSTANCE_NAME> --format='value(ipAddresses[0].ipA
 
 ---
 
-## 2. DNS 레코드 등록
+## 2. DNS 및 SSL (자동)
 
-`api.openclaw.zazz.buzz`에 대한 A 레코드를 GKE Ingress의 외부 IP로 설정한다.
+클러스터에 설치된 **external-dns**가 Ingress 리소스를 감지하여 Cloud DNS에 A 레코드를 자동 생성한다.
+**ManagedCertificate**가 SSL 인증서를 자동 발급한다.
 
-```bash
-# Ingress 배포 후 외부 IP 확인 (5단계 이후)
-kubectl get ingress openclaw-api -n openclaw -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
+- 도메인: `api.openclaw.zazz.buzz`
+- DNS Zone: `zazz-buzz` (Cloud DNS)
+- SSL: GKE ManagedCertificate (자동 발급, 최대 15분)
 
-> GCE Ingress는 IP 할당에 수 분이 걸린다. IP가 할당되면 DNS에 A 레코드를 추가한다.
+> 별도의 수동 DNS 등록이나 SSL 설정이 필요 없다. Ingress를 배포하면 자동으로 처리된다.
 
 ---
 
@@ -50,6 +50,8 @@ kubectl create secret generic openclaw-api -n openclaw \
   --from-literal=DATABASE_URL="postgresql://openclaw_api:<비밀번호>@<CLOUD_SQL_PUBLIC_IP>:5432/openclaw" \
   --from-literal=JWT_SECRET="$(openssl rand -base64 32)" \
   --from-literal=MANAGER_API_KEY="<기존 Manager API Key>" \
+  --from-literal=GOOGLE_CLIENT_ID="<Google OAuth Web Client ID>" \
+  --from-literal=APPLE_CLIENT_ID="<Apple Service ID>" \
   --from-literal=OPENROUTER_MANAGEMENT_KEY="<OpenRouter 관리 키>"
 ```
 
@@ -59,7 +61,11 @@ kubectl create secret generic openclaw-api -n openclaw \
 kubectl get secret openclaw-manager -n openclaw -o jsonpath='{.data.API_KEY}' | base64 -d
 ```
 
-OpenRouter 관리 키는 [OpenRouter Keys](https://openrouter.ai/settings/keys) 페이지에서 발급받는다.
+### OAuth 인증 정보
+
+- **Google**: [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → OAuth 2.0 Client → **Web Client ID** 사용 (Android Client ID가 아님)
+- **Apple**: [Apple Developer Console](https://developer.apple.com/account/resources/identifiers) → Service ID 생성
+- **OpenRouter**: [OpenRouter Keys](https://openrouter.ai/settings/keys) 페이지에서 관리 키 발급
 
 ---
 
@@ -101,13 +107,11 @@ npx prisma migrate deploy
 ## 6. K8s 매니페스트 배포
 
 ```bash
-cd deploy/api
-
 # Deployment + Service
-kubectl apply -f k8s/api-deployment.yaml
+kubectl apply -f deploy/api/k8s/api-deployment.yaml
 
-# Ingress + ManagedCertificate
-kubectl apply -f k8s/api-ingress.yaml
+# Ingress + ManagedCertificate (SSL 자동 발급 + DNS 자동 등록)
+kubectl apply -f deploy/api/k8s/api-ingress.yaml
 ```
 
 ---
@@ -121,14 +125,17 @@ kubectl get pods -n openclaw -l app.kubernetes.io/name=openclaw-api
 # 로그 확인
 kubectl logs -n openclaw -l app.kubernetes.io/name=openclaw-api -f
 
-# Readiness 확인
-kubectl get deployment openclaw-api -n openclaw
-
-# Ingress 상태 확인 (IP 할당까지 수 분 소요)
+# Ingress 상태 확인 (IP 할당 → external-dns가 DNS 자동 등록)
 kubectl get ingress openclaw-api -n openclaw
 
-# ManagedCertificate 상태 확인 (Active까지 최대 15분)
+# ManagedCertificate 상태 확인 (Provisioning → Active, 최대 15분)
 kubectl get managedcertificate openclaw-api-cert -n openclaw
+
+# DNS 자동 등록 확인
+gcloud dns record-sets list --zone=zazz-buzz --filter="name=api.openclaw.zazz.buzz."
+
+# HTTPS 접속 테스트 (SSL Active 이후)
+curl https://api.openclaw.zazz.buzz/health
 ```
 
 ---
@@ -139,15 +146,34 @@ kubectl get managedcertificate openclaw-api-cert -n openclaw
 # Health check (내부)
 kubectl exec -n openclaw deploy/openclaw-api -- curl -s http://localhost:4000/health
 
-# 회원가입 (외부, 인증서 발급 완료 후)
+# 회원가입 (이메일/비밀번호)
 curl -X POST https://api.openclaw.zazz.buzz/auth/signup \
   -H 'Content-Type: application/json' \
   -d '{"email":"test@example.com","password":"Test1234!"}'
 
-# 로그인
+# 이메일 로그인
 curl -X POST https://api.openclaw.zazz.buzz/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"email":"test@example.com","password":"Test1234!"}'
+
+# Google 소셜 로그인 (Flutter 앱에서 받은 ID Token 사용)
+curl -X POST https://api.openclaw.zazz.buzz/auth/google \
+  -H 'Content-Type: application/json' \
+  -d '{"idToken":"<Google ID Token>"}'
+
+# Apple 소셜 로그인 (iOS/macOS 앱에서 받은 Identity Token 사용)
+curl -X POST https://api.openclaw.zazz.buzz/auth/apple \
+  -H 'Content-Type: application/json' \
+  -d '{"identityToken":"<Apple Identity Token>","givenName":"길동","familyName":"홍"}'
+
+# JWT 토큰 갱신
+curl -X POST https://api.openclaw.zazz.buzz/auth/refresh \
+  -H 'Content-Type: application/json' \
+  -d '{"refreshToken":"<refresh_token>"}'
+
+# 내 프로필 조회
+curl https://api.openclaw.zazz.buzz/users/me \
+  -H 'Authorization: Bearer <access_token>'
 
 # 인스턴스 생성 (JWT 필요, OpenRouter API Key 자동 생성)
 curl -X POST https://api.openclaw.zazz.buzz/instances \
@@ -157,6 +183,10 @@ curl -X POST https://api.openclaw.zazz.buzz/instances \
 
 # 내 인스턴스 목록
 curl https://api.openclaw.zazz.buzz/instances \
+  -H 'Authorization: Bearer <access_token>'
+
+# 인스턴스 상세 조회 (Manager 프록시 → phase 포함)
+curl https://api.openclaw.zazz.buzz/instances/<instance_id> \
   -H 'Authorization: Bearer <access_token>'
 ```
 
@@ -282,6 +312,8 @@ kubectl rollout status deployment/openclaw-api -n openclaw
 | `JWT_SECRET`                | JWT 서명 키                  | Secret `openclaw-api` |
 | `MANAGER_URL`               | Manager 내부 URL             | Deployment env        |
 | `MANAGER_API_KEY`           | Manager 인증 키              | Secret `openclaw-api` |
+| `GOOGLE_CLIENT_ID`          | Google OAuth Web Client ID   | Secret `openclaw-api` |
+| `APPLE_CLIENT_ID`           | Apple Sign-In Service ID     | Secret `openclaw-api` |
 | `OPENROUTER_MANAGEMENT_KEY` | OpenRouter 키 생성용 관리 키 | Secret `openclaw-api` |
 
 ---
@@ -296,6 +328,36 @@ kubectl logs -n openclaw -l app.kubernetes.io/name=openclaw-api --previous
 
 주요 원인: DATABASE_URL 오류, JWT_SECRET 미설정, Cloud SQL 접근 불가
 
+### Google 소셜 로그인 실패
+
+- `GOOGLE_CLIENT_ID` 환경변수가 **Web Client ID**인지 확인 (Android Client ID가 아님)
+- Google Cloud Console에서 OAuth 동의 화면 설정 확인
+- Android 앱의 SHA-1 지문이 Google Cloud Console의 Android Client에 등록되어 있는지 확인
+- Flutter 앱에서 `serverClientId`에 Web Client ID를 전달하는지 확인 (Android에서 `idToken`을 받기 위해 필수)
+
+### Apple 소셜 로그인 실패
+
+- `APPLE_CLIENT_ID`가 Apple Developer Console의 Service ID와 일치하는지 확인
+- Xcode의 Signing & Capabilities에서 "Sign In with Apple" capability 추가 확인
+- Associated Domains 설정 확인
+
+### JWT 토큰 관련
+
+- `JWT_SECRET`이 모든 API Pod에서 동일한 값인지 확인 (Secret에서 주입)
+- access token 만료: 15분, refresh token 만료: 7일
+- 401 응답 시 `/auth/refresh`로 갱신 필요
+
+### Prisma 마이그레이션 실패
+
+```bash
+# 마이그레이션 상태 확인
+export DATABASE_URL="postgresql://..."
+npx prisma migrate status
+
+# 실패한 마이그레이션 롤백
+npx prisma migrate resolve --rolled-back <migration_name>
+```
+
 ### Ingress 502 Bad Gateway
 
 - Pod readiness probe 실패 → Pod 로그 확인
@@ -303,5 +365,70 @@ kubectl logs -n openclaw -l app.kubernetes.io/name=openclaw-api --previous
 
 ### ManagedCertificate Provisioning 상태 지속
 
-- DNS A 레코드가 Ingress IP를 가리키는지 확인
-- 최대 15분 대기, 그래도 안 되면 `kubectl describe managedcertificate`
+- external-dns가 DNS A 레코드를 생성했는지 확인: `gcloud dns record-sets list --zone=zazz-buzz --filter="name=api.openclaw.zazz.buzz."`
+- 최대 15분 대기, 그래도 안 되면 `kubectl describe managedcertificate openclaw-api-cert -n openclaw`
+- external-dns Pod 로그 확인: `kubectl logs -l app=external-dns --all-namespaces`
+
+---
+
+## API 엔드포인트
+
+### 인증 불필요 (Public)
+
+| 메서드 | 경로            | 설명               | 요청 Body                                    |
+| ------ | --------------- | ------------------ | -------------------------------------------- |
+| POST   | `/auth/signup`  | 이메일 회원가입    | `{ email, password, name? }`                 |
+| POST   | `/auth/login`   | 이메일 로그인      | `{ email, password }`                        |
+| POST   | `/auth/google`  | Google 소셜 로그인 | `{ idToken }`                                |
+| POST   | `/auth/apple`   | Apple 소셜 로그인  | `{ identityToken, givenName?, familyName? }` |
+| POST   | `/auth/refresh` | JWT 토큰 갱신      | `{ refreshToken }`                           |
+| GET    | `/health`       | 헬스체크           | —                                            |
+
+### JWT 인증 필요 (`Authorization: Bearer <JWT>`)
+
+| 메서드 | 경로                                           | 설명                  |
+| ------ | ---------------------------------------------- | --------------------- |
+| GET    | `/users/me`                                    | 내 프로필 조회        |
+| POST   | `/instances`                                   | 인스턴스 생성         |
+| GET    | `/instances`                                   | 내 인스턴스 목록      |
+| GET    | `/instances/:id`                               | 인스턴스 상세 조회    |
+| DELETE | `/instances/:id`                               | 인스턴스 삭제         |
+| POST   | `/instances/:id/telegram/setup`                | Telegram 봇 토큰 설정 |
+| GET    | `/instances/:id/telegram/status[?probe=true]`  | Telegram 연결 상태    |
+| POST   | `/instances/:id/telegram/logout`               | Telegram 연결 해제    |
+| GET    | `/instances/:id/pairing/list?channel=telegram` | 페어링 요청 조회      |
+| POST   | `/instances/:id/pairing/approve`               | 페어링 승인           |
+| POST   | `/instances/:id/whatsapp/qr`                   | WhatsApp QR 요청      |
+| POST   | `/instances/:id/whatsapp/wait`                 | WhatsApp 연결 대기    |
+| GET    | `/instances/:id/whatsapp/status`               | WhatsApp 연결 상태    |
+| POST   | `/instances/:id/rpc`                           | RPC 호출 (프록시)     |
+
+---
+
+## Flutter 앱 (ClawBox) 연동
+
+### 앱 온보딩 플로우
+
+```
+1. RevenueCat 페이월 → 구독 완료
+2. POST /auth/google (or /auth/apple)  → accessToken, refreshToken
+3. POST /instances                      → 인스턴스 자동 생성
+4. GET  /instances/:id                  → 폴링 (phase: pending → running)
+5. POST /instances/:id/telegram/setup   → 봇 토큰 설정
+6. GET  /instances/:id/telegram/status  → 연결 확인
+7. (Telegram 앱에서 봇에 DM 전송)
+8. GET  /instances/:id/pairing/list     → 페어링 코드 조회
+9. POST /instances/:id/pairing/approve  → 페어링 승인
+10. 대시보드 → 인스턴스/Telegram 상태 표시
+```
+
+### 앱 설정 (constants.dart)
+
+```dart
+const String revenueCatApiKey = '<RevenueCat API Key>';
+const String entitlementId = 'ClawBox Pro';
+const String apiBaseUrl = 'https://api.openclaw.app';
+const String googleServerClientId = '<Google OAuth Web Client ID>';
+```
+
+> `googleServerClientId`는 `GOOGLE_CLIENT_ID`와 동일한 **Web Client ID**를 사용해야 한다.
