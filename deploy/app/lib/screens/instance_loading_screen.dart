@@ -17,7 +17,7 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(instanceProvider);
-      if (state.status == InstanceStatus.idle) {
+      if (state.status == InstanceStatus.idle || state.status == InstanceStatus.error) {
         ref.read(instanceProvider.notifier).ensureInstance();
       }
     });

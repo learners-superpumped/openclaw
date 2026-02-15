@@ -109,6 +109,11 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
     }
   }
 
+  void resetState() {
+    _pollTimer?.cancel();
+    state = const InstanceState();
+  }
+
   @override
   void dispose() {
     _pollTimer?.cancel();

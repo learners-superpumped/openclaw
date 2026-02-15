@@ -3,6 +3,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../models/user.dart';
 import 'api_provider.dart';
+import 'instance_provider.dart';
 
 enum AuthStatus { unauthenticated, loading, authenticated, error }
 
@@ -56,6 +57,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      _ref.read(instanceProvider.notifier).resetState();
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
@@ -70,6 +72,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      _ref.read(instanceProvider.notifier).resetState();
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
@@ -79,6 +82,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> signOut() async {
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
+    _ref.read(instanceProvider.notifier).resetState();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 }
