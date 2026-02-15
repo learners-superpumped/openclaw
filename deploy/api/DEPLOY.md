@@ -49,7 +49,8 @@ kubectl get ingress openclaw-api -n openclaw -o jsonpath='{.status.loadBalancer.
 kubectl create secret generic openclaw-api -n openclaw \
   --from-literal=DATABASE_URL="postgresql://openclaw_api:<비밀번호>@<CLOUD_SQL_PUBLIC_IP>:5432/openclaw" \
   --from-literal=JWT_SECRET="$(openssl rand -base64 32)" \
-  --from-literal=MANAGER_API_KEY="<기존 Manager API Key>"
+  --from-literal=MANAGER_API_KEY="<기존 Manager API Key>" \
+  --from-literal=OPENROUTER_MANAGEMENT_KEY="<OpenRouter 관리 키>"
 ```
 
 기존 Manager API Key 확인:
@@ -57,6 +58,8 @@ kubectl create secret generic openclaw-api -n openclaw \
 ```bash
 kubectl get secret openclaw-manager -n openclaw -o jsonpath='{.data.API_KEY}' | base64 -d
 ```
+
+OpenRouter 관리 키는 [OpenRouter Keys](https://openrouter.ai/settings/keys) 페이지에서 발급받는다.
 
 ---
 
@@ -146,11 +149,11 @@ curl -X POST https://api.openclaw.zazz.buzz/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"email":"test@example.com","password":"Test1234!"}'
 
-# 인스턴스 생성 (JWT 필요)
+# 인스턴스 생성 (JWT 필요, OpenRouter API Key 자동 생성)
 curl -X POST https://api.openclaw.zazz.buzz/instances \
   -H 'Authorization: Bearer <access_token>' \
   -H 'Content-Type: application/json' \
-  -d '{"secrets":{"ANTHROPIC_API_KEY":"sk-..."}}'
+  -d '{"displayName":"내 인스턴스"}'
 
 # 내 인스턴스 목록
 curl https://api.openclaw.zazz.buzz/instances \
@@ -272,13 +275,14 @@ kubectl rollout status deployment/openclaw-api -n openclaw
 
 ## 환경 변수
 
-| 변수              | 설명                   | 소스                  |
-| ----------------- | ---------------------- | --------------------- |
-| `PORT`            | 서버 포트              | Deployment env (4000) |
-| `DATABASE_URL`    | PostgreSQL 연결 문자열 | Secret `openclaw-api` |
-| `JWT_SECRET`      | JWT 서명 키            | Secret `openclaw-api` |
-| `MANAGER_URL`     | Manager 내부 URL       | Deployment env        |
-| `MANAGER_API_KEY` | Manager 인증 키        | Secret `openclaw-api` |
+| 변수                        | 설명                         | 소스                  |
+| --------------------------- | ---------------------------- | --------------------- |
+| `PORT`                      | 서버 포트                    | Deployment env (4000) |
+| `DATABASE_URL`              | PostgreSQL 연결 문자열       | Secret `openclaw-api` |
+| `JWT_SECRET`                | JWT 서명 키                  | Secret `openclaw-api` |
+| `MANAGER_URL`               | Manager 내부 URL             | Deployment env        |
+| `MANAGER_API_KEY`           | Manager 인증 키              | Secret `openclaw-api` |
+| `OPENROUTER_MANAGEMENT_KEY` | OpenRouter 키 생성용 관리 키 | Secret `openclaw-api` |
 
 ---
 
