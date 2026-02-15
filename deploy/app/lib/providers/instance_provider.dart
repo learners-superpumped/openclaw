@@ -33,6 +33,27 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
 
   InstanceNotifier(this._ref) : super(const InstanceState());
 
+  Future<void> ensureInstance() async {
+    state = state.copyWith(status: InstanceStatus.creating);
+    try {
+      final apiClient = _ref.read(apiClientProvider);
+      final instances = await apiClient.listInstances();
+      if (instances.isNotEmpty) {
+        final instance = instances.first;
+        if (instance.isReady) {
+          state = InstanceState(status: InstanceStatus.ready, instance: instance);
+        } else {
+          state = InstanceState(status: InstanceStatus.polling, instance: instance);
+          _startPolling(instance.instanceId);
+        }
+      } else {
+        await createAndPoll();
+      }
+    } catch (e) {
+      state = InstanceState(status: InstanceStatus.error, error: e.toString());
+    }
+  }
+
   Future<void> createAndPoll() async {
     state = state.copyWith(status: InstanceStatus.creating);
     try {

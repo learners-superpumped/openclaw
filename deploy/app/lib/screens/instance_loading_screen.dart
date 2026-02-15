@@ -18,7 +18,7 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = ref.read(instanceProvider);
       if (state.status == InstanceStatus.idle) {
-        ref.read(instanceProvider.notifier).createAndPoll();
+        ref.read(instanceProvider.notifier).ensureInstance();
       }
     });
   }
@@ -47,7 +47,7 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: () => ref.read(instanceProvider.notifier).createAndPoll(),
+              onPressed: () => ref.read(instanceProvider.notifier).ensureInstance(),
               child: const Text('다시 시도'),
             ),
           ] else ...[
