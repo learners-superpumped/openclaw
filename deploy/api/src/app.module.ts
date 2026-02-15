@@ -7,6 +7,7 @@ import { AuthGuard } from "./auth/auth.guard.js";
 import { AuthModule } from "./auth/auth.module.js";
 import { HealthController } from "./health.controller.js";
 import { InstancesModule } from "./instances/instances.module.js";
+import { LegalModule } from "./legal/legal.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
 import { SubscriptionModule } from "./subscription/subscription.module.js";
 import { UsersModule } from "./users/users.module.js";
@@ -27,6 +28,7 @@ import { UsersModule } from "./users/users.module.js";
     UsersModule,
     InstancesModule,
     SubscriptionModule,
+    LegalModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
