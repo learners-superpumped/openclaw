@@ -1,0 +1,33 @@
+ClawBox lets you run your own personal AI assistant on Telegram — fully managed in the cloud.
+
+No servers to configure. No code to write. Just sign in, connect your Telegram bot, and start chatting with your AI assistant in seconds.
+
+YOUR AI, YOUR MESSENGER
+ClawBox brings AI to the messaging app you already use. Set up a Telegram bot powered by OpenClaw and have natural conversations with your personal AI assistant — right inside Telegram.
+
+SIMPLE SETUP, POWERFUL RESULTS
+Getting started takes just a few steps:
+• Sign in with Google or Apple
+• Create your cloud instance automatically
+• Connect a Telegram bot with guided setup
+• Start chatting immediately
+
+FULLY MANAGED CLOUD
+Your AI assistant runs in the cloud 24/7. ClawBox handles all the infrastructure — deployment, updates, and monitoring — so you can focus on chatting.
+
+REAL-TIME DASHBOARD
+• Monitor your instance status at a glance
+• Check Telegram bot connection health
+• View instance details and activity
+• Pull-to-refresh for instant status updates
+
+FEATURES
+• One-tap cloud instance creation
+• Step-by-step Telegram bot setup wizard
+• Secure authentication with Google and Apple
+• Real-time instance and bot status monitoring
+• Subscription management
+• Dark mode interface
+• Available in 7 languages: English, Korean, Japanese, Chinese, Spanish, Portuguese, and French
+
+Powered by OpenClaw — the open personal AI assistant platform.
