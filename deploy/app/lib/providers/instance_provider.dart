@@ -99,6 +99,14 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
     });
   }
 
+  Future<void> deleteInstance() async {
+    final instance = state.instance;
+    if (instance == null) return;
+    final apiClient = _ref.read(apiClientProvider);
+    await apiClient.deleteInstance(instance.instanceId);
+    resetState();
+  }
+
   Future<void> refresh() async {
     if (state.instance != null) {
       try {

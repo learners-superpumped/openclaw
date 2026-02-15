@@ -22,7 +22,10 @@ class AuthScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
-              Icon(Icons.lock_outline, size: 48, color: AppColors.accent),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset('assets/images/logo.png', width: 80, height: 80),
+              ),
               const SizedBox(height: 24),
               Text(
                 '로그인',

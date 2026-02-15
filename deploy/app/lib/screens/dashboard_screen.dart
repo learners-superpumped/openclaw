@@ -60,10 +60,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               _loadStatus();
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authProvider.notifier).signOut(),
-          ),
         ],
       ),
       body: RefreshIndicator(

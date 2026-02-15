@@ -60,6 +60,10 @@ class ApiClient {
     return Instance.fromJson(response.data);
   }
 
+  Future<void> deleteInstance(String instanceId) async {
+    await _dio.delete('/instances/$instanceId');
+  }
+
   // Telegram
   Future<Map<String, dynamic>> setupTelegram(String instanceId, String botToken, {String? accountId}) async {
     final response = await _dio.post('/instances/$instanceId/telegram/setup', data: {

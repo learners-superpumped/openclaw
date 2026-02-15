@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'providers/onboarding_provider.dart';
 import 'screens/auth_screen.dart';
-import 'screens/dashboard_screen.dart';
+import 'screens/main_shell.dart';
 import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
 import 'screens/paywall_screen.dart';
@@ -51,7 +50,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const DashboardScreen(),
+        builder: (context, state) => const MainShell(),
       ),
     ],
   );

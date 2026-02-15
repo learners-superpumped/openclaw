@@ -18,18 +18,9 @@ class PaywallScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [AppColors.accent, AppColors.accentGreen],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: const Icon(Icons.auto_awesome, size: 40, color: AppColors.background),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset('assets/images/logo.png', width: 80, height: 80),
               ),
               const SizedBox(height: 32),
               Text(
