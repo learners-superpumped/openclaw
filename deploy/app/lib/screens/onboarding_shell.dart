@@ -14,7 +14,7 @@ class OnboardingShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final step = ref.watch(onboardingStepProvider);
     final currentIndex = _stepIndex(step);
-    final totalSteps = 3;
+    final totalSteps = 4;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,6 +41,8 @@ class OnboardingShell extends ConsumerWidget {
         return 1;
       case OnboardingStep.telegramPairing:
         return 2;
+      case OnboardingStep.setupComplete:
+        return 3;
       default:
         return 0;
     }

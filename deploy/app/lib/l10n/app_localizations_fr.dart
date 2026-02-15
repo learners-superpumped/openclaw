@@ -186,4 +186,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get delete => 'Supprimer';
+
+  @override
+  String get setupCompleteTitle => 'Configuration terminée !';
+
+  @override
+  String get setupCompleteDesc =>
+      'Envoyez un message à votre bot sur Telegram et OpenClaw répondra. Commencez à discuter maintenant !';
+
+  @override
+  String get startChatting => 'Commencer à discuter';
 }

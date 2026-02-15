@@ -7,6 +7,7 @@ import 'screens/main_shell.dart';
 import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
 import 'screens/paywall_screen.dart';
+import 'screens/setup_complete_screen.dart';
 import 'screens/telegram_pairing_screen.dart';
 import 'screens/telegram_setup_screen.dart';
 
@@ -46,6 +47,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/setup/pairing',
             builder: (context, state) => const TelegramPairingScreen(),
           ),
+          GoRoute(
+            path: '/setup/complete',
+            builder: (context, state) => const SetupCompleteScreen(),
+          ),
         ],
       ),
       GoRoute(
@@ -68,6 +73,8 @@ String _locationForStep(OnboardingStep step) {
       return '/setup/telegram';
     case OnboardingStep.telegramPairing:
       return '/setup/pairing';
+    case OnboardingStep.setupComplete:
+      return '/setup/complete';
     case OnboardingStep.dashboard:
       return '/dashboard';
   }

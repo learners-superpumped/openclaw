@@ -177,4 +177,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get delete => '削除';
+
+  @override
+  String get setupCompleteTitle => 'セットアップ完了！';
+
+  @override
+  String get setupCompleteDesc =>
+      'Telegramでボットにメッセージを送ると、OpenClawが返答します。今すぐ会話を始めましょう！';
+
+  @override
+  String get startChatting => 'チャットを始める';
 }

@@ -55,5 +55,8 @@
   "deleteAccountDesc": "Eliminar permanentemente tu cuenta y todos los datos",
   "deleteAccountConfirmTitle": "¿Eliminar cuenta?",
   "deleteAccountConfirmMessage": "Tu instancia será eliminada y todos los datos se perderán permanentemente. Esta acción no se puede deshacer. Puedes crear una nueva cuenta después de la eliminación.",
-  "delete": "Eliminar"
+  "delete": "Eliminar",
+  "setupCompleteTitle": "¡Configuración completada!",
+  "setupCompleteDesc": "Envía un mensaje a tu bot en Telegram y OpenClaw responderá. ¡Comienza a chatear ahora!",
+  "startChatting": "Empezar a chatear"
 }

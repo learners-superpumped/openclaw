@@ -443,6 +443,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// Setup complete screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Complete!'**
+  String get setupCompleteTitle;
+
+  /// Setup complete screen description
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message to your bot on Telegram and OpenClaw will reply. Start chatting now!'**
+  String get setupCompleteDesc;
+
+  /// Start chatting button
+  ///
+  /// In en, this message translates to:
+  /// **'Start Chatting'**
+  String get startChatting;
 }
 
 class _AppLocalizationsDelegate

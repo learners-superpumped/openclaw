@@ -177,4 +177,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get delete => '삭제';
+
+  @override
+  String get setupCompleteTitle => '설정 완료!';
+
+  @override
+  String get setupCompleteDesc =>
+      'Telegram에서 봇에게 메시지를 보내면 OpenClaw가 대답합니다. 지금 바로 대화를 시작해보세요!';
+
+  @override
+  String get startChatting => '대화 시작하기';
 }

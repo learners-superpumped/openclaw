@@ -55,5 +55,8 @@
   "deleteAccountDesc": "アカウントとすべてのデータを完全に削除",
   "deleteAccountConfirmTitle": "アカウントを削除しますか？",
   "deleteAccountConfirmMessage": "インスタンスが削除され、すべてのデータが完全に失われます。この操作は元に戻せません。削除後に新しいアカウントを作成できます。",
-  "delete": "削除"
+  "delete": "削除",
+  "setupCompleteTitle": "セットアップ完了！",
+  "setupCompleteDesc": "Telegramでボットにメッセージを送ると、OpenClawが返答します。今すぐ会話を始めましょう！",
+  "startChatting": "チャットを始める"
 }

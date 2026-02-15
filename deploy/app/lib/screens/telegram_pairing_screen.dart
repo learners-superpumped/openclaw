@@ -36,7 +36,7 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.approvePairing(instance.instanceId, 'telegram', code);
       if (mounted) {
-        ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+        ref.read(setupProgressProvider.notifier).state = OnboardingStep.setupComplete;
       }
     } catch (e) {
       if (mounted) {

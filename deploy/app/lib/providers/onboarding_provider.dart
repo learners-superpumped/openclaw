@@ -10,6 +10,7 @@ enum OnboardingStep {
   instanceLoading,
   telegramSetup,
   telegramPairing,
+  setupComplete,
   dashboard,
 }
 

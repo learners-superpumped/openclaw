@@ -55,5 +55,8 @@
   "deleteAccountDesc": "永久删除您的账户和所有数据",
   "deleteAccountConfirmTitle": "确定删除账户？",
   "deleteAccountConfirmMessage": "您的实例将被删除，所有数据将永久丢失。此操作无法撤消。删除后您可以创建新账户。",
-  "delete": "删除"
+  "delete": "删除",
+  "setupCompleteTitle": "设置完成！",
+  "setupCompleteDesc": "在Telegram上给机器人发消息，OpenClaw会回复您。现在就开始对话吧！",
+  "startChatting": "开始对话"
 }

@@ -111,5 +111,11 @@
   "deleteAccountConfirmMessage": "Your instance will be deleted and all data will be permanently lost. This action cannot be undone. You can create a new account after deletion.",
   "@deleteAccountConfirmMessage": { "description": "Delete account confirmation dialog message" },
   "delete": "Delete",
-  "@delete": { "description": "Delete button" }
+  "@delete": { "description": "Delete button" },
+  "setupCompleteTitle": "Setup Complete!",
+  "@setupCompleteTitle": { "description": "Setup complete screen title" },
+  "setupCompleteDesc": "Send a message to your bot on Telegram and OpenClaw will reply. Start chatting now!",
+  "@setupCompleteDesc": { "description": "Setup complete screen description" },
+  "startChatting": "Start Chatting",
+  "@startChatting": { "description": "Start chatting button" }
 }

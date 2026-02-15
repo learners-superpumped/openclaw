@@ -176,4 +176,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get delete => '删除';
+
+  @override
+  String get setupCompleteTitle => '设置完成！';
+
+  @override
+  String get setupCompleteDesc => '在Telegram上给机器人发消息，OpenClaw会回复您。现在就开始对话吧！';
+
+  @override
+  String get startChatting => '开始对话';
 }
