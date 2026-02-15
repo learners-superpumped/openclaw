@@ -1,6 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:superwallkit_flutter/superwallkit_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  String apiKey = Platform.isIOS
+      ? "pk_tpxjndO_YPA5D-M7V47Zu"
+      : "pk_N5x2uue52hKjVENGQBXvR";
+  Superwall.configure(apiKey);
+
   runApp(const MyApp());
 }
 

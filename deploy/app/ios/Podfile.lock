@@ -1,0 +1,33 @@
+PODS:
+  - Flutter (1.0.0)
+  - Superscript (1.0.12)
+  - SuperwallKit (4.12.10):
+    - Superscript (= 1.0.12)
+  - superwallkit_flutter (0.0.1):
+    - Flutter
+    - SuperwallKit (= 4.12.10)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - superwallkit_flutter (from `.symlinks/plugins/superwallkit_flutter/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Superscript
+    - SuperwallKit
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  superwallkit_flutter:
+    :path: ".symlinks/plugins/superwallkit_flutter/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Superscript: 00e98fcd78a2cefa33b658d4a16756b535eabd2c
+  SuperwallKit: 9bdeb59a3e062364fce2c1faaf196597bf81890e
+  superwallkit_flutter: 41698c114d4591b9f6dd25a1254103a74c55bbdd
+
+PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
+
+COCOAPODS: 1.16.2
