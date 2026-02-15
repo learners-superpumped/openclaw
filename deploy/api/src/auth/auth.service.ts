@@ -1,7 +1,12 @@
 import { ConflictException, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { verifyIdToken as verifyAppleToken } from "apple-signin-auth";
 import { hash, compare } from "bcrypt";
+import { OAuth2Client } from "google-auth-library";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { AppleAuthDto } from "./dto/apple-auth.dto.js";
+import { GoogleAuthDto } from "./dto/google-auth.dto.js";
 import { LoginDto } from "./dto/login.dto.js";
 import { SignupDto } from "./dto/signup.dto.js";
 
@@ -14,6 +19,7 @@ export class AuthService {
   constructor(
     @Inject(PrismaService) private prisma: PrismaService,
     @Inject(JwtService) private jwtService: JwtService,
+    @Inject(ConfigService) private configService: ConfigService,
   ) {}
 
   async signup(dto: SignupDto) {
@@ -40,7 +46,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
-    if (!user) {
+    if (!user || !user.passwordHash) {
       throw new UnauthorizedException("Invalid credentials");
     }
 
@@ -48,6 +54,67 @@ export class AuthService {
     if (!valid) {
       throw new UnauthorizedException("Invalid credentials");
     }
+
+    return this.generateTokens(user.id, user.email);
+  }
+
+  async googleLogin(dto: GoogleAuthDto) {
+    const clientId = this.configService.getOrThrow<string>("GOOGLE_CLIENT_ID");
+    const client = new OAuth2Client(clientId);
+    const ticket = await client.verifyIdToken({
+      idToken: dto.idToken,
+      audience: clientId,
+    });
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
+      throw new UnauthorizedException("Invalid Google ID token");
+    }
+
+    const user = await this.prisma.user.upsert({
+      where: {
+        provider_providerId: { provider: "google", providerId: payload.sub },
+      },
+      update: {
+        name: payload.name ?? undefined,
+        avatarUrl: payload.picture ?? undefined,
+      },
+      create: {
+        email: payload.email,
+        provider: "google",
+        providerId: payload.sub,
+        name: payload.name,
+        avatarUrl: payload.picture,
+      },
+    });
+
+    return this.generateTokens(user.id, user.email);
+  }
+
+  async appleLogin(dto: AppleAuthDto) {
+    const clientId = this.configService.getOrThrow<string>("APPLE_CLIENT_ID");
+    const payload = await verifyAppleToken(dto.identityToken, {
+      audience: clientId,
+    });
+    if (!payload.sub || !payload.email) {
+      throw new UnauthorizedException("Invalid Apple identity token");
+    }
+
+    const name = [dto.givenName, dto.familyName].filter(Boolean).join(" ") || undefined;
+
+    const user = await this.prisma.user.upsert({
+      where: {
+        provider_providerId: { provider: "apple", providerId: payload.sub },
+      },
+      update: {
+        name: name ?? undefined,
+      },
+      create: {
+        email: payload.email,
+        provider: "apple",
+        providerId: payload.sub,
+        name,
+      },
+    });
 
     return this.generateTokens(user.id, user.email);
   }

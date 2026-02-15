@@ -1,6 +1,8 @@
 import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service.js";
+import { AppleAuthDto } from "./dto/apple-auth.dto.js";
+import { GoogleAuthDto } from "./dto/google-auth.dto.js";
 import { LoginDto } from "./dto/login.dto.js";
 import { RefreshDto } from "./dto/refresh.dto.js";
 import { SignupDto } from "./dto/signup.dto.js";
@@ -30,5 +32,19 @@ export class AuthController {
   @ApiOperation({ summary: "토큰 갱신" })
   refresh(@Body() dto: RefreshDto) {
     return this.authService.refresh(dto.refreshToken);
+  }
+
+  @Public()
+  @Post("google")
+  @ApiOperation({ summary: "Google 소셜 로그인" })
+  googleLogin(@Body() dto: GoogleAuthDto) {
+    return this.authService.googleLogin(dto);
+  }
+
+  @Public()
+  @Post("apple")
+  @ApiOperation({ summary: "Apple 소셜 로그인" })
+  appleLogin(@Body() dto: AppleAuthDto) {
+    return this.authService.appleLogin(dto);
   }
 }

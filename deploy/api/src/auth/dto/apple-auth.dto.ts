@@ -1,0 +1,14 @@
+import { IsOptional, IsString } from "class-validator";
+
+export class AppleAuthDto {
+  @IsString()
+  identityToken!: string;
+
+  @IsOptional()
+  @IsString()
+  givenName?: string;
+
+  @IsOptional()
+  @IsString()
+  familyName?: string;
+}

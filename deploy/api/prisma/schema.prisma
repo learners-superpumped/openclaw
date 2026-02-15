@@ -10,12 +10,16 @@ datasource db {
 model User {
   id           String     @id @default(uuid())
   email        String     @unique
-  passwordHash String     @map("password_hash")
+  passwordHash String?    @map("password_hash")
   name         String?
+  provider     String     @default("email")
+  providerId   String?    @map("provider_id")
+  avatarUrl    String?    @map("avatar_url")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
   instances    Instance[]
 
+  @@unique([provider, providerId])
   @@map("users")
 }
 
