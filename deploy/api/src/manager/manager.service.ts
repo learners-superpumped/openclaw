@@ -96,6 +96,7 @@ export class ManagerService {
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/telegram/status`, {
         headers: this.headers,
         params: probe ? { probe: "true" } : {},
+        timeout: 20_000,
       }),
     );
     return data;
