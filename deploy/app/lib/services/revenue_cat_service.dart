@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -8,7 +11,17 @@ import '../constants.dart';
 class RevenueCatService {
   static Future<void> initialize() async {
     await Purchases.setLogLevel(LogLevel.debug);
-    final configuration = PurchasesConfiguration(revenueCatApiKey);
+
+    final String apiKey;
+    if (kDebugMode) {
+      apiKey = revenueCatTestApiKey;
+    } else if (Platform.isAndroid) {
+      apiKey = revenueCatAndroidApiKey;
+    } else {
+      apiKey = revenueCatIosApiKey;
+    }
+
+    final configuration = PurchasesConfiguration(apiKey);
     await Purchases.configure(configuration);
   }
 
@@ -43,9 +56,7 @@ class RevenueCatService {
     await RevenueCatUI.presentCustomerCenter();
   }
 
-  static void addCustomerInfoListener(
-    void Function(CustomerInfo) listener,
-  ) {
+  static void addCustomerInfoListener(void Function(CustomerInfo) listener) {
     Purchases.addCustomerInfoUpdateListener(listener);
   }
 }
