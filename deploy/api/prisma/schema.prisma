@@ -20,14 +20,30 @@ model User {
 }
 
 model Instance {
-  id          String   @id @default(uuid())
-  instanceId  String   @unique @map("instance_id")
-  userId      String   @map("user_id")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName String?  @map("display_name")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id            String         @id @default(uuid())
+  instanceId    String         @unique @map("instance_id")
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName   String?        @map("display_name")
+  openRouterKey OpenRouterKey?
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
 
   @@index([userId])
   @@map("instances")
+}
+
+model OpenRouterKey {
+  id         String   @id @default(uuid())
+  instanceId String   @unique @map("instance_id")
+  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  key        String
+  keyHash    String   @map("key_hash")
+  name       String
+  limit      Float
+  limitReset String   @map("limit_reset")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("open_router_keys")
 }

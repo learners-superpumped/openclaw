@@ -1,6 +1,7 @@
 import { ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import { ManagerService } from "../manager/manager.service.js";
+import { OpenRouterService } from "../openrouter/openrouter.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateInstanceDto } from "./dto/create-instance.dto.js";
 
@@ -9,18 +10,33 @@ export class InstancesService {
   constructor(
     @Inject(PrismaService) private prisma: PrismaService,
     @Inject(ManagerService) private managerService: ManagerService,
+    @Inject(OpenRouterService) private openRouterService: OpenRouterService,
   ) {}
 
   async create(userId: string, dto: CreateInstanceDto) {
     const instanceId = `u${randomUUID().slice(0, 8)}`;
+    const keyName = `openclaw-${instanceId}`;
 
-    const managerResult = await this.managerService.createInstance(instanceId, dto.secrets);
+    const openRouterKey = await this.openRouterService.createKey(keyName);
+
+    const managerResult = await this.managerService.createInstance(instanceId, {
+      OPENROUTER_API_KEY: openRouterKey.key,
+    });
 
     const instance = await this.prisma.instance.create({
       data: {
         instanceId,
         userId,
         displayName: dto.displayName,
+        openRouterKey: {
+          create: {
+            key: openRouterKey.key,
+            keyHash: openRouterKey.hash,
+            name: keyName,
+            limit: openRouterKey.limit,
+            limitReset: "weekly",
+          },
+        },
       },
     });
 

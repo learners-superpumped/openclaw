@@ -52,6 +52,11 @@ spec:
                 secretKeyRef:
                   name: openclaw-api
                   key: MANAGER_API_KEY
+            - name: OPENROUTER_MANAGEMENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-api
+                  key: OPENROUTER_MANAGEMENT_KEY
           resources:
             requests:
               cpu: 250m

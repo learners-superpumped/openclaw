@@ -21,6 +21,10 @@ export class PrismaService implements OnModuleDestroy {
     return this.client.instance;
   }
 
+  get openRouterKey() {
+    return this.client.openRouterKey;
+  }
+
   async onModuleDestroy() {
     await this.client.$disconnect();
   }
