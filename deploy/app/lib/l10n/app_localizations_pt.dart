@@ -195,4 +195,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get startChatting => 'Começar a conversar';
+
+  @override
+  String openBotOnTelegram(String botUsername) {
+    return 'Abrir @$botUsername';
+  }
 }

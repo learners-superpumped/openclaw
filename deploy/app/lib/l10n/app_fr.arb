@@ -58,5 +58,6 @@
   "delete": "Supprimer",
   "setupCompleteTitle": "Configuration terminée !",
   "setupCompleteDesc": "Envoyez un message à votre bot sur Telegram et OpenClaw répondra. Commencez à discuter maintenant !",
-  "startChatting": "Commencer à discuter"
+  "startChatting": "Commencer à discuter",
+  "openBotOnTelegram": "Ouvrir @{botUsername}"
 }

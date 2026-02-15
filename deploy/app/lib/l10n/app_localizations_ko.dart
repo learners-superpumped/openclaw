@@ -187,4 +187,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get startChatting => '대화 시작하기';
+
+  @override
+  String openBotOnTelegram(String botUsername) {
+    return '@$botUsername 열기';
+  }
 }

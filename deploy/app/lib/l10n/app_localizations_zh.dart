@@ -185,4 +185,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get startChatting => '开始对话';
+
+  @override
+  String openBotOnTelegram(String botUsername) {
+    return '打开 @$botUsername';
+  }
 }

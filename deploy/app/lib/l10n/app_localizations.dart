@@ -461,6 +461,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Chatting'**
   String get startChatting;
+
+  /// Button to open bot on Telegram
+  ///
+  /// In en, this message translates to:
+  /// **'Open @{botUsername}'**
+  String openBotOnTelegram(String botUsername);
 }
 
 class _AppLocalizationsDelegate

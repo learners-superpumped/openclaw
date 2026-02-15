@@ -58,5 +58,6 @@
   "delete": "删除",
   "setupCompleteTitle": "设置完成！",
   "setupCompleteDesc": "在Telegram上给机器人发消息，OpenClaw会回复您。现在就开始对话吧！",
-  "startChatting": "开始对话"
+  "startChatting": "开始对话",
+  "openBotOnTelegram": "打开 @{botUsername}"
 }

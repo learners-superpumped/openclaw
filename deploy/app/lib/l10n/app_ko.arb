@@ -58,5 +58,6 @@
   "delete": "삭제",
   "setupCompleteTitle": "설정 완료!",
   "setupCompleteDesc": "Telegram에서 봇에게 메시지를 보내면 OpenClaw가 대답합니다. 지금 바로 대화를 시작해보세요!",
-  "startChatting": "대화 시작하기"
+  "startChatting": "대화 시작하기",
+  "openBotOnTelegram": "@{botUsername} 열기"
 }

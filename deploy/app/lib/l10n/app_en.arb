@@ -117,5 +117,14 @@
   "setupCompleteDesc": "Send a message to your bot on Telegram and OpenClaw will reply. Start chatting now!",
   "@setupCompleteDesc": { "description": "Setup complete screen description" },
   "startChatting": "Start Chatting",
-  "@startChatting": { "description": "Start chatting button" }
+  "@startChatting": { "description": "Start chatting button" },
+  "openBotOnTelegram": "Open @{botUsername}",
+  "@openBotOnTelegram": {
+    "description": "Button to open bot on Telegram",
+    "placeholders": {
+      "botUsername": {
+        "type": "String"
+      }
+    }
+  }
 }
