@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/api_provider.dart';
 import '../providers/auth_provider.dart';
@@ -18,6 +19,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Map<String, dynamic>? _telegramStatus;
+  String? _botUsername;
   Timer? _refreshTimer;
 
   @override
@@ -38,10 +40,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance != null) {
-        final status = await apiClient.getTelegramStatus(instance.instanceId);
-        if (mounted) setState(() => _telegramStatus = status);
+        final needProbe = _botUsername == null;
+        final status = await apiClient.getTelegramStatus(
+          instance.instanceId,
+          probe: needProbe,
+        );
+        if (mounted) {
+          setState(() {
+            _telegramStatus = status;
+            if (needProbe) {
+              _botUsername = _extractBotUsername(status);
+            }
+          });
+        }
       }
     } catch (_) {}
+  }
+
+  String? _extractBotUsername(Map<String, dynamic> status) {
+    final telegram = status['telegram'] as Map<String, dynamic>?;
+    final probe = telegram?['probe'] as Map<String, dynamic>?;
+    final bot = probe?['bot'] as Map<String, dynamic>?;
+    return bot?['username'] as String?;
+  }
+
+  Future<void> _openTelegramBot() async {
+    if (_botUsername == null) return;
+    final url = Uri.parse('https://t.me/$_botUsername');
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
   @override
@@ -144,44 +170,50 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             const SizedBox(height: 16),
             // Telegram status card
             Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.telegram, color: AppColors.accent, size: 20),
-                        const SizedBox(width: 8),
-                        Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
-                        const Spacer(),
-                        if (_telegramStatus != null)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: _telegramStatus!['connected'] == true
-                                  ? AppColors.accentGreen.withValues(alpha: 0.15)
-                                  : AppColors.textTertiary.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              _telegramStatus!['connected'] == true ? AppLocalizations.of(context)!.statusConnected : AppLocalizations.of(context)!.statusDisconnected,
-                              style: TextStyle(
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: _telegramStatus?['connected'] == true && _botUsername != null
+                    ? _openTelegramBot
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.telegram, color: AppColors.accent, size: 20),
+                          const SizedBox(width: 8),
+                          Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
+                          const Spacer(),
+                          if (_telegramStatus != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
                                 color: _telegramStatus!['connected'] == true
-                                    ? AppColors.accentGreen
-                                    : AppColors.textTertiary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                    ? AppColors.accentGreen.withValues(alpha: 0.15)
+                                    : AppColors.textTertiary.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                _telegramStatus!['connected'] == true ? AppLocalizations.of(context)!.statusConnected : AppLocalizations.of(context)!.statusDisconnected,
+                                style: TextStyle(
+                                  color: _telegramStatus!['connected'] == true
+                                      ? AppColors.accentGreen
+                                      : AppColors.textTertiary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
+                        ],
+                      ),
+                      if (_botUsername != null) ...[
+                        const SizedBox(height: 12),
+                        _infoRow(AppLocalizations.of(context)!.labelBot, '@$_botUsername'),
                       ],
-                    ),
-                    if (_telegramStatus != null && _telegramStatus!['botUsername'] != null) ...[
-                      const SizedBox(height: 12),
-                      _infoRow(AppLocalizations.of(context)!.labelBot, '@${_telegramStatus!['botUsername']}'),
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
