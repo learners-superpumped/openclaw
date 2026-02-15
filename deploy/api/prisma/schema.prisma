@@ -17,6 +17,7 @@ model User {
   avatarUrl    String?    @map("avatar_url")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
+  isPromo      Boolean    @default(false) @map("is_promo")
   instances    Instance[]
 
   @@unique([provider, providerId])

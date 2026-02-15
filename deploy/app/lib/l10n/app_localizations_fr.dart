@@ -201,4 +201,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String openBotOnTelegram(String botUsername) {
     return 'Ouvrir @$botUsername';
   }
+
+  @override
+  String get havePromoCode => 'Vous avez un code promo ?';
+
+  @override
+  String get enterPromoCode => 'Entrer le code promo';
+
+  @override
+  String get promoCodeHint => 'Entrez votre code';
+
+  @override
+  String get promoCodeInvalid => 'Code promo invalide.';
+
+  @override
+  String get promoCodeSuccess => 'Code promo appliqué !';
 }

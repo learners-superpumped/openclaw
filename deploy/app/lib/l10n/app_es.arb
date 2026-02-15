@@ -59,5 +59,10 @@
   "setupCompleteTitle": "¡Configuración completada!",
   "setupCompleteDesc": "Envía un mensaje a tu bot en Telegram y OpenClaw responderá. ¡Comienza a chatear ahora!",
   "startChatting": "Empezar a chatear",
-  "openBotOnTelegram": "Abrir @{botUsername}"
+  "openBotOnTelegram": "Abrir @{botUsername}",
+  "havePromoCode": "¿Tienes un código promocional?",
+  "enterPromoCode": "Ingresar código promocional",
+  "promoCodeHint": "Ingresa tu código",
+  "promoCodeInvalid": "Código promocional inválido.",
+  "promoCodeSuccess": "¡Código promocional aplicado!"
 }

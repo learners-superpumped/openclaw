@@ -126,5 +126,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "havePromoCode": "Have a promo code?",
+  "@havePromoCode": { "description": "Promo code link on paywall" },
+  "enterPromoCode": "Enter Promo Code",
+  "@enterPromoCode": { "description": "Promo code dialog title" },
+  "promoCodeHint": "Enter your code",
+  "@promoCodeHint": { "description": "Promo code input hint" },
+  "promoCodeInvalid": "Invalid promo code.",
+  "@promoCodeInvalid": { "description": "Invalid promo code error" },
+  "promoCodeSuccess": "Promo code applied!",
+  "@promoCodeSuccess": { "description": "Promo code success message" }
 }

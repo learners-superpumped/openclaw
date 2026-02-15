@@ -59,5 +59,10 @@
   "setupCompleteTitle": "セットアップ完了！",
   "setupCompleteDesc": "Telegramでボットにメッセージを送ると、OpenClawが返答します。今すぐ会話を始めましょう！",
   "startChatting": "チャットを始める",
-  "openBotOnTelegram": "@{botUsername} を開く"
+  "openBotOnTelegram": "@{botUsername} を開く",
+  "havePromoCode": "プロモーションコードをお持ちですか？",
+  "enterPromoCode": "プロモーションコード入力",
+  "promoCodeHint": "コードを入力してください",
+  "promoCodeInvalid": "無効なプロモーションコードです。",
+  "promoCodeSuccess": "プロモーションコードが適用されました！"
 }

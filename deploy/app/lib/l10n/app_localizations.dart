@@ -467,6 +467,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open @{botUsername}'**
   String openBotOnTelegram(String botUsername);
+
+  /// Promo code link on paywall
+  ///
+  /// In en, this message translates to:
+  /// **'Have a promo code?'**
+  String get havePromoCode;
+
+  /// Promo code dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Promo Code'**
+  String get enterPromoCode;
+
+  /// Promo code input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your code'**
+  String get promoCodeHint;
+
+  /// Invalid promo code error
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid promo code.'**
+  String get promoCodeInvalid;
+
+  /// Promo code success message
+  ///
+  /// In en, this message translates to:
+  /// **'Promo code applied!'**
+  String get promoCodeSuccess;
 }
 
 class _AppLocalizationsDelegate

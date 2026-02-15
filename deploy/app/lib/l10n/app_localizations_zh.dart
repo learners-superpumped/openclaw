@@ -190,4 +190,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String openBotOnTelegram(String botUsername) {
     return '打开 @$botUsername';
   }
+
+  @override
+  String get havePromoCode => '有促销码？';
+
+  @override
+  String get enterPromoCode => '输入促销码';
+
+  @override
+  String get promoCodeHint => '请输入您的码';
+
+  @override
+  String get promoCodeInvalid => '无效的促销码。';
+
+  @override
+  String get promoCodeSuccess => '促销码已应用！';
 }

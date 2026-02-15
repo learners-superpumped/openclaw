@@ -16,9 +16,15 @@ export class InstancesService {
   ) {}
 
   async create(userId: string, dto: CreateInstanceDto) {
-    const isActive = await this.revenueCatService.isEntitlementActive(userId);
-    if (!isActive) {
-      throw new ForbiddenException("Active subscription required");
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { isPromo: true },
+    });
+    if (!user?.isPromo) {
+      const isActive = await this.revenueCatService.isEntitlementActive(userId);
+      if (!isActive) {
+        throw new ForbiddenException("Active subscription required");
+      }
     }
 
     const instanceId = `u${randomUUID().slice(0, 8)}`;

@@ -192,4 +192,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String openBotOnTelegram(String botUsername) {
     return '@$botUsername 열기';
   }
+
+  @override
+  String get havePromoCode => '프로모션 코드가 있으신가요?';
+
+  @override
+  String get enterPromoCode => '프로모션 코드 입력';
+
+  @override
+  String get promoCodeHint => '코드를 입력하세요';
+
+  @override
+  String get promoCodeInvalid => '유효하지 않은 프로모션 코드입니다.';
+
+  @override
+  String get promoCodeSuccess => '프로모션 코드가 적용되었습니다!';
 }

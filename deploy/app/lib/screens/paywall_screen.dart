@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/api_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
@@ -50,11 +51,79 @@ class PaywallScreen extends ConsumerWidget {
                   style: TextStyle(color: AppColors.textSecondary),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => _showPromoCodeDialog(context, ref),
+                child: Text(
+                  AppLocalizations.of(context)!.havePromoCode,
+                  style: TextStyle(color: AppColors.textTertiary),
+                ),
+              ),
+              const SizedBox(height: 32),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showPromoCodeDialog(BuildContext context, WidgetRef ref) {
+    final controller = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
+    final apiClient = ref.read(apiClientProvider);
+    final subNotifier = ref.read(isProProvider.notifier);
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.enterPromoCode),
+          content: TextField(
+            controller: controller,
+            textCapitalization: TextCapitalization.characters,
+            decoration: InputDecoration(hintText: l10n.promoCodeHint),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final code = controller.text.trim();
+                if (code.isEmpty) return;
+
+                try {
+                  final valid = await apiClient.validatePromo(code);
+                  if (!dialogContext.mounted) return;
+                  Navigator.of(dialogContext).pop();
+
+                  if (valid) {
+                    await subNotifier.activatePromo(code);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.promoCodeSuccess)),
+                    );
+                  } else {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.promoCodeInvalid)),
+                    );
+                  }
+                } catch (_) {
+                  if (!dialogContext.mounted) return;
+                  Navigator.of(dialogContext).pop();
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.promoCodeInvalid)),
+                  );
+                }
+              },
+              child: Text(l10n.approve),
+            ),
+          ],
+        );
+      },
     );
   }
 }

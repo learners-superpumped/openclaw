@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../models/user.dart';
 import 'api_provider.dart';
 import 'instance_provider.dart';
+import 'subscription_provider.dart';
 
 enum AuthStatus { unauthenticated, loading, authenticated, error }
 
@@ -57,6 +58,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      final subNotifier = _ref.read(isProProvider.notifier);
+      if (subNotifier.isPromo) {
+        final promoCode = await subNotifier.getPromoCode();
+        if (promoCode != null) {
+          try { await apiClient.activatePromo(promoCode); } catch (_) {}
+        }
+      }
       _ref.read(instanceProvider.notifier).resetState();
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
@@ -72,6 +80,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      final subNotifier = _ref.read(isProProvider.notifier);
+      if (subNotifier.isPromo) {
+        final promoCode = await subNotifier.getPromoCode();
+        if (promoCode != null) {
+          try { await apiClient.activatePromo(promoCode); } catch (_) {}
+        }
+      }
       _ref.read(instanceProvider.notifier).resetState();
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {

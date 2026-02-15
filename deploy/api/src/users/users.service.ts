@@ -1,12 +1,14 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InstancesService } from "../instances/instances.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { PromoService } from "../promo/promo.service.js";
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(PrismaService) private prisma: PrismaService,
     @Inject(InstancesService) private instancesService: InstancesService,
+    @Inject(PromoService) private promoService: PromoService,
   ) {}
 
   async findById(id: string) {
@@ -38,5 +40,15 @@ export class UsersService {
     }
 
     await this.prisma.user.delete({ where: { id: userId } });
+  }
+
+  async activatePromo(userId: string, code: string) {
+    if (!this.promoService.isValidCode(code)) {
+      throw new BadRequestException("Invalid promo code");
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { isPromo: true },
+    });
   }
 }
