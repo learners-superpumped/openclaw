@@ -67,6 +67,13 @@ spec:
                 secretKeyRef:
                   name: openclaw-api
                   key: OPENROUTER_MANAGEMENT_KEY
+            - name: REVENUECAT_SECRET_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-api
+                  key: REVENUECAT_SECRET_API_KEY
+            - name: REVENUECAT_PROJECT_ID
+              value: "proj04fe98be"
           resources:
             requests:
               cpu: 250m

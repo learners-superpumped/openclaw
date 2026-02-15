@@ -25,6 +25,21 @@ export class OpenRouterService {
     this.managementKey = configService.getOrThrow<string>("OPENROUTER_MANAGEMENT_KEY");
   }
 
+  async deleteKey(hash: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.delete(`https://openrouter.ai/api/v1/keys/${hash}`, {
+          headers: { Authorization: `Bearer ${this.managementKey}` },
+        }),
+      );
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        return;
+      }
+      throw error;
+    }
+  }
+
   async createKey(
     name: string,
   ): Promise<{ key: string; hash: string; limit: number; limitRemaining: number }> {

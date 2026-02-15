@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { ManagerService } from "../manager/manager.service.js";
 import { OpenRouterService } from "../openrouter/openrouter.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
+import { RevenueCatService } from "../revenuecat/revenuecat.service.js";
 import { CreateInstanceDto } from "./dto/create-instance.dto.js";
 
 @Injectable()
@@ -11,9 +12,15 @@ export class InstancesService {
     @Inject(PrismaService) private prisma: PrismaService,
     @Inject(ManagerService) private managerService: ManagerService,
     @Inject(OpenRouterService) private openRouterService: OpenRouterService,
+    @Inject(RevenueCatService) private revenueCatService: RevenueCatService,
   ) {}
 
   async create(userId: string, dto: CreateInstanceDto) {
+    const isActive = await this.revenueCatService.isEntitlementActive(userId);
+    if (!isActive) {
+      throw new ForbiddenException("Active subscription required");
+    }
+
     const instanceId = `u${randomUUID().slice(0, 8)}`;
     const keyName = `openclaw-${instanceId}`;
 
@@ -71,6 +78,14 @@ export class InstancesService {
 
   async remove(userId: string, instanceId: string) {
     await this.verifyOwnership(userId, instanceId);
+
+    const openRouterKey = await this.prisma.openRouterKey.findUnique({
+      where: { instanceId },
+    });
+    if (openRouterKey) {
+      await this.openRouterService.deleteKey(openRouterKey.keyHash);
+    }
+
     const managerResult = await this.managerService.deleteInstance(instanceId);
     await this.prisma.instance.delete({ where: { instanceId } });
     return managerResult;
