@@ -53,15 +53,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ClawBox'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              ref.read(instanceProvider.notifier).refresh();
-              _loadStatus();
-            },
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
