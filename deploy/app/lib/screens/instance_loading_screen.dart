@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/instance_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/branded_logo_loader.dart';
 
 class InstanceLoadingScreen extends ConsumerStatefulWidget {
   const InstanceLoadingScreen({super.key});
@@ -52,14 +53,7 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
               child: Text(AppLocalizations.of(context)!.retry),
             ),
           ] else ...[
-            SizedBox(
-              width: 64,
-              height: 64,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                color: AppColors.accent,
-              ),
-            ),
+            BrandedLogoLoader(),
             const SizedBox(height: 32),
             Text(
               _statusTitle(context, state.status),

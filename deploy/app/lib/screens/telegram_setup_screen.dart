@@ -6,6 +6,7 @@ import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
 import '../providers/onboarding_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/loading_button.dart';
 
 class TelegramSetupScreen extends ConsumerStatefulWidget {
   const TelegramSetupScreen({super.key});
@@ -88,11 +89,10 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
             Text(_error!, style: TextStyle(color: AppColors.error, fontSize: 13)),
           ],
           const SizedBox(height: 24),
-          FilledButton(
-            onPressed: _isSubmitting ? null : _submit,
-            child: _isSubmitting
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : Text(AppLocalizations.of(context)!.next),
+          LoadingButton(
+            onPressed: _submit,
+            isLoading: _isSubmitting,
+            label: Text(AppLocalizations.of(context)!.next),
           ),
         ],
       ),

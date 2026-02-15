@@ -6,6 +6,7 @@ import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
 import '../providers/onboarding_provider.dart' show OnboardingStep, setupProgressProvider;
 import '../theme/app_theme.dart';
+import '../widgets/loading_button.dart';
 
 class TelegramPairingScreen extends ConsumerStatefulWidget {
   const TelegramPairingScreen({super.key});
@@ -76,15 +77,14 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              FilledButton(
-                onPressed: _isSubmitting ? null : () {
+              LoadingButton(
+                onPressed: () {
                   final code = _codeController.text.trim();
                   if (code.isNotEmpty) _approve(code);
                 },
-                style: FilledButton.styleFrom(minimumSize: const Size(80, 52)),
-                child: _isSubmitting
-                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                    : Text(AppLocalizations.of(context)!.approve),
+                isLoading: _isSubmitting,
+                minimumSize: const Size(80, 52),
+                label: Text(AppLocalizations.of(context)!.approve),
               ),
             ],
           ),

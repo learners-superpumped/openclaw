@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/loading_button.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class AuthScreen extends ConsumerWidget {
@@ -64,17 +65,18 @@ class AuthScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
               ],
-              FilledButton.icon(
-                onPressed: isLoading ? null : () => ref.read(authProvider.notifier).signInWithGoogle(),
-                icon: isLoading ? const SizedBox.shrink() : const Icon(Icons.g_mobiledata, size: 24),
-                label: isLoading
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : Text(AppLocalizations.of(context)!.continueWithGoogle),
+              LoadingButton(
+                onPressed: () => ref.read(authProvider.notifier).signInWithGoogle(),
+                isLoading: isLoading,
+                icon: const Icon(Icons.g_mobiledata, size: 24),
+                label: Text(AppLocalizations.of(context)!.continueWithGoogle),
               ),
               if (Platform.isIOS || Platform.isMacOS) ...[
                 const SizedBox(height: 12),
-                OutlinedButton.icon(
-                  onPressed: isLoading ? null : () => ref.read(authProvider.notifier).signInWithApple(),
+                LoadingButton(
+                  onPressed: () => ref.read(authProvider.notifier).signInWithApple(),
+                  isLoading: isLoading,
+                  outlined: true,
                   icon: const Icon(Icons.apple, size: 24),
                   label: Text(AppLocalizations.of(context)!.continueWithApple),
                 ),
