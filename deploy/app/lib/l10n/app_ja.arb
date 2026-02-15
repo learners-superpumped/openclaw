@@ -50,5 +50,10 @@
   "approve": "承認",
   "pairingError": "ペアリングに失敗しました。もう一度お試しください。",
   "home": "ホーム",
-  "setup": "設定"
+  "setup": "設定",
+  "deleteAccount": "アカウント削除",
+  "deleteAccountDesc": "アカウントとすべてのデータを完全に削除",
+  "deleteAccountConfirmTitle": "アカウントを削除しますか？",
+  "deleteAccountConfirmMessage": "インスタンスが削除され、すべてのデータが完全に失われます。この操作は元に戻せません。削除後に新しいアカウントを作成できます。",
+  "delete": "削除"
 }

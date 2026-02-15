@@ -161,4 +161,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get setup => '설정';
+
+  @override
+  String get deleteAccount => '회원 탈퇴';
+
+  @override
+  String get deleteAccountDesc => '계정과 모든 데이터를 영구적으로 삭제';
+
+  @override
+  String get deleteAccountConfirmTitle => '정말 탈퇴하시겠습니까?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      '인스턴스가 삭제되고 모든 데이터가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 탈퇴 후에도 새 계정을 생성할 수 있습니다.';
+
+  @override
+  String get delete => '삭제';
 }

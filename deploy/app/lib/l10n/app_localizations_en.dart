@@ -165,4 +165,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setup => 'Setup';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountDesc =>
+      'Permanently delete your account and all data';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete Account?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Your instance will be deleted and all data will be permanently lost. This action cannot be undone. You can create a new account after deletion.';
+
+  @override
+  String get delete => 'Delete';
 }

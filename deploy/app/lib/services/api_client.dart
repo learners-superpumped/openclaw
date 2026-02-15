@@ -42,6 +42,10 @@ class ApiClient {
     return User.fromJson(response.data);
   }
 
+  Future<void> deleteAccount() async {
+    await _dio.delete('/users/me');
+  }
+
   // Instances
   Future<Instance> createInstance({String? displayName}) async {
     final response = await _dio.post('/instances', data: {

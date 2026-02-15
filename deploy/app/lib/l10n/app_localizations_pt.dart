@@ -168,4 +168,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setup => 'Configurações';
+
+  @override
+  String get deleteAccount => 'Excluir conta';
+
+  @override
+  String get deleteAccountDesc =>
+      'Excluir permanentemente sua conta e todos os dados';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Excluir conta?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Sua instância será excluída e todos os dados serão permanentemente perdidos. Esta ação não pode ser desfeita. Você pode criar uma nova conta após a exclusão.';
+
+  @override
+  String get delete => 'Excluir';
 }

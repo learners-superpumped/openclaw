@@ -169,4 +169,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get setup => 'Configuration';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountDesc =>
+      'Supprimer définitivement votre compte et toutes les données';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Supprimer le compte ?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Votre instance sera supprimée et toutes les données seront définitivement perdues. Cette action est irréversible. Vous pouvez créer un nouveau compte après la suppression.';
+
+  @override
+  String get delete => 'Supprimer';
 }

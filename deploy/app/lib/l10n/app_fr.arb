@@ -50,5 +50,10 @@
   "approve": "Approuver",
   "pairingError": "Échec de l'appairage. Veuillez réessayer.",
   "home": "Accueil",
-  "setup": "Configuration"
+  "setup": "Configuration",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountDesc": "Supprimer définitivement votre compte et toutes les données",
+  "deleteAccountConfirmTitle": "Supprimer le compte ?",
+  "deleteAccountConfirmMessage": "Votre instance sera supprimée et toutes les données seront définitivement perdues. Cette action est irréversible. Vous pouvez créer un nouveau compte après la suppression.",
+  "delete": "Supprimer"
 }

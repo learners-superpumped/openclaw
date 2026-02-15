@@ -77,10 +77,10 @@ export class InstancesService {
   }
 
   async remove(userId: string, instanceId: string) {
-    await this.verifyOwnership(userId, instanceId);
+    const instance = await this.verifyOwnership(userId, instanceId);
 
     const openRouterKey = await this.prisma.openRouterKey.findUnique({
-      where: { instanceId },
+      where: { instanceId: instance.id },
     });
     if (openRouterKey) {
       await this.openRouterService.deleteKey(openRouterKey.keyHash);

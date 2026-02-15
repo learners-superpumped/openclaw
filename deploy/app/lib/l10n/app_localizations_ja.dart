@@ -161,4 +161,20 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get setup => '設定';
+
+  @override
+  String get deleteAccount => 'アカウント削除';
+
+  @override
+  String get deleteAccountDesc => 'アカウントとすべてのデータを完全に削除';
+
+  @override
+  String get deleteAccountConfirmTitle => 'アカウントを削除しますか？';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'インスタンスが削除され、すべてのデータが完全に失われます。この操作は元に戻せません。削除後に新しいアカウントを作成できます。';
+
+  @override
+  String get delete => '削除';
 }

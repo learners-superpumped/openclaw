@@ -85,6 +85,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     _ref.read(instanceProvider.notifier).resetState();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
+
+  Future<void> deleteAccount() async {
+    final apiClient = _ref.read(apiClientProvider);
+    await apiClient.deleteAccount();
+    await Purchases.logOut();
+    final authService = _ref.read(authServiceProvider);
+    await authService.signOut();
+    _ref.read(instanceProvider.notifier).resetState();
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {

@@ -169,4 +169,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get setup => 'Configuración';
+
+  @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountDesc =>
+      'Eliminar permanentemente tu cuenta y todos los datos';
+
+  @override
+  String get deleteAccountConfirmTitle => '¿Eliminar cuenta?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Tu instancia será eliminada y todos los datos se perderán permanentemente. Esta acción no se puede deshacer. Puedes crear una nueva cuenta después de la eliminación.';
+
+  @override
+  String get delete => 'Eliminar';
 }

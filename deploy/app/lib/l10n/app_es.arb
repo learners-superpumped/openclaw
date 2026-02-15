@@ -50,5 +50,10 @@
   "approve": "Aprobar",
   "pairingError": "Error en el emparejamiento. Inténtalo de nuevo.",
   "home": "Inicio",
-  "setup": "Configuración"
+  "setup": "Configuración",
+  "deleteAccount": "Eliminar cuenta",
+  "deleteAccountDesc": "Eliminar permanentemente tu cuenta y todos los datos",
+  "deleteAccountConfirmTitle": "¿Eliminar cuenta?",
+  "deleteAccountConfirmMessage": "Tu instancia será eliminada y todos los datos se perderán permanentemente. Esta acción no se puede deshacer. Puedes crear una nueva cuenta después de la eliminación.",
+  "delete": "Eliminar"
 }

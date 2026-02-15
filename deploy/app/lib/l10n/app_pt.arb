@@ -50,5 +50,10 @@
   "approve": "Aprovar",
   "pairingError": "Falha no pareamento. Tente novamente.",
   "home": "Início",
-  "setup": "Configurações"
+  "setup": "Configurações",
+  "deleteAccount": "Excluir conta",
+  "deleteAccountDesc": "Excluir permanentemente sua conta e todos os dados",
+  "deleteAccountConfirmTitle": "Excluir conta?",
+  "deleteAccountConfirmMessage": "Sua instância será excluída e todos os dados serão permanentemente perdidos. Esta ação não pode ser desfeita. Você pode criar uma nova conta após a exclusão.",
+  "delete": "Excluir"
 }

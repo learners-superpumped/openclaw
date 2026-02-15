@@ -43,6 +43,14 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: AppLocalizations.of(context)!.logoutDesc,
             onTap: () => ref.read(authProvider.notifier).signOut(),
           ),
+          const SizedBox(height: 12),
+          _SettingsTile(
+            icon: Icons.person_remove_rounded,
+            iconColor: AppColors.error,
+            title: AppLocalizations.of(context)!.deleteAccount,
+            subtitle: AppLocalizations.of(context)!.deleteAccountDesc,
+            onTap: () => _showDeleteAccountConfirmation(context, ref),
+          ),
         ],
       ),
     );
@@ -87,6 +95,42 @@ class SettingsScreen extends ConsumerWidget {
   void _deleteInstance(WidgetRef ref) {
     ref.read(instanceProvider.notifier).deleteInstance();
     ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+  }
+
+  void _showDeleteAccountConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        title: Text(AppLocalizations.of(context)!.deleteAccountConfirmTitle),
+        content: Text(
+          AppLocalizations.of(context)!.deleteAccountConfirmMessage,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              ref.read(authProvider.notifier).deleteAccount();
+            },
+            child: Text(
+              AppLocalizations.of(context)!.delete,
+              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

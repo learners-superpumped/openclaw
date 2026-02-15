@@ -413,6 +413,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setup'**
   String get setup;
+
+  /// Delete account tile title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// Delete account tile description
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and all data'**
+  String get deleteAccountDesc;
+
+  /// Delete account confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account?'**
+  String get deleteAccountConfirmTitle;
+
+  /// Delete account confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Your instance will be deleted and all data will be permanently lost. This action cannot be undone. You can create a new account after deletion.'**
+  String get deleteAccountConfirmMessage;
+
+  /// Delete button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 }
 
 class _AppLocalizationsDelegate

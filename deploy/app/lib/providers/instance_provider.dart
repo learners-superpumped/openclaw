@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/instance.dart';
 import 'api_provider.dart';
+import 'onboarding_provider.dart';
 
 enum InstanceStatus { idle, creating, polling, ready, error }
 
@@ -42,6 +43,7 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         final instance = instances.first;
         if (instance.isReady) {
           state = InstanceState(status: InstanceStatus.ready, instance: instance);
+          await _checkTelegramSetup(instance);
         } else {
           state = InstanceState(status: InstanceStatus.polling, instance: instance);
           _startPolling(instance.instanceId);
@@ -94,9 +96,22 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         if (instance.isReady) {
           _pollTimer?.cancel();
           state = state.copyWith(status: InstanceStatus.ready);
+          await _checkTelegramSetup(instance);
         }
       } catch (_) {}
     });
+  }
+
+  Future<void> _checkTelegramSetup(Instance instance) async {
+    try {
+      final apiClient = _ref.read(apiClientProvider);
+      final status = await apiClient.getTelegramStatus(instance.instanceId);
+      final telegram = status['telegram'] as Map<String, dynamic>?;
+      final accounts = status['accounts'] as List?;
+      if (telegram?['configured'] == true && accounts != null && accounts.isNotEmpty) {
+        _ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+      }
+    } catch (_) {}
   }
 
   Future<void> deleteInstance() async {

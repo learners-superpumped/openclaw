@@ -101,5 +101,15 @@
   "home": "Home",
   "@home": { "description": "Home tab label" },
   "setup": "Setup",
-  "@setup": { "description": "Setup tab label / onboarding title" }
+  "@setup": { "description": "Setup tab label / onboarding title" },
+  "deleteAccount": "Delete Account",
+  "@deleteAccount": { "description": "Delete account tile title" },
+  "deleteAccountDesc": "Permanently delete your account and all data",
+  "@deleteAccountDesc": { "description": "Delete account tile description" },
+  "deleteAccountConfirmTitle": "Delete Account?",
+  "@deleteAccountConfirmTitle": { "description": "Delete account confirmation dialog title" },
+  "deleteAccountConfirmMessage": "Your instance will be deleted and all data will be permanently lost. This action cannot be undone. You can create a new account after deletion.",
+  "@deleteAccountConfirmMessage": { "description": "Delete account confirmation dialog message" },
+  "delete": "Delete",
+  "@delete": { "description": "Delete button" }
 }
