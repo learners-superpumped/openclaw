@@ -29,25 +29,36 @@ export async function gatewayRpc(
 
   return new Promise<RpcResponse>((resolve, reject) => {
     const ws = new WebSocket(url);
+    let settled = false;
+
+    const settle = (fn: () => void) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearTimeout(timer);
+      fn();
+    };
+
     const timer = setTimeout(() => {
-      ws.close();
-      reject(new Error(`RPC timeout after ${timeoutMs}ms`));
+      settle(() => {
+        ws.close();
+        reject(new Error(`RPC timeout after ${timeoutMs}ms`));
+      });
     }, timeoutMs);
 
-    let handshakeDone = false;
     const connectId = randomUUID();
     const rpcId = randomUUID();
 
     ws.on("error", (err) => {
-      clearTimeout(timer);
-      reject(err);
+      settle(() => {
+        ws.close();
+        reject(err);
+      });
     });
 
     ws.on("close", () => {
-      clearTimeout(timer);
-      if (!handshakeDone) {
-        reject(new Error("WebSocket closed before handshake completed"));
-      }
+      settle(() => reject(new Error("WebSocket closed before RPC completed")));
     });
 
     ws.on("message", (raw) => {
@@ -95,16 +106,12 @@ export async function gatewayRpc(
       // Step 3: receive hello-ok response for connect
       if (msg.type === "res" && msg.id === connectId) {
         if (!msg.ok) {
-          clearTimeout(timer);
-          ws.close();
-          reject(
-            new Error(
-              `Gateway handshake failed: ${msg.error?.message || "unknown"}`,
-            ),
-          );
+          settle(() => {
+            ws.close();
+            reject(new Error(`Gateway handshake failed: ${msg.error?.message || "unknown"}`));
+          });
           return;
         }
-        handshakeDone = true;
 
         // Step 4: send the actual RPC request
         ws.send(
@@ -120,12 +127,13 @@ export async function gatewayRpc(
 
       // Step 5: receive RPC response
       if (msg.type === "res" && msg.id === rpcId) {
-        clearTimeout(timer);
-        ws.close();
-        resolve({
-          ok: msg.ok ?? false,
-          payload: msg.payload,
-          error: msg.error,
+        settle(() => {
+          ws.close();
+          resolve({
+            ok: msg.ok ?? false,
+            payload: msg.payload,
+            error: msg.error,
+          });
         });
       }
     });
