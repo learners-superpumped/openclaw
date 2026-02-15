@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:clawbox/l10n/app_localizations.dart';
 import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
 import '../providers/onboarding_provider.dart';
@@ -41,10 +42,12 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
         ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramPairing;
       }
     } catch (e) {
-      setState(() {
-        _error = '봇 토큰 설정에 실패했습니다. 토큰을 확인해주세요.';
-        _isSubmitting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _error = AppLocalizations.of(context)!.botTokenError;
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -57,25 +60,25 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
         children: [
           const SizedBox(height: 16),
           Text(
-            'Telegram 봇 설정',
+            AppLocalizations.of(context)!.telegramBotSetup,
             style: Theme.of(context).textTheme.displayMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            'Telegram에서 @BotFather를 통해 봇을 생성하세요.',
+            AppLocalizations.of(context)!.telegramBotSetupDesc,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 32),
           // Guide steps
-          _buildStep(context, '1', 'Telegram에서 @BotFather 검색'),
-          _buildStep(context, '2', '/newbot 명령어 입력'),
-          _buildStep(context, '3', '봇 이름과 username 설정'),
-          _buildStep(context, '4', '발급받은 토큰을 아래에 입력'),
+          _buildStep(context, '1', AppLocalizations.of(context)!.stepSearchBotFather),
+          _buildStep(context, '2', AppLocalizations.of(context)!.stepNewBot),
+          _buildStep(context, '3', AppLocalizations.of(context)!.stepSetBotName),
+          _buildStep(context, '4', AppLocalizations.of(context)!.stepEnterToken),
           const SizedBox(height: 32),
           TextField(
             controller: _tokenController,
             decoration: InputDecoration(
-              hintText: '봇 토큰을 입력하세요',
+              hintText: AppLocalizations.of(context)!.enterBotToken,
               prefixIcon: Icon(Icons.key, color: AppColors.textTertiary),
             ),
             style: const TextStyle(color: AppColors.textPrimary),
@@ -89,7 +92,7 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
             onPressed: _isSubmitting ? null : _submit,
             child: _isSubmitting
                 ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('다음'),
+                : Text(AppLocalizations.of(context)!.next),
           ),
         ],
       ),

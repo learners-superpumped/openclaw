@@ -1,3 +1,4 @@
+import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('설정'),
+        title: Text(AppLocalizations.of(context)!.settings),
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
@@ -22,24 +23,24 @@ class SettingsScreen extends ConsumerWidget {
           _SettingsTile(
             icon: Icons.credit_card_rounded,
             iconColor: AppColors.accent,
-            title: '구독 관리',
-            subtitle: '구독 상태 확인 및 관리',
+            title: AppLocalizations.of(context)!.manageSubscription,
+            subtitle: AppLocalizations.of(context)!.manageSubscriptionDesc,
             onTap: () => RevenueCatService.showCustomerCenter(),
           ),
           const SizedBox(height: 12),
           _SettingsTile(
             icon: Icons.restart_alt_rounded,
             iconColor: AppColors.error,
-            title: '인스턴스 재생성',
-            subtitle: '모든 데이터를 초기화하고 다시 설정',
+            title: AppLocalizations.of(context)!.recreateInstance,
+            subtitle: AppLocalizations.of(context)!.recreateInstanceDesc,
             onTap: () => _showDeleteConfirmation(context, ref),
           ),
           const SizedBox(height: 12),
           _SettingsTile(
             icon: Icons.logout_rounded,
             iconColor: AppColors.error,
-            title: '로그아웃',
-            subtitle: '계정에서 로그아웃',
+            title: AppLocalizations.of(context)!.logout,
+            subtitle: AppLocalizations.of(context)!.logoutDesc,
             onTap: () => ref.read(authProvider.notifier).signOut(),
           ),
         ],
@@ -56,15 +57,15 @@ class SettingsScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.border),
         ),
-        title: const Text('인스턴스 재생성'),
-        content: const Text(
-          '모든 데이터가 초기화되고 처음부터 다시 설정됩니다. 이 작업은 되돌릴 수 없습니다.',
+        title: Text(AppLocalizations.of(context)!.recreateInstance),
+        content: Text(
+          AppLocalizations.of(context)!.recreateConfirmMessage,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              '취소',
+              AppLocalizations.of(context)!.cancel,
               style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
@@ -74,7 +75,7 @@ class SettingsScreen extends ConsumerWidget {
               _deleteInstance(ref);
             },
             child: Text(
-              '재생성',
+              AppLocalizations.of(context)!.recreate,
               style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:clawbox/l10n/app_localizations.dart';
 import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
 import '../providers/onboarding_provider.dart' show OnboardingStep, setupProgressProvider;
@@ -38,10 +39,12 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
         ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
       }
     } catch (e) {
-      setState(() {
-        _error = '페어링에 실패했습니다. 다시 시도해주세요.';
-        _isSubmitting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _error = AppLocalizations.of(context)!.pairingError;
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -54,12 +57,12 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
         children: [
           const SizedBox(height: 16),
           Text(
-            'Telegram 페어링',
+            AppLocalizations.of(context)!.telegramPairing,
             style: Theme.of(context).textTheme.displayMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            '봇에게 메시지를 보내면 표시되는 인증 코드를 입력하세요.',
+            AppLocalizations.of(context)!.telegramPairingDesc,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 32),
@@ -68,7 +71,7 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
               Expanded(
                 child: TextField(
                   controller: _codeController,
-                  decoration: const InputDecoration(hintText: '인증 코드'),
+                  decoration: InputDecoration(hintText: AppLocalizations.of(context)!.authCode),
                   style: const TextStyle(color: AppColors.textPrimary),
                 ),
               ),
@@ -81,7 +84,7 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
                 style: FilledButton.styleFrom(minimumSize: const Size(80, 52)),
                 child: _isSubmitting
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('승인'),
+                    : Text(AppLocalizations.of(context)!.approve),
               ),
             ],
           ),

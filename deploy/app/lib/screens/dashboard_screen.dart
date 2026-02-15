@@ -7,6 +7,7 @@ import '../providers/api_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
 import '../theme/app_theme.dart';
+import 'package:clawbox/l10n/app_localizations.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -120,7 +121,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         children: [
                           Icon(Icons.dns_outlined, color: AppColors.accent, size: 20),
                           const SizedBox(width: 8),
-                          Text('인스턴스', style: Theme.of(context).textTheme.titleMedium),
+                          Text(AppLocalizations.of(context)!.instance, style: Theme.of(context).textTheme.titleMedium),
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -131,7 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              instance.isReady ? '실행 중' : (instance.manager?.phase ?? '대기'),
+                              instance.isReady ? AppLocalizations.of(context)!.statusRunning : (instance.manager?.phase ?? AppLocalizations.of(context)!.statusWaiting),
                               style: TextStyle(
                                 color: instance.isReady ? AppColors.accentGreen : AppColors.warning,
                                 fontSize: 12,
@@ -142,9 +143,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      _infoRow('ID', instance.instanceId),
+                      _infoRow(AppLocalizations.of(context)!.labelId, instance.instanceId),
                       if (instance.displayName != null)
-                        _infoRow('이름', instance.displayName!),
+                        _infoRow(AppLocalizations.of(context)!.labelName, instance.displayName!),
                     ],
                   ),
                 ),
@@ -173,7 +174,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              _telegramStatus!['connected'] == true ? '연결됨' : '미연결',
+                              _telegramStatus!['connected'] == true ? AppLocalizations.of(context)!.statusConnected : AppLocalizations.of(context)!.statusDisconnected,
                               style: TextStyle(
                                 color: _telegramStatus!['connected'] == true
                                     ? AppColors.accentGreen
@@ -187,7 +188,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                     if (_telegramStatus != null && _telegramStatus!['botUsername'] != null) ...[
                       const SizedBox(height: 12),
-                      _infoRow('봇', '@${_telegramStatus!['botUsername']}'),
+                      _infoRow(AppLocalizations.of(context)!.labelBot, '@${_telegramStatus!['botUsername']}'),
                     ],
                   ],
                 ),

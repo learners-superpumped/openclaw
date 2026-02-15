@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:clawbox/l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import 'dashboard_screen.dart';
 import 'settings_screen.dart';
@@ -38,14 +39,14 @@ class _MainShellState extends State<MainShell> {
           unselectedItemColor: AppColors.textTertiary,
           type: BottomNavigationBarType.fixed,
           elevation: 0,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: '홈',
+              icon: const Icon(Icons.home_rounded),
+              label: AppLocalizations.of(context)!.home,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings_rounded),
-              label: '설정',
+              icon: const Icon(Icons.settings_rounded),
+              label: AppLocalizations.of(context)!.settings,
             ),
           ],
         ),

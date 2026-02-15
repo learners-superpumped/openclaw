@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'l10n/app_localizations.dart';
 import 'providers/auth_provider.dart';
 import 'providers/instance_provider.dart';
 import 'router.dart';
@@ -39,6 +40,8 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
       theme: AppTheme.dark,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

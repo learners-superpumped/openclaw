@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:clawbox/l10n/app_localizations.dart';
 import '../providers/onboarding_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -17,7 +18,7 @@ class OnboardingShell extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('설정'),
+        title: Text(AppLocalizations.of(context)!.setup),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: LinearProgressIndicator(

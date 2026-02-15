@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/instance_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -36,19 +37,19 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
             Icon(Icons.error_outline, size: 48, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
-              '인스턴스 생성에 실패했습니다',
+              AppLocalizations.of(context)!.instanceCreationFailed,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              '네트워크 연결을 확인하고 다시 시도해주세요.',
+              AppLocalizations.of(context)!.checkNetworkAndRetry,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () => ref.read(instanceProvider.notifier).ensureInstance(),
-              child: const Text('다시 시도'),
+              child: Text(AppLocalizations.of(context)!.retry),
             ),
           ] else ...[
             SizedBox(
@@ -61,12 +62,12 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
             ),
             const SizedBox(height: 32),
             Text(
-              _statusTitle(state.status),
+              _statusTitle(context, state.status),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              _statusDescription(state.status),
+              _statusDescription(context, state.status),
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -108,25 +109,27 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
     );
   }
 
-  String _statusTitle(InstanceStatus status) {
+  String _statusTitle(BuildContext context, InstanceStatus status) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case InstanceStatus.creating:
-        return '인스턴스 생성 중...';
+        return l10n.creatingInstance;
       case InstanceStatus.polling:
-        return '설정 진행 중...';
+        return l10n.settingUp;
       default:
-        return '준비 중...';
+        return l10n.preparing;
     }
   }
 
-  String _statusDescription(InstanceStatus status) {
+  String _statusDescription(BuildContext context, InstanceStatus status) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case InstanceStatus.creating:
-        return 'AI 인스턴스를 생성하고 있습니다.\n잠시만 기다려주세요.';
+        return l10n.creatingInstanceDesc;
       case InstanceStatus.polling:
-        return '인스턴스가 시작되고 있습니다.\n보통 1-2분 정도 소요됩니다.';
+        return l10n.startingInstanceDesc;
       default:
-        return '잠시만 기다려주세요...';
+        return l10n.pleaseWait;
     }
   }
 }

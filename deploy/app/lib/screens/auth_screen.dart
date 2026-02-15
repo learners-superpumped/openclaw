@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
+import 'package:clawbox/l10n/app_localizations.dart';
 
 class AuthScreen extends ConsumerWidget {
   const AuthScreen({super.key});
@@ -28,12 +29,12 @@ class AuthScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                '로그인',
+                AppLocalizations.of(context)!.login,
                 style: Theme.of(context).textTheme.displayMedium,
               ),
               const SizedBox(height: 12),
               Text(
-                '계정을 연결하여 ClawBox를 시작하세요',
+                AppLocalizations.of(context)!.loginSubtitle,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
@@ -52,7 +53,7 @@ class AuthScreen extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          authState.error ?? '로그인에 실패했습니다.',
+                          authState.error ?? AppLocalizations.of(context)!.loginFailed,
                           style: TextStyle(color: AppColors.error, fontSize: 13),
                           maxLines: 5,
                           overflow: TextOverflow.ellipsis,
@@ -68,14 +69,14 @@ class AuthScreen extends ConsumerWidget {
                 icon: isLoading ? const SizedBox.shrink() : const Icon(Icons.g_mobiledata, size: 24),
                 label: isLoading
                     ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Google로 계속하기'),
+                    : Text(AppLocalizations.of(context)!.continueWithGoogle),
               ),
               if (Platform.isIOS || Platform.isMacOS) ...[
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: isLoading ? null : () => ref.read(authProvider.notifier).signInWithApple(),
                   icon: const Icon(Icons.apple, size: 24),
-                  label: const Text('Apple로 계속하기'),
+                  label: Text(AppLocalizations.of(context)!.continueWithApple),
                 ),
               ],
               const SizedBox(height: 48),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/subscription_provider.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
+import 'package:clawbox/l10n/app_localizations.dart';
 
 class PaywallScreen extends ConsumerWidget {
   const PaywallScreen({super.key});
@@ -29,7 +30,7 @@ class PaywallScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'AI 어시스턴트를 메신저로 만나보세요',
+                AppLocalizations.of(context)!.tagline,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
@@ -39,13 +40,13 @@ class PaywallScreen extends ConsumerWidget {
                   await RevenueCatService.showPaywall();
                   ref.read(isProProvider.notifier).refresh();
                 },
-                child: const Text('시작하기'),
+                child: Text(AppLocalizations.of(context)!.getStarted),
               ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () => RevenueCatService.showCustomerCenter(),
                 child: Text(
-                  '이미 구독 중이신가요?',
+                  AppLocalizations.of(context)!.alreadySubscribed,
                   style: TextStyle(color: AppColors.textSecondary),
                 ),
               ),
