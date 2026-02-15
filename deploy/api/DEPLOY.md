@@ -75,7 +75,7 @@ kubectl get secret openclaw-manager -n openclaw -o jsonpath='{.data.API_KEY}' | 
 cd deploy/api
 
 # 이미지 빌드
-docker build -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest .
+docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest .
 
 # Artifact Registry에 푸시
 docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest
@@ -287,7 +287,7 @@ curl -X POST https://api.openclaw.zazz.buzz/instances/<INSTANCE_ID>/telegram/log
 cd deploy/api
 
 # 1. 이미지 빌드 & 푸시
-docker build -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest .
+docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest .
 docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-api:latest
 
 # 2. DB 마이그레이션 (스키마 변경이 있을 때만)
