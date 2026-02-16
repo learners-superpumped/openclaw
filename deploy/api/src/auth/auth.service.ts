@@ -60,10 +60,11 @@ export class AuthService {
 
   async googleLogin(dto: GoogleAuthDto) {
     const clientId = this.configService.getOrThrow<string>("GOOGLE_CLIENT_ID");
+    const iosClientId = this.configService.getOrThrow<string>("GOOGLE_IOS_CLIENT_ID");
     const client = new OAuth2Client(clientId);
     const ticket = await client.verifyIdToken({
       idToken: dto.idToken,
-      audience: clientId,
+      audience: [clientId, iosClientId],
     });
     const payload = ticket.getPayload();
     if (!payload || !payload.email) {

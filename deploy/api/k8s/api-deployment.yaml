@@ -57,6 +57,11 @@ spec:
                 secretKeyRef:
                   name: openclaw-api
                   key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_IOS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-api
+                  key: GOOGLE_IOS_CLIENT_ID
             - name: APPLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
