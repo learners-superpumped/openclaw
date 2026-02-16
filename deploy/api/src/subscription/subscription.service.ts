@@ -15,7 +15,7 @@ export class SubscriptionService {
     @Inject(InstancesService) private instancesService: InstancesService,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async validateSubscriptions() {
     if (this.isRunning) {
       this.logger.warn("Previous subscription validation still running, skipping");
