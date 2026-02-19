@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../providers/api_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
+import '../providers/onboarding_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
@@ -168,55 +169,108 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
               ),
             const SizedBox(height: 16),
-            // Telegram status card
-            Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: _telegramStatus?['connected'] == true && _botUsername != null
-                    ? _openTelegramBot
-                    : null,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.telegram, color: AppColors.accent, size: 20),
-                          const SizedBox(width: 8),
-                          Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
-                          const Spacer(),
-                          if (_telegramStatus != null)
+            // Telegram card (unified)
+            if (_telegramStatus != null && _telegramStatus!['connected'] == true)
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: _botUsername != null ? _openTelegramBot : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.telegram, color: AppColors.accent, size: 20),
+                            const SizedBox(width: 8),
+                            Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
+                            const Spacer(),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: _telegramStatus!['connected'] == true
-                                    ? AppColors.accentGreen.withValues(alpha: 0.15)
-                                    : AppColors.textTertiary.withValues(alpha: 0.15),
+                                color: AppColors.accentGreen.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                _telegramStatus!['connected'] == true ? AppLocalizations.of(context)!.statusConnected : AppLocalizations.of(context)!.statusDisconnected,
+                                AppLocalizations.of(context)!.statusConnected,
                                 style: TextStyle(
-                                  color: _telegramStatus!['connected'] == true
-                                      ? AppColors.accentGreen
-                                      : AppColors.textTertiary,
+                                  color: AppColors.accentGreen,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                        if (_botUsername != null) ...[
+                          const SizedBox(height: 12),
+                          _infoRow(AppLocalizations.of(context)!.labelBot, '@$_botUsername'),
                         ],
-                      ),
-                      if (_botUsername != null) ...[
-                        const SizedBox(height: 12),
-                        _infoRow(AppLocalizations.of(context)!.labelBot, '@$_botUsername'),
                       ],
-                    ],
+                    ),
+                  ),
+                ),
+              )
+            else if (_telegramStatus != null)
+              Card(
+                clipBehavior: Clip.antiAlias,
+                color: AppColors.accentGreen.withValues(alpha: 0.08),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: AppColors.accentGreen.withValues(alpha: 0.3)),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(Icons.telegram, color: AppColors.accent, size: 32),
+                            Positioned(
+                              right: -4,
+                              bottom: -4,
+                              child: Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: AppColors.warning,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: AppColors.surface, width: 2),
+                                ),
+                                child: const Icon(Icons.priority_high, color: Colors.white, size: 10),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.connectTelegram,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.connectTelegramDesc,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
