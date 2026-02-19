@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../constants.dart';
 import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
@@ -22,6 +25,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _agreedToTerms = false;
 
   @override
   void dispose() {
@@ -34,10 +38,54 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+    if (!_agreedToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.mustAgreeToTerms)),
+      );
+      return;
+    }
     ref.read(authProvider.notifier).signUpWithEmail(
       _emailController.text.trim(),
       _passwordController.text,
       name: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : null,
+    );
+  }
+
+  Widget _buildTermsText(BuildContext context, AppLocalizations l10n) {
+    const termsMarker = '\u0000TERMS\u0000';
+    const privacyMarker = '\u0000PRIVACY\u0000';
+    final full = l10n.agreeToTerms(termsMarker, privacyMarker);
+    final parts = full.split(RegExp('\u0000(TERMS|PRIVACY)\u0000'));
+    final markers = RegExp('\u0000(TERMS|PRIVACY)\u0000').allMatches(full).map((m) => m.group(1)).toList();
+
+    final spans = <InlineSpan>[];
+    int markerIdx = 0;
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].isNotEmpty) {
+        spans.add(TextSpan(text: parts[i]));
+      }
+      if (markerIdx < markers.length && i < parts.length - 1) {
+        final isTerms = markers[markerIdx] == 'TERMS';
+        spans.add(TextSpan(
+          text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
+          style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launchUrl(
+                Uri.parse('$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}'),
+                mode: LaunchMode.externalApplication,
+              );
+            },
+        ));
+        markerIdx++;
+      }
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodySmall,
+        children: spans,
+      ),
     );
   }
 
@@ -190,7 +238,29 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: _agreedToTerms,
+                        onChanged: (value) {
+                          setState(() {
+                            _agreedToTerms = value ?? false;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildTermsText(context, l10n),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 LoadingButton(
                   onPressed: _submit,
                   isLoading: isLoading,

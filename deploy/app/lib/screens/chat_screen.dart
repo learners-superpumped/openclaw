@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/chat_message.dart';
+import '../providers/api_provider.dart';
 import '../providers/chat_provider.dart';
 import '../providers/instance_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/chat_message_bubble.dart';
+import 'package:clawbox/l10n/app_localizations.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -17,13 +19,61 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen>
     with WidgetsBindingObserver {
+  static const _consentKey = 'ai_data_consent_accepted';
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     Future.microtask(() {
-      if (mounted) _connectWhenReady();
+      if (mounted) _checkConsentAndConnect();
     });
+  }
+
+  Future<void> _checkConsentAndConnect() async {
+    final storage = ref.read(secureStorageProvider);
+    final consent = await storage.read(key: _consentKey);
+    if (consent == 'true') {
+      _connectWhenReady();
+      return;
+    }
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    final agreed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        title: Text(l10n.aiDataConsentTitle),
+        content: Text(l10n.aiDataConsentMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              l10n.decline,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              l10n.agree,
+              style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (agreed == true) {
+      await storage.write(key: _consentKey, value: 'true');
+      if (mounted) _connectWhenReady();
+    } else {
+      if (mounted) Navigator.of(context).pop();
+    }
   }
 
   void _connectWhenReady() {

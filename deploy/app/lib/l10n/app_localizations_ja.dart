@@ -261,4 +261,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => 'パスワードが一致しません';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String agreeToTerms(String terms, String privacy) {
+    return 'I agree to the $terms and $privacy';
+  }
+
+  @override
+  String get mustAgreeToTerms =>
+      'You must agree to the Terms of Service and Privacy Policy';
+
+  @override
+  String get aiDataConsentTitle => 'AI Data Sharing';
+
+  @override
+  String get aiDataConsentMessage =>
+      'Your messages and image attachments are sent to third-party AI services (via OpenRouter) to generate responses. Your data is not used for AI training. By continuing, you consent to this data processing.';
+
+  @override
+  String get agree => 'Agree';
+
+  @override
+  String get decline => 'Decline';
+
+  @override
+  String get legal => 'Legal';
+
+  @override
+  String bySigningIn(String terms, String privacy) {
+    return 'By signing in, you agree to our $terms and $privacy';
+  }
 }

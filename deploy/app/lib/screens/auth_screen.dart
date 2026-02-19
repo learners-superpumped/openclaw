@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../constants.dart';
 import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
@@ -34,6 +37,47 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     ref.read(authProvider.notifier).signInWithEmail(
       _emailController.text.trim(),
       _passwordController.text,
+    );
+  }
+
+  Widget _buildBySigningInText(BuildContext context, AppLocalizations l10n) {
+    const termsMarker = '\u0000TERMS\u0000';
+    const privacyMarker = '\u0000PRIVACY\u0000';
+    final full = l10n.bySigningIn(termsMarker, privacyMarker);
+    final parts = full.split(RegExp('\u0000(TERMS|PRIVACY)\u0000'));
+    final markers = RegExp('\u0000(TERMS|PRIVACY)\u0000').allMatches(full).map((m) => m.group(1)).toList();
+
+    final spans = <InlineSpan>[];
+    int markerIdx = 0;
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].isNotEmpty) {
+        spans.add(TextSpan(text: parts[i]));
+      }
+      if (markerIdx < markers.length && i < parts.length - 1) {
+        final isTerms = markers[markerIdx] == 'TERMS';
+        spans.add(TextSpan(
+          text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
+          style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launchUrl(
+                Uri.parse('$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}'),
+                mode: LaunchMode.externalApplication,
+              );
+            },
+        ));
+        markerIdx++;
+      }
+    }
+
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.textSecondary,
+        ),
+        children: spans,
+      ),
     );
   }
 
@@ -209,6 +253,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildBySigningInText(context, l10n),
                 ),
                 const SizedBox(height: 48),
               ],

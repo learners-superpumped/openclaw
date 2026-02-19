@@ -172,5 +172,37 @@
   "passwordTooShort": "Password must be at least 8 characters",
   "@passwordTooShort": { "description": "Password length validation error" },
   "passwordsDoNotMatch": "Passwords do not match",
-  "@passwordsDoNotMatch": { "description": "Password confirmation mismatch error" }
+  "@passwordsDoNotMatch": { "description": "Password confirmation mismatch error" },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": { "description": "Terms of Service link text" },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": { "description": "Privacy Policy link text" },
+  "agreeToTerms": "I agree to the {terms} and {privacy}",
+  "@agreeToTerms": {
+    "description": "Terms agreement checkbox label",
+    "placeholders": {
+      "terms": { "type": "String" },
+      "privacy": { "type": "String" }
+    }
+  },
+  "mustAgreeToTerms": "You must agree to the Terms of Service and Privacy Policy",
+  "@mustAgreeToTerms": { "description": "Error when terms not agreed" },
+  "aiDataConsentTitle": "AI Data Sharing",
+  "@aiDataConsentTitle": { "description": "AI data consent dialog title" },
+  "aiDataConsentMessage": "Your messages and image attachments are sent to third-party AI services (via OpenRouter) to generate responses. Your data is not used for AI training. By continuing, you consent to this data processing.",
+  "@aiDataConsentMessage": { "description": "AI data consent dialog message" },
+  "agree": "Agree",
+  "@agree": { "description": "Agree button" },
+  "decline": "Decline",
+  "@decline": { "description": "Decline button" },
+  "legal": "Legal",
+  "@legal": { "description": "Legal section title" },
+  "bySigningIn": "By signing in, you agree to our {terms} and {privacy}",
+  "@bySigningIn": {
+    "description": "Legal notice on login screen",
+    "placeholders": {
+      "terms": { "type": "String" },
+      "privacy": { "type": "String" }
+    }
+  }
 }

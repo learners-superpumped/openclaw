@@ -82,5 +82,15 @@
   "alreadyHaveAccount": "已经有账户了？",
   "invalidEmail": "请输入有效的电子邮箱",
   "passwordTooShort": "密码至少需要8个字符",
-  "passwordsDoNotMatch": "密码不一致"
+  "passwordsDoNotMatch": "密码不一致",
+  "termsOfService": "Terms of Service",
+  "privacyPolicy": "Privacy Policy",
+  "agreeToTerms": "I agree to the {terms} and {privacy}",
+  "mustAgreeToTerms": "You must agree to the Terms of Service and Privacy Policy",
+  "aiDataConsentTitle": "AI Data Sharing",
+  "aiDataConsentMessage": "Your messages and image attachments are sent to third-party AI services (via OpenRouter) to generate responses. Your data is not used for AI training. By continuing, you consent to this data processing.",
+  "agree": "Agree",
+  "decline": "Decline",
+  "legal": "Legal",
+  "bySigningIn": "By signing in, you agree to our {terms} and {privacy}"
 }

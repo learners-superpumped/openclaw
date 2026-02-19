@@ -605,6 +605,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get passwordsDoNotMatch;
+
+  /// Terms of Service link text
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// Privacy Policy link text
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Terms agreement checkbox label
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the {terms} and {privacy}'**
+  String agreeToTerms(String terms, String privacy);
+
+  /// Error when terms not agreed
+  ///
+  /// In en, this message translates to:
+  /// **'You must agree to the Terms of Service and Privacy Policy'**
+  String get mustAgreeToTerms;
+
+  /// AI data consent dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'AI Data Sharing'**
+  String get aiDataConsentTitle;
+
+  /// AI data consent dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Your messages and image attachments are sent to third-party AI services (via OpenRouter) to generate responses. Your data is not used for AI training. By continuing, you consent to this data processing.'**
+  String get aiDataConsentMessage;
+
+  /// Agree button
+  ///
+  /// In en, this message translates to:
+  /// **'Agree'**
+  String get agree;
+
+  /// Decline button
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get decline;
+
+  /// Legal section title
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get legal;
+
+  /// Legal notice on login screen
+  ///
+  /// In en, this message translates to:
+  /// **'By signing in, you agree to our {terms} and {privacy}'**
+  String bySigningIn(String terms, String privacy);
 }
 
 class _AppLocalizationsDelegate

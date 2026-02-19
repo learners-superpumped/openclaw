@@ -1,7 +1,9 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../constants.dart';
 import '../providers/api_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
@@ -49,6 +51,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          _SettingsTile(
+            icon: Icons.description_outlined,
+            iconColor: AppColors.accent,
+            title: AppLocalizations.of(context)!.termsOfService,
+            subtitle: AppLocalizations.of(context)!.legal,
+            onTap: () => launchUrl(
+              Uri.parse('$apiBaseUrl/legal/terms'),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _SettingsTile(
+            icon: Icons.privacy_tip_outlined,
+            iconColor: AppColors.accent,
+            title: AppLocalizations.of(context)!.privacyPolicy,
+            subtitle: AppLocalizations.of(context)!.legal,
+            onTap: () => launchUrl(
+              Uri.parse('$apiBaseUrl/legal/privacy'),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+          const SizedBox(height: 12),
           _SettingsTile(
             icon: Icons.credit_card_rounded,
             iconColor: AppColors.accent,

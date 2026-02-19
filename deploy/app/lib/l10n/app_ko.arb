@@ -82,5 +82,15 @@
   "alreadyHaveAccount": "이미 계정이 있으신가요?",
   "invalidEmail": "올바른 이메일을 입력하세요",
   "passwordTooShort": "비밀번호는 최소 8자 이상이어야 합니다",
-  "passwordsDoNotMatch": "비밀번호가 일치하지 않습니다"
+  "passwordsDoNotMatch": "비밀번호가 일치하지 않습니다",
+  "termsOfService": "이용약관",
+  "privacyPolicy": "개인정보처리방침",
+  "agreeToTerms": "{terms} 및 {privacy}에 동의합니다",
+  "mustAgreeToTerms": "이용약관 및 개인정보처리방침에 동의해주세요",
+  "aiDataConsentTitle": "AI 데이터 공유",
+  "aiDataConsentMessage": "메시지와 이미지 첨부 파일은 응답 생성을 위해 제3자 AI 서비스(OpenRouter 경유)로 전송됩니다. 데이터는 AI 학습에 사용되지 않습니다. 계속하면 이 데이터 처리에 동의하는 것입니다.",
+  "agree": "동의",
+  "decline": "거절",
+  "legal": "법적 고지",
+  "bySigningIn": "로그인하면 {terms} 및 {privacy}에 동의하게 됩니다"
 }

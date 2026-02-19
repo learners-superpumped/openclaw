@@ -262,4 +262,39 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatch => '비밀번호가 일치하지 않습니다';
+
+  @override
+  String get termsOfService => '이용약관';
+
+  @override
+  String get privacyPolicy => '개인정보처리방침';
+
+  @override
+  String agreeToTerms(String terms, String privacy) {
+    return '$terms 및 $privacy에 동의합니다';
+  }
+
+  @override
+  String get mustAgreeToTerms => '이용약관 및 개인정보처리방침에 동의해주세요';
+
+  @override
+  String get aiDataConsentTitle => 'AI 데이터 공유';
+
+  @override
+  String get aiDataConsentMessage =>
+      '메시지와 이미지 첨부 파일은 응답 생성을 위해 제3자 AI 서비스(OpenRouter 경유)로 전송됩니다. 데이터는 AI 학습에 사용되지 않습니다. 계속하면 이 데이터 처리에 동의하는 것입니다.';
+
+  @override
+  String get agree => '동의';
+
+  @override
+  String get decline => '거절';
+
+  @override
+  String get legal => '법적 고지';
+
+  @override
+  String bySigningIn(String terms, String privacy) {
+    return '로그인하면 $terms 및 $privacy에 동의하게 됩니다';
+  }
 }
