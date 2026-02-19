@@ -497,6 +497,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Referral code applied!'**
   String get referralCodeSuccess;
+
+  /// Skip Telegram setup confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Telegram Setup?'**
+  String get skipTelegramTitle;
+
+  /// Skip Telegram setup confirmation dialog description
+  ///
+  /// In en, this message translates to:
+  /// **'You can connect later. Until connected, you can chat within the app.'**
+  String get skipTelegramDesc;
+
+  /// Skip button
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// Connect Telegram banner title
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Telegram'**
+  String get connectTelegram;
+
+  /// Connect Telegram banner description
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Telegram to chat on messenger too'**
+  String get connectTelegramDesc;
+
+  /// Log in button
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get logIn;
+
+  /// Sign up button / screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
+
+  /// Sign up screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account to start ClawBox'**
+  String get signUpSubtitle;
+
+  /// Email input label
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// Password input label
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// Confirm password input label
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// Optional name input label
+  ///
+  /// In en, this message translates to:
+  /// **'Name (optional)'**
+  String get nameOptional;
+
+  /// Divider text between email and social login
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get or;
+
+  /// Link text to sign up screen
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// Link text to login screen
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// Email validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get invalidEmail;
+
+  /// Password length validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordTooShort;
+
+  /// Password confirmation mismatch error
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
 }
 
 class _AppLocalizationsDelegate

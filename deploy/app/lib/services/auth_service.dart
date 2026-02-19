@@ -57,6 +57,18 @@ class AuthService {
     return tokens;
   }
 
+  Future<AuthTokens> signInWithEmail(String email, String password) async {
+    final tokens = await _apiClient.emailLogin(email, password);
+    await _saveTokens(tokens);
+    return tokens;
+  }
+
+  Future<AuthTokens> signUpWithEmail(String email, String password, {String? name}) async {
+    final tokens = await _apiClient.emailSignup(email, password, name: name);
+    await _saveTokens(tokens);
+    return tokens;
+  }
+
   Future<bool> isAuthenticated() async {
     final token = await _storage.read(key: 'access_token');
     return token != null;

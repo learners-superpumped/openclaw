@@ -212,4 +212,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referralCodeSuccess => 'Referral code applied!';
+
+  @override
+  String get skipTelegramTitle => 'Skip Telegram Setup?';
+
+  @override
+  String get skipTelegramDesc =>
+      'You can connect later. Until connected, you can chat within the app.';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get connectTelegram => 'Connect Telegram';
+
+  @override
+  String get connectTelegramDesc => 'Connect Telegram to chat on messenger too';
+
+  @override
+  String get logIn => 'Log In';
+
+  @override
+  String get signUp => 'Sign Up';
+
+  @override
+  String get signUpSubtitle => 'Create your account to start ClawBox';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get nameOptional => 'Name (optional)';
+
+  @override
+  String get or => 'or';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
 }

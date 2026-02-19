@@ -205,4 +205,58 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get referralCodeSuccess => '推荐码已应用！';
+
+  @override
+  String get skipTelegramTitle => '跳过Telegram设置？';
+
+  @override
+  String get skipTelegramDesc => '您可以稍后连接。连接之前，您可以在应用内聊天。';
+
+  @override
+  String get skip => '跳过';
+
+  @override
+  String get connectTelegram => '连接Telegram';
+
+  @override
+  String get connectTelegramDesc => '连接Telegram后也可以在即时通讯中聊天';
+
+  @override
+  String get logIn => '登录';
+
+  @override
+  String get signUp => '注册';
+
+  @override
+  String get signUpSubtitle => '创建账户以开始使用ClawBox';
+
+  @override
+  String get email => '电子邮箱';
+
+  @override
+  String get password => '密码';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get nameOptional => '姓名（可选）';
+
+  @override
+  String get or => '或';
+
+  @override
+  String get dontHaveAccount => '还没有账户？';
+
+  @override
+  String get alreadyHaveAccount => '已经有账户了？';
+
+  @override
+  String get invalidEmail => '请输入有效的电子邮箱';
+
+  @override
+  String get passwordTooShort => '密码至少需要8个字符';
+
+  @override
+  String get passwordsDoNotMatch => '密码不一致';
 }

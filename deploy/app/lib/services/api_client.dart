@@ -36,6 +36,23 @@ class ApiClient {
     return AuthTokens.fromJson(response.data);
   }
 
+  Future<AuthTokens> emailLogin(String email, String password) async {
+    final response = await _dio.post('/auth/login', data: {
+      'email': email,
+      'password': password,
+    });
+    return AuthTokens.fromJson(response.data);
+  }
+
+  Future<AuthTokens> emailSignup(String email, String password, {String? name}) async {
+    final response = await _dio.post('/auth/signup', data: {
+      'email': email,
+      'password': password,
+      if (name != null && name.isNotEmpty) 'name': name,
+    });
+    return AuthTokens.fromJson(response.data);
+  }
+
   // User
   Future<User> getMe() async {
     final response = await _dio.get('/users/me');

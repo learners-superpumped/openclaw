@@ -216,4 +216,61 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get referralCodeSuccess => '¡Código de referencia aplicado!';
+
+  @override
+  String get skipTelegramTitle => '¿Omitir configuración de Telegram?';
+
+  @override
+  String get skipTelegramDesc =>
+      'Puedes conectarte más tarde. Hasta entonces, puedes chatear dentro de la aplicación.';
+
+  @override
+  String get skip => 'Omitir';
+
+  @override
+  String get connectTelegram => 'Conectar Telegram';
+
+  @override
+  String get connectTelegramDesc =>
+      'Conecta Telegram para chatear también en el mensajero';
+
+  @override
+  String get logIn => 'Iniciar sesión';
+
+  @override
+  String get signUp => 'Registrarse';
+
+  @override
+  String get signUpSubtitle => 'Crea tu cuenta para comenzar con ClawBox';
+
+  @override
+  String get email => 'Correo electrónico';
+
+  @override
+  String get password => 'Contraseña';
+
+  @override
+  String get confirmPassword => 'Confirmar contraseña';
+
+  @override
+  String get nameOptional => 'Nombre (opcional)';
+
+  @override
+  String get or => 'o';
+
+  @override
+  String get dontHaveAccount => '¿No tienes una cuenta?';
+
+  @override
+  String get alreadyHaveAccount => '¿Ya tienes una cuenta?';
+
+  @override
+  String get invalidEmail => 'Ingresa un correo electrónico válido';
+
+  @override
+  String get passwordTooShort =>
+      'La contraseña debe tener al menos 8 caracteres';
+
+  @override
+  String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
 }

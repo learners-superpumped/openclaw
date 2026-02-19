@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,31 +7,37 @@ import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
-class AuthScreen extends ConsumerStatefulWidget {
-  const AuthScreen({super.key});
+class SignupScreen extends ConsumerStatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  ConsumerState<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _AuthScreenState extends ConsumerState<AuthScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(authProvider.notifier).signInWithEmail(
+    ref.read(authProvider.notifier).signUpWithEmail(
       _emailController.text.trim(),
       _passwordController.text,
+      name: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : null,
     );
   }
 
@@ -63,12 +67,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  l10n.login,
+                  l10n.signUp,
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  l10n.loginSubtitle,
+                  l10n.signUpSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -103,6 +107,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _nameController,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          hintText: l10n.nameOptional,
+                          prefixIcon: const Icon(Icons.person_outlined),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
@@ -125,8 +138,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _submit(),
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           hintText: l10n.password,
                           prefixIcon: const Icon(Icons.lock_outlined),
@@ -142,8 +154,35 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           ),
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return l10n.password;
+                          if (value == null || value.length < 8) {
+                            return l10n.passwordTooShort;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureConfirmPassword,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _submit(),
+                        decoration: InputDecoration(
+                          hintText: l10n.confirmPassword,
+                          prefixIcon: const Icon(Icons.lock_outlined),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value != _passwordController.text) {
+                            return l10n.passwordsDoNotMatch;
                           }
                           return null;
                         },
@@ -155,53 +194,21 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 LoadingButton(
                   onPressed: _submit,
                   isLoading: isLoading,
-                  label: Text(l10n.logIn),
+                  label: Text(l10n.signUp),
                 ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        l10n.or,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                LoadingButton(
-                  onPressed: () => ref.read(authProvider.notifier).signInWithGoogle(),
-                  isLoading: isLoading,
-                  outlined: true,
-                  icon: const Icon(Icons.g_mobiledata, size: 24),
-                  label: Text(l10n.continueWithGoogle),
-                ),
-                if (Platform.isIOS || Platform.isMacOS) ...[
-                  const SizedBox(height: 12),
-                  LoadingButton(
-                    onPressed: () => ref.read(authProvider.notifier).signInWithApple(),
-                    isLoading: isLoading,
-                    outlined: true,
-                    icon: const Icon(Icons.apple, size: 24),
-                    label: Text(l10n.continueWithApple),
-                  ),
-                ],
                 const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      l10n.dontHaveAccount,
+                      l10n.alreadyHaveAccount,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () => context.go('/auth/signup'),
+                      onTap: () => context.go('/auth'),
                       child: Text(
-                        l10n.signUp,
+                        l10n.logIn,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.accent,
                           fontWeight: FontWeight.w600,

@@ -207,4 +207,59 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get referralCodeSuccess => '레퍼럴 코드가 적용되었습니다!';
+
+  @override
+  String get skipTelegramTitle => 'Telegram 설정 건너뛰기';
+
+  @override
+  String get skipTelegramDesc =>
+      '연결하지 않고 나중에 연결할 수 있습니다. 연결 전까지는 앱 내에서 채팅 가능합니다.';
+
+  @override
+  String get skip => '건너뛰기';
+
+  @override
+  String get connectTelegram => 'Telegram 연결하기';
+
+  @override
+  String get connectTelegramDesc => 'Telegram을 연결하면 메신저에서도 대화할 수 있습니다';
+
+  @override
+  String get logIn => '로그인';
+
+  @override
+  String get signUp => '회원가입';
+
+  @override
+  String get signUpSubtitle => '계정을 만들어 ClawBox를 시작하세요';
+
+  @override
+  String get email => '이메일';
+
+  @override
+  String get password => '비밀번호';
+
+  @override
+  String get confirmPassword => '비밀번호 확인';
+
+  @override
+  String get nameOptional => '이름 (선택)';
+
+  @override
+  String get or => '또는';
+
+  @override
+  String get dontHaveAccount => '계정이 없으신가요?';
+
+  @override
+  String get alreadyHaveAccount => '이미 계정이 있으신가요?';
+
+  @override
+  String get invalidEmail => '올바른 이메일을 입력하세요';
+
+  @override
+  String get passwordTooShort => '비밀번호는 최소 8자 이상이어야 합니다';
+
+  @override
+  String get passwordsDoNotMatch => '비밀번호가 일치하지 않습니다';
 }

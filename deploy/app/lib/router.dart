@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'providers/onboarding_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/main_shell.dart';
+import 'screens/signup_screen.dart';
 import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
 import 'screens/paywall_screen.dart';
@@ -19,7 +20,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: _locationForStep(step),
     redirect: (context, state) {
       final target = _locationForStep(step);
-      if (state.uri.toString() != target) {
+      final currentPath = state.uri.toString();
+      if (step == OnboardingStep.auth && currentPath.startsWith('/auth')) {
+        return null;
+      }
+      if (currentPath != target) {
         return target;
       }
       return null;
@@ -36,6 +41,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/auth',
         builder: (context, state) => const AuthScreen(),
+        routes: [
+          GoRoute(
+            path: 'signup',
+            builder: (context, state) => const SignupScreen(),
+          ),
+        ],
       ),
       ShellRoute(
         builder: (context, state, child) => OnboardingShell(child: child),

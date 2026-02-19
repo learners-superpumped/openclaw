@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -92,6 +93,65 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
     }
+  }
+
+  Future<void> signInWithEmail(String email, String password) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    try {
+      final authService = _ref.read(authServiceProvider);
+      await authService.signInWithEmail(email, password);
+      final apiClient = _ref.read(apiClientProvider);
+      final user = await apiClient.getMe();
+      await Purchases.logIn(user.id);
+      final subNotifier = _ref.read(isProProvider.notifier);
+      if (subNotifier.isReferral) {
+        final referralCode = await subNotifier.getReferralCode();
+        if (referralCode != null) {
+          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+        }
+      }
+      _ref.read(instanceProvider.notifier).resetState();
+      state = AuthState(status: AuthStatus.authenticated, user: user);
+    } catch (e) {
+      state = AuthState(status: AuthStatus.error, error: _parseError(e));
+    }
+  }
+
+  Future<void> signUpWithEmail(String email, String password, {String? name}) async {
+    state = state.copyWith(status: AuthStatus.loading);
+    try {
+      final authService = _ref.read(authServiceProvider);
+      await authService.signUpWithEmail(email, password, name: name);
+      final apiClient = _ref.read(apiClientProvider);
+      final user = await apiClient.getMe();
+      await Purchases.logIn(user.id);
+      final subNotifier = _ref.read(isProProvider.notifier);
+      if (subNotifier.isReferral) {
+        final referralCode = await subNotifier.getReferralCode();
+        if (referralCode != null) {
+          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+        }
+      }
+      _ref.read(instanceProvider.notifier).resetState();
+      state = AuthState(status: AuthStatus.authenticated, user: user);
+    } catch (e) {
+      state = AuthState(status: AuthStatus.error, error: _parseError(e));
+    }
+  }
+
+  String _parseError(Object e) {
+    if (e is DioException && e.response != null) {
+      final statusCode = e.response!.statusCode;
+      final data = e.response!.data;
+      if (data is Map<String, dynamic> && data.containsKey('message')) {
+        final message = data['message'];
+        if (message is String) return message;
+        if (message is List) return message.join(', ');
+      }
+      if (statusCode == 409) return 'This email is already registered.';
+      if (statusCode == 401) return 'Invalid email or password.';
+    }
+    return e.toString();
   }
 
   Future<void> signOut() async {

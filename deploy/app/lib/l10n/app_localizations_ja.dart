@@ -207,4 +207,58 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get referralCodeSuccess => '紹介コードが適用されました！';
+
+  @override
+  String get skipTelegramTitle => 'Telegram設定をスキップしますか？';
+
+  @override
+  String get skipTelegramDesc => '後から接続できます。接続するまではアプリ内でチャットできます。';
+
+  @override
+  String get skip => 'スキップ';
+
+  @override
+  String get connectTelegram => 'Telegramを接続';
+
+  @override
+  String get connectTelegramDesc => 'Telegramを接続するとメッセンジャーでもチャットできます';
+
+  @override
+  String get logIn => 'ログイン';
+
+  @override
+  String get signUp => '新規登録';
+
+  @override
+  String get signUpSubtitle => 'アカウントを作成してClawBoxを始めましょう';
+
+  @override
+  String get email => 'メールアドレス';
+
+  @override
+  String get password => 'パスワード';
+
+  @override
+  String get confirmPassword => 'パスワード確認';
+
+  @override
+  String get nameOptional => '名前（任意）';
+
+  @override
+  String get or => 'または';
+
+  @override
+  String get dontHaveAccount => 'アカウントをお持ちでないですか？';
+
+  @override
+  String get alreadyHaveAccount => 'すでにアカウントをお持ちですか？';
+
+  @override
+  String get invalidEmail => '有効なメールアドレスを入力してください';
+
+  @override
+  String get passwordTooShort => 'パスワードは8文字以上にしてください';
+
+  @override
+  String get passwordsDoNotMatch => 'パスワードが一致しません';
 }
