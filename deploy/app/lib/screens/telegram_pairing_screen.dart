@@ -10,7 +10,9 @@ import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
 
 class TelegramPairingScreen extends ConsumerStatefulWidget {
-  const TelegramPairingScreen({super.key});
+  final VoidCallback? onPairingComplete;
+
+  const TelegramPairingScreen({super.key, this.onPairingComplete});
 
   @override
   ConsumerState<TelegramPairingScreen> createState() => _TelegramPairingScreenState();
@@ -68,7 +70,11 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.approvePairing(instance.instanceId, 'telegram', code);
       if (mounted) {
-        ref.read(setupProgressProvider.notifier).state = OnboardingStep.setupComplete;
+        if (widget.onPairingComplete != null) {
+          widget.onPairingComplete!();
+        } else {
+          ref.read(setupProgressProvider.notifier).state = OnboardingStep.setupComplete;
+        }
       }
     } catch (e) {
       if (mounted) {

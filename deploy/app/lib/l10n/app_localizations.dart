@@ -665,6 +665,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'By signing in, you agree to our {terms} and {privacy}'**
   String bySigningIn(String terms, String privacy);
+
+  /// General settings section header
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// Account settings section header
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -80,6 +81,33 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'chat',
             builder: (context, state) => const ChatScreen(),
+          ),
+          GoRoute(
+            path: 'connect-telegram',
+            builder: (context, state) {
+              final router = GoRouter.of(context);
+              return Scaffold(
+                appBar: AppBar(),
+                body: TelegramSetupScreen(
+                  onTokenSubmitted: () async {
+                    await router.push('/dashboard/connect-telegram/pairing');
+                    if (context.mounted) router.pop();
+                  },
+                  onSkipped: () => router.pop(),
+                ),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: 'pairing',
+                builder: (context, state) => Scaffold(
+                  appBar: AppBar(),
+                  body: TelegramPairingScreen(
+                    onPairingComplete: () => GoRouter.of(context).pop(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

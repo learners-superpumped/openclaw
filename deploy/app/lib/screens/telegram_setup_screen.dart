@@ -9,7 +9,14 @@ import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
 
 class TelegramSetupScreen extends ConsumerStatefulWidget {
-  const TelegramSetupScreen({super.key});
+  final VoidCallback? onTokenSubmitted;
+  final VoidCallback? onSkipped;
+
+  const TelegramSetupScreen({
+    super.key,
+    this.onTokenSubmitted,
+    this.onSkipped,
+  });
 
   @override
   ConsumerState<TelegramSetupScreen> createState() => _TelegramSetupScreenState();
@@ -40,7 +47,11 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.setupTelegram(instance.instanceId, token);
       if (mounted) {
-        ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramPairing;
+        if (widget.onTokenSubmitted != null) {
+          widget.onTokenSubmitted!();
+        } else {
+          ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramPairing;
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -131,7 +142,11 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+              if (widget.onSkipped != null) {
+                widget.onSkipped!();
+              } else {
+                ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+              }
             },
             child: Text(
               AppLocalizations.of(context)!.skip,

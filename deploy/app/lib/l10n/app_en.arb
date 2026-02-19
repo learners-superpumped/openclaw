@@ -204,5 +204,9 @@
       "terms": { "type": "String" },
       "privacy": { "type": "String" }
     }
-  }
+  },
+  "general": "General",
+  "@general": { "description": "General settings section header" },
+  "account": "Account",
+  "@account": { "description": "Account settings section header" }
 }

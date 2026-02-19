@@ -297,4 +297,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String bySigningIn(String terms, String privacy) {
     return '로그인하면 $terms 및 $privacy에 동의하게 됩니다';
   }
+
+  @override
+  String get general => '일반';
+
+  @override
+  String get account => '계정';
 }

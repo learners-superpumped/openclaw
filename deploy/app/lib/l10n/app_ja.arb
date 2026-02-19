@@ -92,5 +92,7 @@
   "agree": "Agree",
   "decline": "Decline",
   "legal": "Legal",
-  "bySigningIn": "By signing in, you agree to our {terms} and {privacy}"
+  "bySigningIn": "By signing in, you agree to our {terms} and {privacy}",
+  "general": "General",
+  "account": "Account"
 }

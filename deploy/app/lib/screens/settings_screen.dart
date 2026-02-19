@@ -1,6 +1,7 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
@@ -44,77 +45,84 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
+        title: Text(l10n.settings),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         children: [
-          _SettingsTile(
-            icon: Icons.description_outlined,
-            iconColor: AppColors.accent,
-            title: AppLocalizations.of(context)!.termsOfService,
-            subtitle: AppLocalizations.of(context)!.legal,
-            onTap: () => launchUrl(
-              Uri.parse('$apiBaseUrl/legal/terms'),
-              mode: LaunchMode.externalApplication,
-            ),
+          // General section
+          _SectionHeader(title: l10n.general),
+          _SettingsGroup(
+            children: [
+              _SettingsItem(
+                icon: Icons.credit_card_rounded,
+                title: l10n.manageSubscription,
+                onTap: () => RevenueCatService.showCustomerCenter(),
+              ),
+              if (_telegramConnected == false)
+                _SettingsItem(
+                  icon: Icons.telegram,
+                  title: l10n.connectTelegram,
+                  onTap: () async {
+                    await context.push('/dashboard/connect-telegram');
+                    if (mounted) _loadTelegramStatus();
+                  },
+                ),
+            ],
           ),
-          const SizedBox(height: 12),
-          _SettingsTile(
-            icon: Icons.privacy_tip_outlined,
-            iconColor: AppColors.accent,
-            title: AppLocalizations.of(context)!.privacyPolicy,
-            subtitle: AppLocalizations.of(context)!.legal,
-            onTap: () => launchUrl(
-              Uri.parse('$apiBaseUrl/legal/privacy'),
-              mode: LaunchMode.externalApplication,
-            ),
+          const SizedBox(height: 24),
+
+          // Legal section
+          _SectionHeader(title: l10n.legal),
+          _SettingsGroup(
+            children: [
+              _SettingsItem(
+                icon: Icons.description_outlined,
+                title: l10n.termsOfService,
+                onTap: () => launchUrl(
+                  Uri.parse('$apiBaseUrl/legal/terms'),
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+              _SettingsItem(
+                icon: Icons.privacy_tip_outlined,
+                title: l10n.privacyPolicy,
+                onTap: () => launchUrl(
+                  Uri.parse('$apiBaseUrl/legal/privacy'),
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          _SettingsTile(
-            icon: Icons.credit_card_rounded,
-            iconColor: AppColors.accent,
-            title: AppLocalizations.of(context)!.manageSubscription,
-            subtitle: AppLocalizations.of(context)!.manageSubscriptionDesc,
-            onTap: () => RevenueCatService.showCustomerCenter(),
-          ),
-          if (_telegramConnected == false) ...[
-            const SizedBox(height: 12),
-            _SettingsTile(
-              icon: Icons.telegram,
-              iconColor: AppColors.accent,
-              title: AppLocalizations.of(context)!.connectTelegram,
-              subtitle: AppLocalizations.of(context)!.connectTelegramDesc,
-              onTap: () {
-                ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
-              },
-            ),
-          ],
-          const SizedBox(height: 12),
-          _SettingsTile(
-            icon: Icons.restart_alt_rounded,
-            iconColor: AppColors.error,
-            title: AppLocalizations.of(context)!.recreateInstance,
-            subtitle: AppLocalizations.of(context)!.recreateInstanceDesc,
-            onTap: () => _showDeleteConfirmation(context),
-          ),
-          const SizedBox(height: 12),
-          _SettingsTile(
-            icon: Icons.logout_rounded,
-            iconColor: AppColors.error,
-            title: AppLocalizations.of(context)!.logout,
-            subtitle: AppLocalizations.of(context)!.logoutDesc,
-            onTap: () => ref.read(authProvider.notifier).signOut(),
-          ),
-          const SizedBox(height: 12),
-          _SettingsTile(
-            icon: Icons.person_remove_rounded,
-            iconColor: AppColors.error,
-            title: AppLocalizations.of(context)!.deleteAccount,
-            subtitle: AppLocalizations.of(context)!.deleteAccountDesc,
-            onTap: () => _showDeleteAccountConfirmation(context),
+          const SizedBox(height: 24),
+
+          // Account section
+          _SectionHeader(title: l10n.account),
+          _SettingsGroup(
+            children: [
+              _SettingsItem(
+                icon: Icons.restart_alt_rounded,
+                title: l10n.recreateInstance,
+                destructive: true,
+                onTap: () => _showDeleteConfirmation(context),
+              ),
+              _SettingsItem(
+                icon: Icons.logout_rounded,
+                title: l10n.logout,
+                destructive: true,
+                onTap: () => ref.read(authProvider.notifier).signOut(),
+              ),
+              _SettingsItem(
+                icon: Icons.person_remove_rounded,
+                title: l10n.deleteAccount,
+                destructive: true,
+                onTap: () => _showDeleteAccountConfirmation(context),
+              ),
+            ],
           ),
         ],
       ),
@@ -149,7 +157,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             },
             child: Text(
               AppLocalizations.of(context)!.recreate,
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: AppColors.error, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -159,7 +168,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   void _deleteInstance() {
     ref.read(instanceProvider.notifier).deleteInstance();
-    ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+    ref.read(setupProgressProvider.notifier).state =
+        OnboardingStep.telegramSetup;
   }
 
   void _showDeleteAccountConfirmation(BuildContext context) {
@@ -190,7 +200,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             },
             child: Text(
               AppLocalizations.of(context)!.delete,
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: AppColors.error, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -199,64 +210,99 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 }
 
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
+class _SectionHeader extends StatelessWidget {
   final String title;
-  final String subtitle;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textTertiary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
+              fontSize: 11,
+            ),
+      ),
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  final List<Widget> children;
+
+  const _SettingsGroup({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = children.whereType<_SettingsItem>().toList();
+    if (filtered.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < filtered.length; i++) ...[
+            filtered[i],
+            if (i < filtered.length - 1)
+              const Divider(height: 1, indent: 48, endIndent: 0),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final bool destructive;
   final VoidCallback onTap;
 
-  const _SettingsTile({
+  const _SettingsItem({
     required this.icon,
-    required this.iconColor,
     required this.title,
-    required this.subtitle,
+    this.destructive = false,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: iconColor, size: 20),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium,
+    final color = destructive ? AppColors.error : AppColors.textPrimary;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: color,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textTertiary,
-                size: 20,
-              ),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textTertiary,
+              size: 18,
+            ),
+          ],
         ),
       ),
     );

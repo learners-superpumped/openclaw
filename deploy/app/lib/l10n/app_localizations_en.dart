@@ -303,4 +303,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String bySigningIn(String terms, String privacy) {
     return 'By signing in, you agree to our $terms and $privacy';
   }
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get account => 'Account';
 }
