@@ -194,17 +194,17 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => '프로모션 코드가 있으신가요?';
+  String get haveReferralCode => '레퍼럴 코드가 있으신가요?';
 
   @override
-  String get enterPromoCode => '프로모션 코드 입력';
+  String get enterReferralCode => '레퍼럴 코드 입력';
 
   @override
-  String get promoCodeHint => '코드를 입력하세요';
+  String get referralCodeHint => '코드를 입력하세요';
 
   @override
-  String get promoCodeInvalid => '유효하지 않은 프로모션 코드입니다.';
+  String get referralCodeInvalid => '유효하지 않은 레퍼럴 코드입니다.';
 
   @override
-  String get promoCodeSuccess => '프로모션 코드가 적용되었습니다!';
+  String get referralCodeSuccess => '레퍼럴 코드가 적용되었습니다!';
 }

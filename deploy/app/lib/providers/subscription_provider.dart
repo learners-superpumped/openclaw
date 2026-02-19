@@ -11,13 +11,13 @@ class SubscriptionNotifier extends StateNotifier<bool> {
   StreamSubscription<CustomerInfo>? _subscription;
   final Completer<void> _initCompleter = Completer<void>();
   final FlutterSecureStorage _storage;
-  bool _isPromo = false;
+  bool _isReferral = false;
 
   Future<void> get initialized => _initCompleter.future;
 
-  bool get isPromo => _isPromo;
+  bool get isReferral => _isReferral;
 
-  Future<String?> getPromoCode() => _storage.read(key: 'promo_code');
+  Future<String?> getReferralCode() => _storage.read(key: 'referral_code');
 
   SubscriptionNotifier(this._storage) : super(false) {
     _init();
@@ -30,17 +30,17 @@ class SubscriptionNotifier extends StateNotifier<bool> {
       revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
     } catch (_) {}
 
-    final promoValue = await _storage.read(key: 'is_promo_user');
-    _isPromo = promoValue == 'true';
+    final referralValue = await _storage.read(key: 'is_referral_user');
+    _isReferral = referralValue == 'true';
 
-    state = revenueCatActive || _isPromo;
+    state = revenueCatActive || _isReferral;
     _initCompleter.complete();
     Purchases.addCustomerInfoUpdateListener(_onUpdate);
   }
 
   void _onUpdate(CustomerInfo info) {
     final revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
-    state = revenueCatActive || _isPromo;
+    state = revenueCatActive || _isReferral;
   }
 
   Future<void> refresh() async {
@@ -50,16 +50,16 @@ class SubscriptionNotifier extends StateNotifier<bool> {
       revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
     } catch (_) {}
 
-    final promoValue = await _storage.read(key: 'is_promo_user');
-    _isPromo = promoValue == 'true';
+    final referralValue = await _storage.read(key: 'is_referral_user');
+    _isReferral = referralValue == 'true';
 
-    state = revenueCatActive || _isPromo;
+    state = revenueCatActive || _isReferral;
   }
 
-  Future<void> activatePromo(String code) async {
-    await _storage.write(key: 'is_promo_user', value: 'true');
-    await _storage.write(key: 'promo_code', value: code);
-    _isPromo = true;
+  Future<void> activateReferral(String code) async {
+    await _storage.write(key: 'is_referral_user', value: 'true');
+    await _storage.write(key: 'referral_code', value: code);
+    _isReferral = true;
     state = true;
   }
 

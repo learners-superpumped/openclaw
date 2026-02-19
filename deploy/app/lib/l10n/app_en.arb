@@ -127,14 +127,14 @@
       }
     }
   },
-  "havePromoCode": "Have a promo code?",
-  "@havePromoCode": { "description": "Promo code link on paywall" },
-  "enterPromoCode": "Enter Promo Code",
-  "@enterPromoCode": { "description": "Promo code dialog title" },
-  "promoCodeHint": "Enter your code",
-  "@promoCodeHint": { "description": "Promo code input hint" },
-  "promoCodeInvalid": "Invalid promo code.",
-  "@promoCodeInvalid": { "description": "Invalid promo code error" },
-  "promoCodeSuccess": "Promo code applied!",
-  "@promoCodeSuccess": { "description": "Promo code success message" }
+  "haveReferralCode": "Have a referral code?",
+  "@haveReferralCode": { "description": "Referral code link on paywall" },
+  "enterReferralCode": "Enter Referral Code",
+  "@enterReferralCode": { "description": "Referral code dialog title" },
+  "referralCodeHint": "Enter your code",
+  "@referralCodeHint": { "description": "Referral code input hint" },
+  "referralCodeInvalid": "Invalid referral code.",
+  "@referralCodeInvalid": { "description": "Invalid referral code error" },
+  "referralCodeSuccess": "Referral code applied!",
+  "@referralCodeSuccess": { "description": "Referral code success message" }
 }

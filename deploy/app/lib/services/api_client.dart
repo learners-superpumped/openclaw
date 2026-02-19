@@ -85,13 +85,13 @@ class ApiClient {
     return response.data;
   }
 
-  // Promo
-  Future<bool> validatePromo(String code) async {
+  // Referral
+  Future<bool> validateReferral(String code) async {
     final response = await _dio.post('/promo/validate', data: {'code': code});
     return response.data['valid'] as bool;
   }
 
-  Future<void> activatePromo(String code) async {
+  Future<void> activateReferral(String code) async {
     await _dio.patch('/users/me/promo', data: {'code': code});
   }
 

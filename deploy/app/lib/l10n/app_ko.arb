@@ -60,9 +60,9 @@
   "setupCompleteDesc": "Telegram에서 봇에게 메시지를 보내면 OpenClaw가 대답합니다. 지금 바로 대화를 시작해보세요!",
   "startChatting": "대화 시작하기",
   "openBotOnTelegram": "@{botUsername} 열기",
-  "havePromoCode": "프로모션 코드가 있으신가요?",
-  "enterPromoCode": "프로모션 코드 입력",
-  "promoCodeHint": "코드를 입력하세요",
-  "promoCodeInvalid": "유효하지 않은 프로모션 코드입니다.",
-  "promoCodeSuccess": "프로모션 코드가 적용되었습니다!"
+  "haveReferralCode": "레퍼럴 코드가 있으신가요?",
+  "enterReferralCode": "레퍼럴 코드 입력",
+  "referralCodeHint": "코드를 입력하세요",
+  "referralCodeInvalid": "유효하지 않은 레퍼럴 코드입니다.",
+  "referralCodeSuccess": "레퍼럴 코드가 적용되었습니다!"
 }

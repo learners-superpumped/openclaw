@@ -468,35 +468,35 @@ abstract class AppLocalizations {
   /// **'Open @{botUsername}'**
   String openBotOnTelegram(String botUsername);
 
-  /// Promo code link on paywall
+  /// Referral code link on paywall
   ///
   /// In en, this message translates to:
-  /// **'Have a promo code?'**
-  String get havePromoCode;
+  /// **'Have a referral code?'**
+  String get haveReferralCode;
 
-  /// Promo code dialog title
+  /// Referral code dialog title
   ///
   /// In en, this message translates to:
-  /// **'Enter Promo Code'**
-  String get enterPromoCode;
+  /// **'Enter Referral Code'**
+  String get enterReferralCode;
 
-  /// Promo code input hint
+  /// Referral code input hint
   ///
   /// In en, this message translates to:
   /// **'Enter your code'**
-  String get promoCodeHint;
+  String get referralCodeHint;
 
-  /// Invalid promo code error
+  /// Invalid referral code error
   ///
   /// In en, this message translates to:
-  /// **'Invalid promo code.'**
-  String get promoCodeInvalid;
+  /// **'Invalid referral code.'**
+  String get referralCodeInvalid;
 
-  /// Promo code success message
+  /// Referral code success message
   ///
   /// In en, this message translates to:
-  /// **'Promo code applied!'**
-  String get promoCodeSuccess;
+  /// **'Referral code applied!'**
+  String get referralCodeSuccess;
 }
 
 class _AppLocalizationsDelegate

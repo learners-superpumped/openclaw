@@ -53,9 +53,9 @@ class PaywallScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               TextButton(
-                onPressed: () => _showPromoCodeDialog(context, ref),
+                onPressed: () => _showReferralCodeDialog(context, ref),
                 child: Text(
-                  AppLocalizations.of(context)!.havePromoCode,
+                  AppLocalizations.of(context)!.haveReferralCode,
                   style: TextStyle(color: AppColors.textTertiary),
                 ),
               ),
@@ -67,7 +67,7 @@ class PaywallScreen extends ConsumerWidget {
     );
   }
 
-  void _showPromoCodeDialog(BuildContext context, WidgetRef ref) {
+  void _showReferralCodeDialog(BuildContext context, WidgetRef ref) {
     final controller = TextEditingController();
     final l10n = AppLocalizations.of(context)!;
     final apiClient = ref.read(apiClientProvider);
@@ -77,11 +77,11 @@ class PaywallScreen extends ConsumerWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(l10n.enterPromoCode),
+          title: Text(l10n.enterReferralCode),
           content: TextField(
             controller: controller,
             textCapitalization: TextCapitalization.characters,
-            decoration: InputDecoration(hintText: l10n.promoCodeHint),
+            decoration: InputDecoration(hintText: l10n.referralCodeHint),
           ),
           actions: [
             TextButton(
@@ -94,20 +94,20 @@ class PaywallScreen extends ConsumerWidget {
                 if (code.isEmpty) return;
 
                 try {
-                  final valid = await apiClient.validatePromo(code);
+                  final valid = await apiClient.validateReferral(code);
                   if (!dialogContext.mounted) return;
                   Navigator.of(dialogContext).pop();
 
                   if (valid) {
-                    await subNotifier.activatePromo(code);
+                    await subNotifier.activateReferral(code);
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.promoCodeSuccess)),
+                      SnackBar(content: Text(l10n.referralCodeSuccess)),
                     );
                   } else {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.promoCodeInvalid)),
+                      SnackBar(content: Text(l10n.referralCodeInvalid)),
                     );
                   }
                 } catch (_) {
@@ -115,7 +115,7 @@ class PaywallScreen extends ConsumerWidget {
                   Navigator.of(dialogContext).pop();
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.promoCodeInvalid)),
+                    SnackBar(content: Text(l10n.referralCodeInvalid)),
                   );
                 }
               },

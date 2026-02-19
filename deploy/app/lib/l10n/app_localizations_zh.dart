@@ -192,17 +192,17 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => '有促销码？';
+  String get haveReferralCode => '有推荐码？';
 
   @override
-  String get enterPromoCode => '输入促销码';
+  String get enterReferralCode => '输入推荐码';
 
   @override
-  String get promoCodeHint => '请输入您的码';
+  String get referralCodeHint => '请输入您的码';
 
   @override
-  String get promoCodeInvalid => '无效的促销码。';
+  String get referralCodeInvalid => '无效的推荐码。';
 
   @override
-  String get promoCodeSuccess => '促销码已应用！';
+  String get referralCodeSuccess => '推荐码已应用！';
 }

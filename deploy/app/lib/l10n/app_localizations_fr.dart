@@ -203,17 +203,17 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => 'Vous avez un code promo ?';
+  String get haveReferralCode => 'Vous avez un code de parrainage ?';
 
   @override
-  String get enterPromoCode => 'Entrer le code promo';
+  String get enterReferralCode => 'Entrer le code de parrainage';
 
   @override
-  String get promoCodeHint => 'Entrez votre code';
+  String get referralCodeHint => 'Entrez votre code';
 
   @override
-  String get promoCodeInvalid => 'Code promo invalide.';
+  String get referralCodeInvalid => 'Code de parrainage invalide.';
 
   @override
-  String get promoCodeSuccess => 'Code promo appliqué !';
+  String get referralCodeSuccess => 'Code de parrainage appliqué !';
 }

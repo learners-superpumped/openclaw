@@ -202,17 +202,17 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => 'Tem um código promocional?';
+  String get haveReferralCode => 'Tem um código de indicação?';
 
   @override
-  String get enterPromoCode => 'Inserir código promocional';
+  String get enterReferralCode => 'Inserir código de indicação';
 
   @override
-  String get promoCodeHint => 'Insira seu código';
+  String get referralCodeHint => 'Insira seu código';
 
   @override
-  String get promoCodeInvalid => 'Código promocional inválido.';
+  String get referralCodeInvalid => 'Código de indicação inválido.';
 
   @override
-  String get promoCodeSuccess => 'Código promocional aplicado!';
+  String get referralCodeSuccess => 'Código de indicação aplicado!';
 }

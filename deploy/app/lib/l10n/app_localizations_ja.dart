@@ -194,17 +194,17 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => 'プロモーションコードをお持ちですか？';
+  String get haveReferralCode => '紹介コードをお持ちですか？';
 
   @override
-  String get enterPromoCode => 'プロモーションコード入力';
+  String get enterReferralCode => '紹介コード入力';
 
   @override
-  String get promoCodeHint => 'コードを入力してください';
+  String get referralCodeHint => 'コードを入力してください';
 
   @override
-  String get promoCodeInvalid => '無効なプロモーションコードです。';
+  String get referralCodeInvalid => '無効な紹介コードです。';
 
   @override
-  String get promoCodeSuccess => 'プロモーションコードが適用されました！';
+  String get referralCodeSuccess => '紹介コードが適用されました！';
 }

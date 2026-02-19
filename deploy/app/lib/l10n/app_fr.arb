@@ -60,9 +60,9 @@
   "setupCompleteDesc": "Envoyez un message à votre bot sur Telegram et OpenClaw répondra. Commencez à discuter maintenant !",
   "startChatting": "Commencer à discuter",
   "openBotOnTelegram": "Ouvrir @{botUsername}",
-  "havePromoCode": "Vous avez un code promo ?",
-  "enterPromoCode": "Entrer le code promo",
-  "promoCodeHint": "Entrez votre code",
-  "promoCodeInvalid": "Code promo invalide.",
-  "promoCodeSuccess": "Code promo appliqué !"
+  "haveReferralCode": "Vous avez un code de parrainage ?",
+  "enterReferralCode": "Entrer le code de parrainage",
+  "referralCodeHint": "Entrez votre code",
+  "referralCodeInvalid": "Code de parrainage invalide.",
+  "referralCodeSuccess": "Code de parrainage appliqué !"
 }

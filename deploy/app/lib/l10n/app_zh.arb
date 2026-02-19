@@ -60,9 +60,9 @@
   "setupCompleteDesc": "在Telegram上给机器人发消息，OpenClaw会回复您。现在就开始对话吧！",
   "startChatting": "开始对话",
   "openBotOnTelegram": "打开 @{botUsername}",
-  "havePromoCode": "有促销码？",
-  "enterPromoCode": "输入促销码",
-  "promoCodeHint": "请输入您的码",
-  "promoCodeInvalid": "无效的促销码。",
-  "promoCodeSuccess": "促销码已应用！"
+  "haveReferralCode": "有推荐码？",
+  "enterReferralCode": "输入推荐码",
+  "referralCodeHint": "请输入您的码",
+  "referralCodeInvalid": "无效的推荐码。",
+  "referralCodeSuccess": "推荐码已应用！"
 }

@@ -59,10 +59,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
       final subNotifier = _ref.read(isProProvider.notifier);
-      if (subNotifier.isPromo) {
-        final promoCode = await subNotifier.getPromoCode();
-        if (promoCode != null) {
-          try { await apiClient.activatePromo(promoCode); } catch (_) {}
+      if (subNotifier.isReferral) {
+        final referralCode = await subNotifier.getReferralCode();
+        if (referralCode != null) {
+          try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
       _ref.read(instanceProvider.notifier).resetState();
@@ -81,10 +81,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
       final subNotifier = _ref.read(isProProvider.notifier);
-      if (subNotifier.isPromo) {
-        final promoCode = await subNotifier.getPromoCode();
-        if (promoCode != null) {
-          try { await apiClient.activatePromo(promoCode); } catch (_) {}
+      if (subNotifier.isReferral) {
+        final referralCode = await subNotifier.getReferralCode();
+        if (referralCode != null) {
+          try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
       _ref.read(instanceProvider.notifier).resetState();

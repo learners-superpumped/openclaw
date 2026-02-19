@@ -199,17 +199,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get havePromoCode => 'Have a promo code?';
+  String get haveReferralCode => 'Have a referral code?';
 
   @override
-  String get enterPromoCode => 'Enter Promo Code';
+  String get enterReferralCode => 'Enter Referral Code';
 
   @override
-  String get promoCodeHint => 'Enter your code';
+  String get referralCodeHint => 'Enter your code';
 
   @override
-  String get promoCodeInvalid => 'Invalid promo code.';
+  String get referralCodeInvalid => 'Invalid referral code.';
 
   @override
-  String get promoCodeSuccess => 'Promo code applied!';
+  String get referralCodeSuccess => 'Referral code applied!';
 }
