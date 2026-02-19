@@ -6,6 +6,8 @@ import '../models/instance.dart';
 import 'api_provider.dart';
 import 'onboarding_provider.dart';
 
+const _kTelegramSetupSkipped = 'telegram_setup_skipped';
+
 enum InstanceStatus { idle, creating, polling, ready, error }
 
 class InstanceState {
@@ -111,6 +113,12 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
       final accounts = status['accounts'] as List?;
       if (telegram?['configured'] == true && accounts != null && accounts.isNotEmpty) {
         _ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+      } else {
+        final storage = _ref.read(secureStorageProvider);
+        final skipped = await storage.read(key: _kTelegramSetupSkipped);
+        if (skipped == 'true') {
+          _ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+        }
       }
     } catch (_) {}
   }

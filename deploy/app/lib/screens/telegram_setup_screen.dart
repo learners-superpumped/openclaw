@@ -8,6 +8,8 @@ import '../providers/onboarding_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
 
+const _kTelegramSetupSkipped = 'telegram_setup_skipped';
+
 class TelegramSetupScreen extends ConsumerStatefulWidget {
   final VoidCallback? onTokenSubmitted;
   final VoidCallback? onSkipped;
@@ -140,11 +142,13 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
               if (widget.onSkipped != null) {
                 widget.onSkipped!();
               } else {
+                final storage = ref.read(secureStorageProvider);
+                await storage.write(key: _kTelegramSetupSkipped, value: 'true');
                 ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
               }
             },

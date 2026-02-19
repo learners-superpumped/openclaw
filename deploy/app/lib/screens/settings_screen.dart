@@ -12,6 +12,8 @@ import '../providers/onboarding_provider.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
 
+const _kTelegramSetupSkipped = 'telegram_setup_skipped';
+
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -166,7 +168,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  void _deleteInstance() {
+  Future<void> _deleteInstance() async {
+    final storage = ref.read(secureStorageProvider);
+    await storage.delete(key: _kTelegramSetupSkipped);
     ref.read(instanceProvider.notifier).deleteInstance();
     ref.read(setupProgressProvider.notifier).state =
         OnboardingStep.telegramSetup;
