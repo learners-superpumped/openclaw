@@ -315,4 +315,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get goodMorning => 'Bonjour';
+
+  @override
+  String get goodAfternoon => 'Bon après-midi';
+
+  @override
+  String get goodEvening => 'Bonsoir';
+
+  @override
+  String get chatWithAI => 'Discuter avec l\'IA';
+
+  @override
+  String get agentReady => 'Votre agent est prêt';
+
+  @override
+  String get agentStarting => 'L\'agent démarre...';
 }

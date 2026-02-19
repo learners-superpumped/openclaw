@@ -208,5 +208,17 @@
   "general": "General",
   "@general": { "description": "General settings section header" },
   "account": "Account",
-  "@account": { "description": "Account settings section header" }
+  "@account": { "description": "Account settings section header" },
+  "goodMorning": "Good morning",
+  "@goodMorning": { "description": "Morning greeting on dashboard" },
+  "goodAfternoon": "Good afternoon",
+  "@goodAfternoon": { "description": "Afternoon greeting on dashboard" },
+  "goodEvening": "Good evening",
+  "@goodEvening": { "description": "Evening greeting on dashboard" },
+  "chatWithAI": "Chat with AI",
+  "@chatWithAI": { "description": "Hero CTA title on dashboard" },
+  "agentReady": "Your agent is ready",
+  "@agentReady": { "description": "Agent ready status text" },
+  "agentStarting": "Agent is starting up...",
+  "@agentStarting": { "description": "Agent starting status text" }
 }

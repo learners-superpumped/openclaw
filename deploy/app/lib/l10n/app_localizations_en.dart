@@ -309,4 +309,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get goodMorning => 'Good morning';
+
+  @override
+  String get goodAfternoon => 'Good afternoon';
+
+  @override
+  String get goodEvening => 'Good evening';
+
+  @override
+  String get chatWithAI => 'Chat with AI';
+
+  @override
+  String get agentReady => 'Your agent is ready';
+
+  @override
+  String get agentStarting => 'Agent is starting up...';
 }

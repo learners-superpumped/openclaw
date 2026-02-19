@@ -313,4 +313,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get goodMorning => 'Bom dia';
+
+  @override
+  String get goodAfternoon => 'Boa tarde';
+
+  @override
+  String get goodEvening => 'Boa noite';
+
+  @override
+  String get chatWithAI => 'Conversar com IA';
+
+  @override
+  String get agentReady => 'Seu agente está pronto';
+
+  @override
+  String get agentStarting => 'O agente está iniciando...';
 }

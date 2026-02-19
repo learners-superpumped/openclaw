@@ -677,6 +677,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account'**
   String get account;
+
+  /// Morning greeting on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get goodMorning;
+
+  /// Afternoon greeting on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get goodAfternoon;
+
+  /// Evening greeting on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get goodEvening;
+
+  /// Hero CTA title on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with AI'**
+  String get chatWithAI;
+
+  /// Agent ready status text
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent is ready'**
+  String get agentReady;
+
+  /// Agent starting status text
+  ///
+  /// In en, this message translates to:
+  /// **'Agent is starting up...'**
+  String get agentStarting;
 }
 
 class _AppLocalizationsDelegate

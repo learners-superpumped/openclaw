@@ -303,4 +303,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get account => '계정';
+
+  @override
+  String get goodMorning => '좋은 아침이에요';
+
+  @override
+  String get goodAfternoon => '좋은 오후예요';
+
+  @override
+  String get goodEvening => '좋은 저녁이에요';
+
+  @override
+  String get chatWithAI => 'AI와 채팅';
+
+  @override
+  String get agentReady => '에이전트가 준비되었어요';
+
+  @override
+  String get agentStarting => '에이전트를 시작하는 중...';
 }

@@ -94,5 +94,11 @@
   "legal": "Legal",
   "bySigningIn": "By signing in, you agree to our {terms} and {privacy}",
   "general": "General",
-  "account": "Account"
+  "account": "Account",
+  "goodMorning": "Bom dia",
+  "goodAfternoon": "Boa tarde",
+  "goodEvening": "Boa noite",
+  "chatWithAI": "Conversar com IA",
+  "agentReady": "Seu agente está pronto",
+  "agentStarting": "O agente está iniciando..."
 }

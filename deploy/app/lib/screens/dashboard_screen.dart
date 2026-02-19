@@ -72,15 +72,57 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
+  String _greeting(AppLocalizations l10n) {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return l10n.goodMorning;
+    if (hour < 18) return l10n.goodAfternoon;
+    return l10n.goodEvening;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authProvider);
     final instanceState = ref.watch(instanceProvider);
     final instance = instanceState.instance;
+    final user = authState.user;
+    final isTelegramConnected = _telegramStatus != null && _telegramStatus!['connected'] == true;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ClawBox'),
+        centerTitle: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _greeting(l10n),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            if (user != null)
+              Text(
+                user.name ?? user.email,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+          ],
+        ),
+        actions: [
+          if (user != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: AppColors.accent.withValues(alpha: 0.15),
+                backgroundImage: user.avatarUrl != null
+                    ? NetworkImage(user.avatarUrl!)
+                    : null,
+                child: user.avatarUrl == null
+                    ? Icon(Icons.person, color: AppColors.accent, size: 18)
+                    : null,
+              ),
+            ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -90,87 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            // User card
-            if (authState.user != null)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor: AppColors.accent.withValues(alpha: 0.15),
-                        backgroundImage: authState.user!.avatarUrl != null
-                            ? NetworkImage(authState.user!.avatarUrl!)
-                            : null,
-                        child: authState.user!.avatarUrl == null
-                            ? Icon(Icons.person, color: AppColors.accent)
-                            : null,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              authState.user!.name ?? authState.user!.email,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              authState.user!.email,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            const SizedBox(height: 16),
-            // Instance card
-            if (instance != null)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.dns_outlined, color: AppColors.accent, size: 20),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.instance, style: Theme.of(context).textTheme.titleMedium),
-                          const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: instance.isReady
-                                  ? AppColors.accentGreen.withValues(alpha: 0.15)
-                                  : AppColors.warning.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              instance.isReady ? AppLocalizations.of(context)!.statusRunning : (instance.manager?.phase ?? AppLocalizations.of(context)!.statusWaiting),
-                              style: TextStyle(
-                                color: instance.isReady ? AppColors.accentGreen : AppColors.warning,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      _infoRow(AppLocalizations.of(context)!.labelId, instance.instanceId),
-                      if (instance.displayName != null)
-                        _infoRow(AppLocalizations.of(context)!.labelName, instance.displayName!),
-                    ],
-                  ),
-                ),
-              ),
-            const SizedBox(height: 16),
-            // Chat CTA card
+            // Chat CTA
             if (instance != null)
               Card(
                 clipBehavior: Clip.antiAlias,
@@ -182,43 +144,56 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: InkWell(
                   onTap: () => context.push('/dashboard/chat'),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
                         Container(
-                          width: 48,
-                          height: 48,
+                          width: 44,
+                          height: 44,
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
                           ),
                           child: const Icon(
-                            Icons.chat_rounded,
+                            Icons.auto_awesome,
                             color: AppColors.accent,
-                            size: 24,
+                            size: 22,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Chat with AI',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: AppColors.textPrimary,
-                                ),
+                                l10n.chatWithAI,
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                instance.isReady
-                                    ? 'Your agent is ready'
-                                    : 'Agent is starting up...',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: instance.isReady
-                                      ? AppColors.accentGreen
-                                      : AppColors.textTertiary,
-                                ),
+                              const SizedBox(height: 3),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: BoxDecoration(
+                                      color: instance.isReady
+                                          ? AppColors.accentGreen
+                                          : AppColors.warning,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    instance.isReady
+                                        ? l10n.agentReady
+                                        : l10n.agentStarting,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: instance.isReady
+                                          ? AppColors.accentGreen
+                                          : AppColors.textTertiary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -234,50 +209,43 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
               ),
             const SizedBox(height: 16),
-            // Telegram card (unified)
-            if (_telegramStatus != null && _telegramStatus!['connected'] == true)
-              Card(
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: _botUsername != null ? _openTelegramBot : null,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.telegram, color: AppColors.accent, size: 20),
-                            const SizedBox(width: 8),
-                            Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AppColors.accentGreen.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                AppLocalizations.of(context)!.statusConnected,
-                                style: TextStyle(
-                                  color: AppColors.accentGreen,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (_botUsername != null) ...[
-                          const SizedBox(height: 12),
-                          _infoRow(AppLocalizations.of(context)!.labelBot, '@$_botUsername'),
-                        ],
-                      ],
+            // Status Bar — Instance + Telegram in a row
+            if (instance != null)
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatusTile(
+                      icon: Icons.dns_outlined,
+                      label: l10n.instance,
+                      isActive: instance.isReady,
+                      statusText: instance.isReady
+                          ? l10n.statusRunning
+                          : (instance.manager?.phase ?? l10n.statusWaiting),
+                      subtitle: instance.displayName,
                     ),
                   ),
-                ),
-              )
-            else if (_telegramStatus != null)
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _StatusTile(
+                      icon: Icons.telegram,
+                      label: 'Telegram',
+                      isActive: isTelegramConnected,
+                      statusText: isTelegramConnected
+                          ? l10n.statusConnected
+                          : l10n.statusDisconnected,
+                      subtitle: isTelegramConnected && _botUsername != null
+                          ? '@$_botUsername'
+                          : null,
+                      onTap: isTelegramConnected && _botUsername != null
+                          ? _openTelegramBot
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 16),
+            // Telegram CTA (disconnected only)
+            if (_telegramStatus != null && !isTelegramConnected)
               Card(
                 clipBehavior: Clip.antiAlias,
                 color: AppColors.accentGreen.withValues(alpha: 0.08),
@@ -290,47 +258,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     child: Row(
                       children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Icon(Icons.telegram, color: AppColors.accent, size: 32),
-                            Positioned(
-                              right: -4,
-                              bottom: -4,
-                              child: Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: AppColors.warning,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: AppColors.surface, width: 2),
-                                ),
-                                child: const Icon(Icons.priority_high, color: Colors.white, size: 10),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 16),
+                        Icon(Icons.telegram, color: AppColors.accent, size: 24),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.connectTelegram,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                l10n.connectTelegram,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontSize: 14,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                AppLocalizations.of(context)!.connectTelegramDesc,
+                                l10n.connectTelegramDesc,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
                         ),
-                        Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 20),
+                        Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 16),
                       ],
                     ),
                   ),
@@ -341,23 +292,86 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
     );
   }
+}
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 60,
-            child: Text(label, style: TextStyle(color: AppColors.textTertiary, fontSize: 13)),
+class _StatusTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final String statusText;
+  final String? subtitle;
+  final VoidCallback? onTap;
+
+  const _StatusTile({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.statusText,
+    this.subtitle,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, color: AppColors.accent, size: 18),
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: isActive ? AppColors.accentGreen : AppColors.warning,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      statusText,
+                      style: TextStyle(
+                        color: isActive ? AppColors.accentGreen : AppColors.warning,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 11,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ],
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontFamily: 'monospace'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

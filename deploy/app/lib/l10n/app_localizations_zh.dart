@@ -301,4 +301,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get goodMorning => '早上好';
+
+  @override
+  String get goodAfternoon => '下午好';
+
+  @override
+  String get goodEvening => '晚上好';
+
+  @override
+  String get chatWithAI => '与AI聊天';
+
+  @override
+  String get agentReady => '您的智能助手已就绪';
+
+  @override
+  String get agentStarting => '智能助手正在启动...';
 }

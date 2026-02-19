@@ -303,4 +303,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get goodMorning => 'おはようございます';
+
+  @override
+  String get goodAfternoon => 'こんにちは';
+
+  @override
+  String get goodEvening => 'こんばんは';
+
+  @override
+  String get chatWithAI => 'AIとチャット';
+
+  @override
+  String get agentReady => 'エージェントの準備ができました';
+
+  @override
+  String get agentStarting => 'エージェントを起動中...';
 }
