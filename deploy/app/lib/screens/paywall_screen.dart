@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/api_provider.dart';
 import '../providers/subscription_provider.dart';
+import '../services/api_client.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
@@ -73,57 +74,135 @@ class PaywallScreen extends ConsumerWidget {
     final apiClient = ref.read(apiClientProvider);
     final subNotifier = ref.read(isProProvider.notifier);
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(l10n.enterReferralCode),
-          content: TextField(
-            controller: controller,
-            textCapitalization: TextCapitalization.characters,
-            decoration: InputDecoration(hintText: l10n.referralCodeHint),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final code = controller.text.trim();
-                if (code.isEmpty) return;
-
-                try {
-                  final valid = await apiClient.validateReferral(code);
-                  if (!dialogContext.mounted) return;
-                  Navigator.of(dialogContext).pop();
-
-                  if (valid) {
-                    await subNotifier.activateReferral(code);
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.referralCodeSuccess)),
-                    );
-                  } else {
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.referralCodeInvalid)),
-                    );
-                  }
-                } catch (_) {
-                  if (!dialogContext.mounted) return;
-                  Navigator.of(dialogContext).pop();
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.referralCodeInvalid)),
-                  );
-                }
-              },
-              child: Text(l10n.approve),
-            ),
-          ],
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return _ReferralCodeSheet(
+          controller: controller,
+          l10n: l10n,
+          apiClient: apiClient,
+          subNotifier: subNotifier,
+          parentContext: context,
         );
       },
+    );
+  }
+}
+
+class _ReferralCodeSheet extends StatefulWidget {
+  final TextEditingController controller;
+  final AppLocalizations l10n;
+  final ApiClient apiClient;
+  final SubscriptionNotifier subNotifier;
+  final BuildContext parentContext;
+
+  const _ReferralCodeSheet({
+    required this.controller,
+    required this.l10n,
+    required this.apiClient,
+    required this.subNotifier,
+    required this.parentContext,
+  });
+
+  @override
+  State<_ReferralCodeSheet> createState() => _ReferralCodeSheetState();
+}
+
+class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
+  bool _isLoading = false;
+
+  Future<void> _submit() async {
+    final code = widget.controller.text.trim();
+    if (code.isEmpty || _isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final valid = await widget.apiClient.validateReferral(code);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      if (valid) {
+        await widget.subNotifier.activateReferral(code);
+        if (!widget.parentContext.mounted) return;
+        ScaffoldMessenger.of(widget.parentContext).showSnackBar(
+          SnackBar(content: Text(widget.l10n.referralCodeSuccess)),
+        );
+      } else {
+        if (!widget.parentContext.mounted) return;
+        ScaffoldMessenger.of(widget.parentContext).showSnackBar(
+          SnackBar(content: Text(widget.l10n.referralCodeInvalid)),
+        );
+      }
+    } catch (_) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      if (!widget.parentContext.mounted) return;
+      ScaffoldMessenger.of(widget.parentContext).showSnackBar(
+        SnackBar(content: Text(widget.l10n.referralCodeInvalid)),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.border,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            widget.l10n.enterReferralCode,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: widget.controller,
+            textCapitalization: TextCapitalization.characters,
+            autofocus: true,
+            decoration: InputDecoration(hintText: widget.l10n.referralCodeHint),
+            onSubmitted: (_) => _submit(),
+          ),
+          const SizedBox(height: 20),
+          FilledButton(
+            onPressed: _isLoading ? null : _submit,
+            child: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(widget.l10n.approve),
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+            child: Text(
+              widget.l10n.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
