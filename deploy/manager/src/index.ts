@@ -1,6 +1,7 @@
 import express from "express";
 import { config } from "./config.js";
 import { authMiddleware } from "./middleware/auth.js";
+import { handleChatUpgrade } from "./routes/chat-proxy.js";
 import { gatewayProxyRouter } from "./routes/gateway-proxy.js";
 import { instancesRouter } from "./routes/instances.js";
 import { pairingRouter } from "./routes/pairing.js";
@@ -36,6 +37,8 @@ server.on("upgrade", (req, socket, head) => {
   const url = new URL(req.url || "", `http://${req.headers.host}`);
   if (url.pathname.match(/^\/api\/instances\/[^/]+\/vnc$/)) {
     handleVncUpgrade(req, socket, head);
+  } else if (url.pathname.match(/^\/api\/instances\/[^/]+\/chat$/)) {
+    handleChatUpgrade(req, socket, head);
   } else {
     socket.destroy();
   }

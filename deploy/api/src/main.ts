@@ -1,8 +1,12 @@
 import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import { JwtService } from "@nestjs/jwt";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module.js";
+import { initChatProxy, handleChatUpgrade } from "./chat/chat-proxy.js";
+import { PrismaService } from "./prisma/prisma.service.js";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,6 +35,21 @@ async function bootstrap() {
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
   console.log(`openclaw-api listening on :${port}`);
+
+  initChatProxy({
+    jwt: app.get(JwtService),
+    managerUrl: app.get(ConfigService).getOrThrow("MANAGER_URL"),
+    managerApiKey: app.get(ConfigService).getOrThrow("MANAGER_API_KEY"),
+    prisma: app.get(PrismaService),
+  });
+
+  const server = app.getHttpServer();
+  server.on("upgrade", (req: any, socket: any, head: any) => {
+    const url = new URL(req.url || "", `http://${req.headers.host}`);
+    if (url.pathname.match(/^\/instances\/[^/]+\/chat$/)) {
+      handleChatUpgrade(req, socket, head);
+    }
+  });
 }
 
 bootstrap();

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/api_provider.dart';
@@ -165,6 +166,70 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       if (instance.displayName != null)
                         _infoRow(AppLocalizations.of(context)!.labelName, instance.displayName!),
                     ],
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
+            // Chat CTA card
+            if (instance != null)
+              Card(
+                clipBehavior: Clip.antiAlias,
+                color: AppColors.accent.withValues(alpha: 0.06),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
+                ),
+                child: InkWell(
+                  onTap: () => context.push('/dashboard/chat'),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(
+                            Icons.chat_rounded,
+                            color: AppColors.accent,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Chat with AI',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                instance.isReady
+                                    ? 'Your agent is ready'
+                                    : 'Agent is starting up...',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: instance.isReady
+                                      ? AppColors.accentGreen
+                                      : AppColors.textTertiary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: AppColors.accent.withValues(alpha: 0.7),
+                          size: 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

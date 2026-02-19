@@ -94,6 +94,50 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
             isLoading: _isSubmitting,
             label: Text(AppLocalizations.of(context)!.next),
           ),
+          const SizedBox(height: 12),
+          Center(
+            child: TextButton(
+              onPressed: () => _showSkipDialog(context),
+              child: Text(
+                AppLocalizations.of(context)!.skip,
+                style: TextStyle(color: AppColors.textTertiary),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSkipDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        title: Text(AppLocalizations.of(context)!.skipTelegramTitle),
+        content: Text(AppLocalizations.of(context)!.skipTelegramDesc),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+            },
+            child: Text(
+              AppLocalizations.of(context)!.skip,
+              style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );

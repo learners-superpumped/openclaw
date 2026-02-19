@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'providers/onboarding_provider.dart';
 import 'screens/auth_screen.dart';
+import 'screens/chat_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/signup_screen.dart';
 import 'screens/instance_loading_screen.dart';
@@ -22,6 +23,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       final target = _locationForStep(step);
       final currentPath = state.uri.toString();
       if (step == OnboardingStep.auth && currentPath.startsWith('/auth')) {
+        return null;
+      }
+      if (step == OnboardingStep.dashboard && currentPath.startsWith('/dashboard')) {
         return null;
       }
       if (currentPath != target) {
@@ -72,6 +76,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const MainShell(),
+        routes: [
+          GoRoute(
+            path: 'chat',
+            builder: (context, state) => const ChatScreen(),
+          ),
+        ],
       ),
     ],
   );

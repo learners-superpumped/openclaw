@@ -2,17 +2,46 @@ import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/api_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
 import '../providers/onboarding_provider.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  bool? _telegramConnected;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTelegramStatus();
+  }
+
+  Future<void> _loadTelegramStatus() async {
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final instance = ref.read(instanceProvider).instance;
+      if (instance != null) {
+        final status = await apiClient.getTelegramStatus(instance.instanceId);
+        if (mounted) {
+          setState(() {
+            _telegramConnected = status['connected'] == true;
+          });
+        }
+      }
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -27,13 +56,25 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: AppLocalizations.of(context)!.manageSubscriptionDesc,
             onTap: () => RevenueCatService.showCustomerCenter(),
           ),
+          if (_telegramConnected == false) ...[
+            const SizedBox(height: 12),
+            _SettingsTile(
+              icon: Icons.telegram,
+              iconColor: AppColors.accent,
+              title: AppLocalizations.of(context)!.connectTelegram,
+              subtitle: AppLocalizations.of(context)!.connectTelegramDesc,
+              onTap: () {
+                ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+              },
+            ),
+          ],
           const SizedBox(height: 12),
           _SettingsTile(
             icon: Icons.restart_alt_rounded,
             iconColor: AppColors.error,
             title: AppLocalizations.of(context)!.recreateInstance,
             subtitle: AppLocalizations.of(context)!.recreateInstanceDesc,
-            onTap: () => _showDeleteConfirmation(context, ref),
+            onTap: () => _showDeleteConfirmation(context),
           ),
           const SizedBox(height: 12),
           _SettingsTile(
@@ -49,14 +90,14 @@ class SettingsScreen extends ConsumerWidget {
             iconColor: AppColors.error,
             title: AppLocalizations.of(context)!.deleteAccount,
             subtitle: AppLocalizations.of(context)!.deleteAccountDesc,
-            onTap: () => _showDeleteAccountConfirmation(context, ref),
+            onTap: () => _showDeleteAccountConfirmation(context),
           ),
         ],
       ),
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+  void _showDeleteConfirmation(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -80,7 +121,7 @@ class SettingsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _deleteInstance(ref);
+              _deleteInstance();
             },
             child: Text(
               AppLocalizations.of(context)!.recreate,
@@ -92,12 +133,12 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _deleteInstance(WidgetRef ref) {
+  void _deleteInstance() {
     ref.read(instanceProvider.notifier).deleteInstance();
     ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
   }
 
-  void _showDeleteAccountConfirmation(BuildContext context, WidgetRef ref) {
+  void _showDeleteAccountConfirmation(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
