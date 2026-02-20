@@ -53,8 +53,9 @@ export class ClawHubService {
       const managerResult = await this.managerService.hubInstallSkill(instanceId, slug, version);
       this.logger.log(`[install] Manager ok: ${JSON.stringify(managerResult).slice(0, 200)}`);
     } catch (err: any) {
-      this.logger.error(`[install] Manager failed: ${err.message ?? err}`);
-      throw new BadRequestException(`Skill install failed: ${err.message ?? err}`);
+      const detail = err.response?.data?.details ?? err.response?.data?.error ?? err.message ?? err;
+      this.logger.error(`[install] Manager failed: ${detail}`);
+      throw new BadRequestException(String(detail));
     }
 
     // Upsert DB record
@@ -94,8 +95,9 @@ export class ClawHubService {
       const managerResult = await this.managerService.hubUninstallSkill(instanceId, slug);
       this.logger.log(`[uninstall] Manager ok: ${JSON.stringify(managerResult).slice(0, 200)}`);
     } catch (err: any) {
-      this.logger.error(`[uninstall] Manager failed: ${err.message ?? err}`);
-      throw new BadRequestException(`Skill uninstall failed: ${err.message ?? err}`);
+      const detail = err.response?.data?.details ?? err.response?.data?.error ?? err.message ?? err;
+      this.logger.error(`[uninstall] Manager failed: ${detail}`);
+      throw new BadRequestException(String(detail));
     }
 
     // Delete DB record

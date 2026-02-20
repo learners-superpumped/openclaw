@@ -46,9 +46,13 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
     try {
       const lockResult = await execInPod(podName, ["cat", "/data/.clawhub/lock.json"], 10_000);
       const lock = JSON.parse(lockResult.stdout);
-      const found = Array.isArray(lock.skills) && lock.skills.some((s: any) => s.slug === slug);
+      const skills = lock.skills ?? {};
+      const found =
+        typeof skills === "object" && !Array.isArray(skills)
+          ? slug in skills
+          : Array.isArray(skills) && skills.some((s: any) => s.slug === slug);
       console.log(
-        `[hub-install] lock.json verified: found=${found}, skills=${JSON.stringify(lock.skills?.map((s: any) => s.slug))}`,
+        `[hub-install] lock.json verified: found=${found}, skills=${JSON.stringify(Object.keys(skills))}`,
       );
       if (!found) {
         res.status(500).json({
@@ -73,7 +77,12 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
     res.json({ success: true, stdout: result.stdout, stderr: result.stderr });
   } catch (err) {
     console.error("[hub-install] error:", err);
-    res.status(500).json({ error: "Skill install failed", details: String(err) });
+    // Extract the last "Error: ..." line — the CLI's actual error, not the K8s wrapper
+    const raw = String(err);
+    const matches = [...raw.matchAll(/Error: (.+)/g)];
+    const reason =
+      matches.length > 1 ? matches[matches.length - 1][1] : (matches[0]?.[1] ?? raw.split("\n")[0]);
+    res.status(500).json({ error: "Skill install failed", details: reason });
   }
 });
 
@@ -107,8 +116,11 @@ skillsRouter.post("/hub-uninstall", async (req: Request<{ userId: string }>, res
     try {
       const lockResult = await execInPod(podName, ["cat", "/data/.clawhub/lock.json"], 10_000);
       const lock = JSON.parse(lockResult.stdout);
+      const skills = lock.skills ?? {};
       const stillExists =
-        Array.isArray(lock.skills) && lock.skills.some((s: any) => s.slug === slug);
+        typeof skills === "object" && !Array.isArray(skills)
+          ? slug in skills
+          : Array.isArray(skills) && skills.some((s: any) => s.slug === slug);
       if (stillExists) {
         res.status(500).json({
           error: "Uninstall verification failed: skill still present in lock.json",
