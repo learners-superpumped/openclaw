@@ -20,6 +20,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen>
     with WidgetsBindingObserver {
   static const _consentKey = 'ai_data_consent_accepted';
+  ChatNotifier? _chatNotifier;
 
   @override
   void initState() {
@@ -83,9 +84,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
       final chatState = ref.read(chatProvider);
       if (chatState.connectionState == ChatConnectionState.disconnected ||
           chatState.connectionState == ChatConnectionState.error) {
-        ref
-            .read(chatProvider.notifier)
-            .connect(instanceState.instance!.instanceId);
+        _chatNotifier ??= ref.read(chatProvider.notifier);
+        _chatNotifier!.connect(instanceState.instance!.instanceId);
       }
     }
   }
@@ -109,10 +109,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    // Capture notifier before super.dispose() invalidates ref
-    final notifier = ref.read(chatProvider.notifier);
+    final notifier = _chatNotifier;
     super.dispose();
-    Future.microtask(() => notifier.disconnect());
+    if (notifier != null) {
+      Future.microtask(() => notifier.disconnect());
+    }
   }
 
   @override
