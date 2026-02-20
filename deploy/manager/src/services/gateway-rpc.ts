@@ -1,12 +1,16 @@
 import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
 import { config } from "../config.js";
+import { buildDeviceField } from "./device-identity.js";
+import { ensureManagerPaired } from "./device-pairing.js";
 
 /** Internal service DNS for a user's gateway pod. */
 function gatewayWsUrl(userId: string): string {
   const name = `${userId}-openclaw`;
   return `ws://${name}.${config.namespace}.svc.cluster.local:${config.gateway.port}`;
 }
+
+const MANAGER_SCOPES = ["operator.read", "operator.write", "operator.admin"];
 
 interface RpcResponse {
   ok: boolean;
@@ -26,6 +30,9 @@ export async function gatewayRpc(
   timeoutMs = 60_000,
 ): Promise<RpcResponse> {
   const url = gatewayWsUrl(userId);
+
+  // Ensure manager device is paired before connecting
+  await ensureManagerPaired(userId).catch(() => {});
 
   return new Promise<RpcResponse>((resolve, reject) => {
     const ws = new WebSocket(url);
@@ -67,7 +74,7 @@ export async function gatewayRpc(
         id?: string;
         event?: string;
         ok?: boolean;
-        payload?: unknown;
+        payload?: { nonce?: string; ts?: number } & Record<string, unknown>;
         error?: { code: string; message: string };
       };
       try {
@@ -78,7 +85,9 @@ export async function gatewayRpc(
 
       // Step 1: server sends connect.challenge event
       if (msg.type === "event" && msg.event === "connect.challenge") {
-        // Step 2: send connect request
+        const nonce = msg.payload?.nonce ?? "";
+        const device = nonce ? buildDeviceField(nonce, gatewayToken, MANAGER_SCOPES) : undefined;
+        // Step 2: send connect request with device identity
         ws.send(
           JSON.stringify({
             type: "req",
@@ -95,8 +104,9 @@ export async function gatewayRpc(
                 mode: "backend",
               },
               role: "operator",
-              scopes: ["operator.read", "operator.write", "operator.admin"],
+              scopes: MANAGER_SCOPES,
               auth: { token: gatewayToken },
+              device,
             },
           }),
         );

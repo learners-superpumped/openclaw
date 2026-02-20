@@ -3,6 +3,8 @@ import type { Duplex } from "node:stream";
 import { randomUUID } from "node:crypto";
 import WebSocket, { WebSocketServer } from "ws";
 import { config } from "../config.js";
+import { buildDeviceField } from "../services/device-identity.js";
+import { ensureManagerPaired } from "../services/device-pairing.js";
 import { ensureInstanceReady } from "../services/instance-auth.js";
 
 const wss = new WebSocketServer({ noServer: true });
@@ -12,6 +14,8 @@ function gatewayWsUrl(userId: string): string {
   const name = `${userId}-openclaw`;
   return `ws://${name}.${config.namespace}.svc.cluster.local:${config.gateway.port}`;
 }
+
+const MANAGER_SCOPES = ["operator.read", "operator.write", "operator.admin"];
 
 /**
  * Perform the gateway handshake on the upstream WebSocket.
@@ -40,6 +44,7 @@ function performHandshake(
         id?: string;
         event?: string;
         ok?: boolean;
+        payload?: { nonce?: string; ts?: number };
         error?: { code: string; message: string };
       };
       try {
@@ -50,7 +55,9 @@ function performHandshake(
 
       // Step 1: server sends connect.challenge event
       if (msg.type === "event" && msg.event === "connect.challenge") {
-        // Step 2: send connect request
+        const nonce = msg.payload?.nonce ?? "";
+        const device = nonce ? buildDeviceField(nonce, gatewayToken, MANAGER_SCOPES) : undefined;
+        // Step 2: send connect request with device identity
         upstream.send(
           JSON.stringify({
             type: "req",
@@ -67,8 +74,9 @@ function performHandshake(
                 mode: "backend",
               },
               role: "operator",
-              scopes: ["operator.read", "operator.write", "operator.admin"],
+              scopes: MANAGER_SCOPES,
               auth: { token: gatewayToken },
+              device,
             },
           }),
         );
@@ -122,7 +130,7 @@ export function handleChatUpgrade(req: IncomingMessage, socket: Duplex, head: Bu
 
   // Verify instance is ready, then proxy
   ensureInstanceReady(userId)
-    .then((check) => {
+    .then(async (check) => {
       if (!check.ok) {
         socket.write(`HTTP/1.1 ${check.status} ${check.error}\r\n\r\n`);
         socket.destroy();
@@ -130,6 +138,9 @@ export function handleChatUpgrade(req: IncomingMessage, socket: Duplex, head: Bu
       }
 
       const gatewayToken = check.token;
+
+      // Ensure pairing before opening WebSocket (so connect.challenge isn't missed)
+      await ensureManagerPaired(userId).catch(() => {});
 
       wss.handleUpgrade(req, socket, head, (clientWs) => {
         const targetUrl = gatewayWsUrl(userId);
