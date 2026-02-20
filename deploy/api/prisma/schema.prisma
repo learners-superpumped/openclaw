@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  email        String     @unique
-  passwordHash String?    @map("password_hash")
-  name         String?
-  provider     String     @default("email")
-  providerId   String?    @map("provider_id")
-  avatarUrl    String?    @map("avatar_url")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  isPromo      Boolean    @default(false) @map("is_promo")
-  instances    Instance[]
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String?        @map("password_hash")
+  name          String?
+  provider      String         @default("email")
+  providerId    String?        @map("provider_id")
+  avatarUrl     String?        @map("avatar_url")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  isPromo       Boolean        @default(false) @map("is_promo")
+  instances     Instance[]
+  openRouterKey OpenRouterKey?
 
   @@unique([provider, providerId])
   @@map("users")
@@ -30,7 +31,6 @@ model Instance {
   userId          String           @map("user_id")
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   displayName     String?          @map("display_name")
-  openRouterKey   OpenRouterKey?
   installedSkills InstalledSkill[]
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
@@ -56,8 +56,8 @@ model InstalledSkill {
 
 model OpenRouterKey {
   id         String   @id @default(uuid())
-  instanceId String   @unique @map("instance_id")
-  instance   Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  userId     String   @unique @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   key        String
   keyHash    String   @map("key_hash")
   name       String

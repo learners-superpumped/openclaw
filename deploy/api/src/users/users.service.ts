@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InstancesService } from "../instances/instances.service.js";
+import { OpenRouterService } from "../openrouter/openrouter.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { PromoService } from "../promo/promo.service.js";
 
@@ -8,6 +9,7 @@ export class UsersService {
   constructor(
     @Inject(PrismaService) private prisma: PrismaService,
     @Inject(InstancesService) private instancesService: InstancesService,
+    @Inject(OpenRouterService) private openRouterService: OpenRouterService,
     @Inject(PromoService) private promoService: PromoService,
   ) {}
 
@@ -37,6 +39,13 @@ export class UsersService {
 
     for (const instance of instances) {
       await this.instancesService.remove(userId, instance.instanceId);
+    }
+
+    const openRouterKey = await this.prisma.openRouterKey.findUnique({
+      where: { userId },
+    });
+    if (openRouterKey) {
+      await this.openRouterService.deleteKey(openRouterKey.keyHash);
     }
 
     await this.prisma.user.delete({ where: { id: userId } });

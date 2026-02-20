@@ -28,29 +28,32 @@ export class InstancesService {
     }
 
     const instanceId = `u${randomUUID().slice(0, 8)}`;
-    const keyName = `openclaw-${instanceId}`;
 
-    const openRouterKey = await this.openRouterService.createKey(keyName);
+    let openRouterKey = await this.prisma.openRouterKey.findUnique({
+      where: { userId },
+    });
+
+    if (!openRouterKey) {
+      const keyName = `openclaw-user-${userId.slice(0, 8)}`;
+      const result = await this.openRouterService.createKey(keyName);
+      openRouterKey = await this.prisma.openRouterKey.create({
+        data: {
+          userId,
+          key: result.key,
+          keyHash: result.hash,
+          name: keyName,
+          limit: result.limit,
+          limitReset: "weekly",
+        },
+      });
+    }
 
     const managerResult = await this.managerService.createInstance(instanceId, {
       OPENROUTER_API_KEY: openRouterKey.key,
     });
 
     const instance = await this.prisma.instance.create({
-      data: {
-        instanceId,
-        userId,
-        displayName: dto.displayName,
-        openRouterKey: {
-          create: {
-            key: openRouterKey.key,
-            keyHash: openRouterKey.hash,
-            name: keyName,
-            limit: openRouterKey.limit,
-            limitReset: "weekly",
-          },
-        },
-      },
+      data: { instanceId, userId, displayName: dto.displayName },
     });
 
     return { ...instance, manager: managerResult };
@@ -83,15 +86,7 @@ export class InstancesService {
   }
 
   async remove(userId: string, instanceId: string) {
-    const instance = await this.verifyOwnership(userId, instanceId);
-
-    const openRouterKey = await this.prisma.openRouterKey.findUnique({
-      where: { instanceId: instance.id },
-    });
-    if (openRouterKey) {
-      await this.openRouterService.deleteKey(openRouterKey.keyHash);
-    }
-
+    await this.verifyOwnership(userId, instanceId);
     const managerResult = await this.managerService.deleteInstance(instanceId);
     await this.prisma.instance.delete({ where: { instanceId } });
     return managerResult;
