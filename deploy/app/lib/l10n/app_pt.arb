@@ -120,5 +120,22 @@
   "timeNow": "agora",
   "timeMinutes": "{minutes}m",
   "timeHours": "{hours}h",
-  "timeDays": "{days}d"
+  "timeDays": "{days}d",
+  "skills": "Skills",
+  "allSkills": "Tudo",
+  "searchSkills": "Pesquisar skills...",
+  "installed": "Instalado",
+  "install": "Instalar",
+  "uninstall": "Desinstalar",
+  "installing": "Instalando...",
+  "uninstalling": "Desinstalando...",
+  "installSuccess": "Skill instalado com sucesso",
+  "uninstallSuccess": "Skill desinstalado",
+  "installFailed": "Falha ao instalar o skill",
+  "uninstallFailed": "Falha ao desinstalar o skill",
+  "noSkillsFound": "Nenhum skill encontrado",
+  "version": "Versão",
+  "author": "Autor",
+  "uninstallConfirmTitle": "Desinstalar skill?",
+  "uninstallConfirmMessage": "Este skill será removido da sua instância."
 }

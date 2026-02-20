@@ -4,6 +4,7 @@ import 'package:clawbox/l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import 'dashboard_screen.dart';
 import 'settings_screen.dart';
+import 'skills_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -22,6 +23,7 @@ class _MainShellState extends State<MainShell> {
         index: _currentIndex,
         children: const [
           DashboardScreen(),
+          SkillsScreen(),
           SettingsScreen(),
         ],
       ),
@@ -43,6 +45,10 @@ class _MainShellState extends State<MainShell> {
             BottomNavigationBarItem(
               icon: const Icon(Icons.home_rounded),
               label: AppLocalizations.of(context)!.home,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.extension_rounded),
+              label: AppLocalizations.of(context)!.skills,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.settings_rounded),

@@ -1,10 +1,24 @@
 import * as k8s from "@kubernetes/client-node";
+import { readFileSync } from "node:fs";
 import { Writable, Readable } from "node:stream";
 import { config } from "../config.js";
 import { listPods } from "./k8s-client.js";
 
 const kc = new k8s.KubeConfig();
 kc.loadFromCluster();
+
+// Fix: loadFromCluster() uses a tokenFile authProvider which the Exec
+// WebSocket client doesn't resolve. Read the SA token explicitly so that
+// the WebSocket upgrade request includes the Bearer token.
+try {
+  const token = readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", "utf8");
+  const user = kc.getCurrentUser();
+  if (user) {
+    (user as { token: string }).token = token;
+  }
+} catch {
+  // Not running in-cluster – ignore.
+}
 
 // NOTE: This uses @kubernetes/client-node's Exec class which calls the
 // Kubernetes API exec endpoint directly — NOT child_process.exec().

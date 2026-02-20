@@ -120,5 +120,22 @@
   "timeNow": "刚刚",
   "timeMinutes": "{minutes}分钟",
   "timeHours": "{hours}小时",
-  "timeDays": "{days}天"
+  "timeDays": "{days}天",
+  "skills": "技能",
+  "allSkills": "全部",
+  "searchSkills": "搜索技能...",
+  "installed": "已安装",
+  "install": "安装",
+  "uninstall": "卸载",
+  "installing": "安装中...",
+  "uninstalling": "卸载中...",
+  "installSuccess": "技能安装成功",
+  "uninstallSuccess": "技能已卸载",
+  "installFailed": "技能安装失败",
+  "uninstallFailed": "技能卸载失败",
+  "noSkillsFound": "未找到技能",
+  "version": "版本",
+  "author": "作者",
+  "uninstallConfirmTitle": "卸载技能？",
+  "uninstallConfirmMessage": "此技能将从您的实例中移除。"
 }

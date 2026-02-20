@@ -5,6 +5,7 @@ import { handleChatUpgrade } from "./routes/chat-proxy.js";
 import { gatewayProxyRouter } from "./routes/gateway-proxy.js";
 import { instancesRouter } from "./routes/instances.js";
 import { pairingRouter } from "./routes/pairing.js";
+import { skillsRouter } from "./routes/skills.js";
 import { telegramRouter } from "./routes/telegram.js";
 import { handleVncUpgrade } from "./routes/vnc-proxy.js";
 import { whatsappRouter } from "./routes/whatsapp.js";
@@ -26,6 +27,7 @@ app.use("/api/instances", instancesRouter);
 app.use("/api/instances/:userId/whatsapp", whatsappRouter);
 app.use("/api/instances/:userId/telegram", telegramRouter);
 app.use("/api/instances/:userId/pairing", pairingRouter);
+app.use("/api/instances/:userId/skills", skillsRouter);
 app.use("/api/instances/:userId/rpc", gatewayProxyRouter);
 
 const server = app.listen(config.port, () => {

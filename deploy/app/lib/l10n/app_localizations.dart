@@ -833,6 +833,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days}d'**
   String timeDays(int days);
+
+  /// Skills tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get skills;
+
+  /// All skills filter label
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allSkills;
+
+  /// Skills search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search skills...'**
+  String get searchSkills;
+
+  /// Skill installed badge
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get installed;
+
+  /// Install skill button
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get install;
+
+  /// Uninstall skill button
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall'**
+  String get uninstall;
+
+  /// Skill installing status
+  ///
+  /// In en, this message translates to:
+  /// **'Installing...'**
+  String get installing;
+
+  /// Skill uninstalling status
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstalling...'**
+  String get uninstalling;
+
+  /// Skill install success message
+  ///
+  /// In en, this message translates to:
+  /// **'Skill installed successfully'**
+  String get installSuccess;
+
+  /// Skill uninstall success message
+  ///
+  /// In en, this message translates to:
+  /// **'Skill uninstalled'**
+  String get uninstallSuccess;
+
+  /// Skill install failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to install skill'**
+  String get installFailed;
+
+  /// Skill uninstall failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to uninstall skill'**
+  String get uninstallFailed;
+
+  /// Empty skills list message
+  ///
+  /// In en, this message translates to:
+  /// **'No skills found'**
+  String get noSkillsFound;
+
+  /// Version label
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// Author label
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author;
+
+  /// Uninstall confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Skill?'**
+  String get uninstallConfirmTitle;
+
+  /// Uninstall confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'This skill will be removed from your instance.'**
+  String get uninstallConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

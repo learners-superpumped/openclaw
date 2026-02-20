@@ -120,5 +120,22 @@
   "timeNow": "방금",
   "timeMinutes": "{minutes}분",
   "timeHours": "{hours}시간",
-  "timeDays": "{days}일"
+  "timeDays": "{days}일",
+  "skills": "스킬",
+  "allSkills": "전체",
+  "searchSkills": "스킬 검색...",
+  "installed": "설치됨",
+  "install": "설치",
+  "uninstall": "제거",
+  "installing": "설치 중...",
+  "uninstalling": "제거 중...",
+  "installSuccess": "스킬이 설치되었습니다",
+  "uninstallSuccess": "스킬이 제거되었습니다",
+  "installFailed": "스킬 설치에 실패했습니다",
+  "uninstallFailed": "스킬 제거에 실패했습니다",
+  "noSkillsFound": "스킬을 찾을 수 없습니다",
+  "version": "버전",
+  "author": "작성자",
+  "uninstallConfirmTitle": "스킬을 제거할까요?",
+  "uninstallConfirmMessage": "이 스킬이 인스턴스에서 제거됩니다."
 }

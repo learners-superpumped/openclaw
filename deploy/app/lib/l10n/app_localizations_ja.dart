@@ -387,4 +387,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String timeDays(int days) {
     return '$days日';
   }
+
+  @override
+  String get skills => 'スキル';
+
+  @override
+  String get allSkills => 'すべて';
+
+  @override
+  String get searchSkills => 'スキルを検索...';
+
+  @override
+  String get installed => 'インストール済み';
+
+  @override
+  String get install => 'インストール';
+
+  @override
+  String get uninstall => 'アンインストール';
+
+  @override
+  String get installing => 'インストール中...';
+
+  @override
+  String get uninstalling => 'アンインストール中...';
+
+  @override
+  String get installSuccess => 'スキルがインストールされました';
+
+  @override
+  String get uninstallSuccess => 'スキルがアンインストールされました';
+
+  @override
+  String get installFailed => 'スキルのインストールに失敗しました';
+
+  @override
+  String get uninstallFailed => 'スキルのアンインストールに失敗しました';
+
+  @override
+  String get noSkillsFound => 'スキルが見つかりません';
+
+  @override
+  String get version => 'バージョン';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get uninstallConfirmTitle => 'スキルをアンインストールしますか？';
+
+  @override
+  String get uninstallConfirmMessage => 'このスキルはインスタンスから削除されます。';
 }

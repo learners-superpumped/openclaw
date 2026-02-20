@@ -387,4 +387,55 @@ class AppLocalizationsKo extends AppLocalizations {
   String timeDays(int days) {
     return '$days일';
   }
+
+  @override
+  String get skills => '스킬';
+
+  @override
+  String get allSkills => '전체';
+
+  @override
+  String get searchSkills => '스킬 검색...';
+
+  @override
+  String get installed => '설치됨';
+
+  @override
+  String get install => '설치';
+
+  @override
+  String get uninstall => '제거';
+
+  @override
+  String get installing => '설치 중...';
+
+  @override
+  String get uninstalling => '제거 중...';
+
+  @override
+  String get installSuccess => '스킬이 설치되었습니다';
+
+  @override
+  String get uninstallSuccess => '스킬이 제거되었습니다';
+
+  @override
+  String get installFailed => '스킬 설치에 실패했습니다';
+
+  @override
+  String get uninstallFailed => '스킬 제거에 실패했습니다';
+
+  @override
+  String get noSkillsFound => '스킬을 찾을 수 없습니다';
+
+  @override
+  String get version => '버전';
+
+  @override
+  String get author => '작성자';
+
+  @override
+  String get uninstallConfirmTitle => '스킬을 제거할까요?';
+
+  @override
+  String get uninstallConfirmMessage => '이 스킬이 인스턴스에서 제거됩니다.';
 }

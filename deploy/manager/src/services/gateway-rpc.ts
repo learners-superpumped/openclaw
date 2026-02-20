@@ -95,7 +95,7 @@ export async function gatewayRpc(
                 mode: "backend",
               },
               role: "operator",
-              scopes: ["operator.admin"],
+              scopes: ["operator.read", "operator.write", "operator.admin"],
               auth: { token: gatewayToken },
             },
           }),

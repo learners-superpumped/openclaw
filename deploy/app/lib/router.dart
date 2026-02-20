@@ -6,6 +6,7 @@ import 'providers/onboarding_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/main_shell.dart';
+import 'screens/skill_detail_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
@@ -81,6 +82,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'chat',
             builder: (context, state) => const ChatScreen(),
+          ),
+          GoRoute(
+            path: 'skills/:slug',
+            builder: (context, state) => SkillDetailScreen(
+              slug: state.pathParameters['slug']!,
+            ),
           ),
           GoRoute(
             path: 'connect-telegram',

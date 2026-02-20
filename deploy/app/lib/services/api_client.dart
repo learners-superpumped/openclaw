@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants.dart';
 import '../models/auth_tokens.dart';
 import '../models/instance.dart';
+import '../models/skill.dart';
 import '../models/user.dart';
 import 'auth_interceptor.dart';
 
@@ -126,6 +127,49 @@ class ApiClient {
       'channel': channel,
       'code': code,
     });
+    return response.data;
+  }
+
+  // ClawHub
+  Future<BrowseSkillsResponse> browseSkills(String instanceId, {String? q, int? limit, String? cursor}) async {
+    final response = await _dio.get(
+      '/clawhub/instances/$instanceId/browse',
+      queryParameters: {
+        if (q != null && q.isNotEmpty) 'q': q,
+        if (limit != null) 'limit': limit,
+        if (cursor != null) 'cursor': cursor,
+      },
+    );
+    return BrowseSkillsResponse.fromJson(response.data);
+  }
+
+  Future<BrowseSkillDetail> browseSkillDetail(String instanceId, String slug) async {
+    final response = await _dio.get('/clawhub/instances/$instanceId/browse/$slug');
+    return BrowseSkillDetail.fromJson(response.data);
+  }
+
+  Future<Map<String, dynamic>> installSkill(String instanceId, String slug, {String? version}) async {
+    final response = await _dio.post(
+      '/clawhub/instances/$instanceId/skills',
+      data: {
+        'slug': slug,
+        if (version != null) 'version': version,
+      },
+      options: Options(receiveTimeout: const Duration(seconds: 120)),
+    );
+    return response.data;
+  }
+
+  Future<List<Map<String, dynamic>>> getInstalledSkills(String instanceId) async {
+    final response = await _dio.get('/clawhub/instances/$instanceId/skills');
+    return (response.data as List).cast<Map<String, dynamic>>();
+  }
+
+  Future<Map<String, dynamic>> uninstallSkill(String instanceId, String slug) async {
+    final response = await _dio.delete(
+      '/clawhub/instances/$instanceId/skills/$slug',
+      options: Options(receiveTimeout: const Duration(seconds: 60)),
+    );
     return response.data;
   }
 }

@@ -385,4 +385,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String timeDays(int days) {
     return '$days天';
   }
+
+  @override
+  String get skills => '技能';
+
+  @override
+  String get allSkills => '全部';
+
+  @override
+  String get searchSkills => '搜索技能...';
+
+  @override
+  String get installed => '已安装';
+
+  @override
+  String get install => '安装';
+
+  @override
+  String get uninstall => '卸载';
+
+  @override
+  String get installing => '安装中...';
+
+  @override
+  String get uninstalling => '卸载中...';
+
+  @override
+  String get installSuccess => '技能安装成功';
+
+  @override
+  String get uninstallSuccess => '技能已卸载';
+
+  @override
+  String get installFailed => '技能安装失败';
+
+  @override
+  String get uninstallFailed => '技能卸载失败';
+
+  @override
+  String get noSkillsFound => '未找到技能';
+
+  @override
+  String get version => '版本';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get uninstallConfirmTitle => '卸载技能？';
+
+  @override
+  String get uninstallConfirmMessage => '此技能将从您的实例中移除。';
 }

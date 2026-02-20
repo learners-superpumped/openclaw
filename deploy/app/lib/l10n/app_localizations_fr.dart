@@ -400,4 +400,56 @@ class AppLocalizationsFr extends AppLocalizations {
   String timeDays(int days) {
     return '${days}j';
   }
+
+  @override
+  String get skills => 'Skills';
+
+  @override
+  String get allSkills => 'Tout';
+
+  @override
+  String get searchSkills => 'Rechercher des skills...';
+
+  @override
+  String get installed => 'Installé';
+
+  @override
+  String get install => 'Installer';
+
+  @override
+  String get uninstall => 'Désinstaller';
+
+  @override
+  String get installing => 'Installation...';
+
+  @override
+  String get uninstalling => 'Désinstallation...';
+
+  @override
+  String get installSuccess => 'Skill installé avec succès';
+
+  @override
+  String get uninstallSuccess => 'Skill désinstallé';
+
+  @override
+  String get installFailed => 'Échec de l\'installation du skill';
+
+  @override
+  String get uninstallFailed => 'Échec de la désinstallation du skill';
+
+  @override
+  String get noSkillsFound => 'Aucun skill trouvé';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get author => 'Auteur';
+
+  @override
+  String get uninstallConfirmTitle => 'Désinstaller le skill ?';
+
+  @override
+  String get uninstallConfirmMessage =>
+      'Ce skill sera supprimé de votre instance.';
 }

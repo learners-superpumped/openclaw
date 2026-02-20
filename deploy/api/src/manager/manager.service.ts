@@ -143,4 +143,35 @@ export class ManagerService {
     );
     return data;
   }
+
+  async hubInstallSkill(instanceId: string, slug: string, version?: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.post(
+        `${this.baseUrl}/api/instances/${instanceId}/skills/hub-install`,
+        { slug, ...(version ? { version } : {}) },
+        { headers: this.headers, timeout: 120_000 },
+      ),
+    );
+    return data;
+  }
+
+  async hubUninstallSkill(instanceId: string, slug: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.post(
+        `${this.baseUrl}/api/instances/${instanceId}/skills/hub-uninstall`,
+        { slug },
+        { headers: this.headers, timeout: 60_000 },
+      ),
+    );
+    return data;
+  }
+
+  async hubListSkills(instanceId: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/skills/hub-list`, {
+        headers: this.headers,
+      }),
+    );
+    return data;
+  }
 }

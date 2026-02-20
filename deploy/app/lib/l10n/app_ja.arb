@@ -120,5 +120,22 @@
   "timeNow": "今",
   "timeMinutes": "{minutes}分",
   "timeHours": "{hours}時間",
-  "timeDays": "{days}日"
+  "timeDays": "{days}日",
+  "skills": "スキル",
+  "allSkills": "すべて",
+  "searchSkills": "スキルを検索...",
+  "installed": "インストール済み",
+  "install": "インストール",
+  "uninstall": "アンインストール",
+  "installing": "インストール中...",
+  "uninstalling": "アンインストール中...",
+  "installSuccess": "スキルがインストールされました",
+  "uninstallSuccess": "スキルがアンインストールされました",
+  "installFailed": "スキルのインストールに失敗しました",
+  "uninstallFailed": "スキルのアンインストールに失敗しました",
+  "noSkillsFound": "スキルが見つかりません",
+  "version": "バージョン",
+  "author": "作者",
+  "uninstallConfirmTitle": "スキルをアンインストールしますか？",
+  "uninstallConfirmMessage": "このスキルはインスタンスから削除されます。"
 }
