@@ -161,5 +161,13 @@
   "aiDataProvidersTitle": "AI服务提供商",
   "aiDataProvidersDesc": "您的数据可能由以下第三方AI服务处理：",
   "aiDisclosureAgree": "同意并继续",
-  "aiConsentRequired": "使用此服务需要同意AI数据处理。"
+  "aiConsentRequired": "使用此服务需要同意AI数据处理。",
+
+  "connectingBot": "正在连接Telegram机器人...",
+  "connectingBotDesc": "正在连接您的机器人。\n通常只需几秒钟。",
+  "pendingPairingCodes": "待处理的配对码",
+  "noPendingCodes": "向Telegram机器人发送消息后，配对码将显示在此处。",
+  "tapToApprove": "点击以确认",
+  "pairingApproved": "配对已批准！",
+  "dismiss": "忽略"
 }

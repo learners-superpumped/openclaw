@@ -527,4 +527,27 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get aiConsentRequired =>
       'O consentimento de dados de IA é necessário para usar este serviço.';
+
+  @override
+  String get connectingBot => 'Conectando seu bot do Telegram...';
+
+  @override
+  String get connectingBotDesc =>
+      'Por favor, aguarde enquanto conectamos ao seu bot.\nIsso geralmente leva alguns segundos.';
+
+  @override
+  String get pendingPairingCodes => 'Códigos de pareamento pendentes';
+
+  @override
+  String get noPendingCodes =>
+      'Envie uma mensagem para seu bot do Telegram e o código de pareamento aparecerá aqui.';
+
+  @override
+  String get tapToApprove => 'Toque para aprovar';
+
+  @override
+  String get pairingApproved => 'Pareamento aprovado!';
+
+  @override
+  String get dismiss => 'Ignorar';
 }

@@ -508,4 +508,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aiConsentRequired => '이 서비스를 이용하려면 AI 데이터 동의가 필요합니다.';
+
+  @override
+  String get connectingBot => 'Telegram 봇 연결 중...';
+
+  @override
+  String get connectingBotDesc => '봇에 연결하는 중입니다.\n보통 몇 초 정도 소요됩니다.';
+
+  @override
+  String get pendingPairingCodes => '대기 중인 페어링 코드';
+
+  @override
+  String get noPendingCodes => 'Telegram 봇에 메시지를 보내면 페어링 코드가 여기에 나타납니다.';
+
+  @override
+  String get tapToApprove => '탭하여 승인';
+
+  @override
+  String get pairingApproved => '페어링이 승인되었습니다!';
+
+  @override
+  String get dismiss => '무시';
 }

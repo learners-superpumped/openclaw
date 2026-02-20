@@ -161,5 +161,13 @@
   "aiDataProvidersTitle": "AIサービスプロバイダー",
   "aiDataProvidersDesc": "お客様のデータは以下のサードパーティAIサービスによって処理される場合があります：",
   "aiDisclosureAgree": "同意して続ける",
-  "aiConsentRequired": "このサービスを利用するにはAIデータの同意が必要です。"
+  "aiConsentRequired": "このサービスを利用するにはAIデータの同意が必要です。",
+
+  "connectingBot": "Telegramボットに接続中...",
+  "connectingBotDesc": "ボットに接続しています。\n通常数秒で完了します。",
+  "pendingPairingCodes": "保留中のペアリングコード",
+  "noPendingCodes": "Telegramボットにメッセージを送ると、ペアリングコードがここに表示されます。",
+  "tapToApprove": "タップして承認",
+  "pairingApproved": "ペアリングが承認されました！",
+  "dismiss": "無視"
 }

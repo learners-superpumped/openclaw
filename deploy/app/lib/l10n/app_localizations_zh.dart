@@ -505,4 +505,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aiConsentRequired => '使用此服务需要同意AI数据处理。';
+
+  @override
+  String get connectingBot => '正在连接Telegram机器人...';
+
+  @override
+  String get connectingBotDesc => '正在连接您的机器人。\n通常只需几秒钟。';
+
+  @override
+  String get pendingPairingCodes => '待处理的配对码';
+
+  @override
+  String get noPendingCodes => '向Telegram机器人发送消息后，配对码将显示在此处。';
+
+  @override
+  String get tapToApprove => '点击以确认';
+
+  @override
+  String get pairingApproved => '配对已批准！';
+
+  @override
+  String get dismiss => '忽略';
 }

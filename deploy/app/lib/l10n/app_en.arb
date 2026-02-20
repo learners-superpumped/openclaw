@@ -350,5 +350,20 @@
   "aiDisclosureAgree": "Agree & Continue",
   "@aiDisclosureAgree": { "description": "AI disclosure agree button" },
   "aiConsentRequired": "AI data consent is required to use this service.",
-  "@aiConsentRequired": { "description": "Consent required snackbar message" }
+  "@aiConsentRequired": { "description": "Consent required snackbar message" },
+
+  "connectingBot": "Connecting your Telegram bot...",
+  "@connectingBot": { "description": "Bot connection loading title" },
+  "connectingBotDesc": "Please wait while we connect to your bot.\nThis usually takes a few seconds.",
+  "@connectingBotDesc": { "description": "Bot connection loading description" },
+  "pendingPairingCodes": "Pending Pairing Codes",
+  "@pendingPairingCodes": { "description": "Pending pairing codes section header" },
+  "noPendingCodes": "Send a message to your Telegram bot and the pairing code will appear here.",
+  "@noPendingCodes": { "description": "Empty pending codes hint" },
+  "tapToApprove": "Tap to approve",
+  "@tapToApprove": { "description": "Tap to approve hint on pairing code card" },
+  "pairingApproved": "Pairing approved successfully!",
+  "@pairingApproved": { "description": "Pairing approved success snackbar" },
+  "dismiss": "Dismiss",
+  "@dismiss": { "description": "Dismiss button tooltip" }
 }

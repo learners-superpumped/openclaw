@@ -161,5 +161,13 @@
   "aiDataProvidersTitle": "Provedores de serviços de IA",
   "aiDataProvidersDesc": "Seus dados podem ser processados pelos seguintes serviços de IA de terceiros:",
   "aiDisclosureAgree": "Concordar e continuar",
-  "aiConsentRequired": "O consentimento de dados de IA é necessário para usar este serviço."
+  "aiConsentRequired": "O consentimento de dados de IA é necessário para usar este serviço.",
+
+  "connectingBot": "Conectando seu bot do Telegram...",
+  "connectingBotDesc": "Por favor, aguarde enquanto conectamos ao seu bot.\nIsso geralmente leva alguns segundos.",
+  "pendingPairingCodes": "Códigos de pareamento pendentes",
+  "noPendingCodes": "Envie uma mensagem para seu bot do Telegram e o código de pareamento aparecerá aqui.",
+  "tapToApprove": "Toque para aprovar",
+  "pairingApproved": "Pareamento aprovado!",
+  "dismiss": "Ignorar"
 }

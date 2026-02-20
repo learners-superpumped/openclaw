@@ -1073,6 +1073,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI data consent is required to use this service.'**
   String get aiConsentRequired;
+
+  /// Bot connection loading title
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting your Telegram bot...'**
+  String get connectingBot;
+
+  /// Bot connection loading description
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while we connect to your bot.\nThis usually takes a few seconds.'**
+  String get connectingBotDesc;
+
+  /// Pending pairing codes section header
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Pairing Codes'**
+  String get pendingPairingCodes;
+
+  /// Empty pending codes hint
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message to your Telegram bot and the pairing code will appear here.'**
+  String get noPendingCodes;
+
+  /// Tap to approve hint on pairing code card
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to approve'**
+  String get tapToApprove;
+
+  /// Pairing approved success snackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing approved successfully!'**
+  String get pairingApproved;
+
+  /// Dismiss button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
 }
 
 class _AppLocalizationsDelegate

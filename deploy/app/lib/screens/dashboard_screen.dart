@@ -23,6 +23,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Map<String, dynamic>? _telegramStatus;
   String? _botUsername;
   Timer? _refreshTimer;
+  List<Map<String, dynamic>> _pendingCodes = [];
+  Timer? _codesPollTimer;
+  final Set<String> _dismissedCodes = {};
+  String? _approvingCode;
 
   @override
   void initState() {
@@ -34,6 +38,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _codesPollTimer?.cancel();
     super.dispose();
   }
 
@@ -48,13 +53,39 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           probe: needProbe,
         );
         if (mounted) {
+          final wasConnected = _telegramStatus != null && _telegramStatus!['connected'] == true;
+          final isNowConnected = status['connected'] == true;
           setState(() {
             _telegramStatus = status;
             if (needProbe) {
               _botUsername = _extractBotUsername(status);
             }
           });
+          if (isNowConnected && !wasConnected) {
+            _startCodePolling();
+          }
+          if (isNowConnected && _codesPollTimer == null) {
+            _startCodePolling();
+          }
         }
+      }
+    } catch (_) {}
+  }
+
+  void _startCodePolling() {
+    _codesPollTimer?.cancel();
+    _pollPendingCodes();
+    _codesPollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+  }
+
+  Future<void> _pollPendingCodes() async {
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final instance = ref.read(instanceProvider).instance;
+      if (instance == null) return;
+      final codes = await apiClient.listPairing(instance.instanceId, 'telegram');
+      if (mounted) {
+        setState(() => _pendingCodes = codes);
       }
     } catch (_) {}
   }
@@ -72,12 +103,47 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
+  Future<void> _approvePairing(String code) async {
+    setState(() => _approvingCode = code);
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final instance = ref.read(instanceProvider).instance!;
+      await apiClient.approvePairing(instance.instanceId, 'telegram', code);
+      if (mounted) {
+        setState(() {
+          _pendingCodes.removeWhere((c) => c['code'] == code);
+          _approvingCode = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.pairingApproved)),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _approvingCode = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.pairingError)),
+        );
+      }
+    }
+  }
+
+  void _dismissPairing(String code) {
+    setState(() {
+      _dismissedCodes.add(code);
+      _pendingCodes.removeWhere((c) => c['code'] == code);
+    });
+  }
+
   String _greeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
     if (hour < 12) return l10n.goodMorning;
     if (hour < 18) return l10n.goodAfternoon;
     return l10n.goodEvening;
   }
+
+  List<Map<String, dynamic>> get _visiblePendingCodes =>
+      _pendingCodes.where((c) => !_dismissedCodes.contains(c['code'])).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +154,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final user = authState.user;
     final isTelegramLoading = _telegramStatus == null;
     final isTelegramConnected = _telegramStatus != null && _telegramStatus!['connected'] == true;
+    final visibleCodes = _visiblePendingCodes;
 
     return Scaffold(
       appBar: AppBar(
@@ -129,6 +196,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         onRefresh: () async {
           ref.read(instanceProvider.notifier).refresh();
           await _loadStatus();
+          if (_telegramStatus != null && _telegramStatus!['connected'] == true) {
+            await _pollPendingCodes();
+          }
         },
         child: ListView(
           padding: const EdgeInsets.all(24),
@@ -248,7 +318,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ],
               ),
             const SizedBox(height: 16),
-            // Telegram CTA (disconnected only)
+            // Telegram CTA (disconnected) or Pending Codes (connected)
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
@@ -295,8 +365,101 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                       ),
                     )
-                  : const SizedBox.shrink(),
+                  : isTelegramConnected && visibleCodes.isNotEmpty
+                      ? _buildPendingCodesCard(l10n, visibleCodes)
+                      : const SizedBox.shrink(),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPendingCodesCard(AppLocalizations l10n, List<Map<String, dynamic>> codes) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      color: AppColors.accent.withValues(alpha: 0.06),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.vpn_key_rounded, color: AppColors.accent, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.pendingPairingCodes,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...codes.map((item) {
+              final code = item['code'] as String? ?? '';
+              final isApproving = _approvingCode == code;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          code,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 32,
+                        child: FilledButton(
+                          onPressed: isApproving ? null : () => _approvePairing(code),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                          child: isApproving
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : Text(l10n.approve),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: IconButton(
+                          onPressed: isApproving ? null : () => _dismissPairing(code),
+                          icon: const Icon(Icons.close, size: 16),
+                          padding: EdgeInsets.zero,
+                          style: IconButton.styleFrom(
+                            foregroundColor: AppColors.textTertiary,
+                          ),
+                          tooltip: l10n.dismiss,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ],
         ),
       ),

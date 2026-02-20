@@ -119,7 +119,8 @@ class ApiClient {
       '/instances/$instanceId/pairing/list',
       queryParameters: {'channel': channel},
     );
-    return (response.data as List).cast<Map<String, dynamic>>();
+    final data = response.data as Map<String, dynamic>;
+    return (data['requests'] as List).cast<Map<String, dynamic>>();
   }
 
   Future<Map<String, dynamic>> approvePairing(String instanceId, String channel, String code) async {

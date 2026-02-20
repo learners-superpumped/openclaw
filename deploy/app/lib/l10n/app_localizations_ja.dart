@@ -508,4 +508,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get aiConsentRequired => 'このサービスを利用するにはAIデータの同意が必要です。';
+
+  @override
+  String get connectingBot => 'Telegramボットに接続中...';
+
+  @override
+  String get connectingBotDesc => 'ボットに接続しています。\n通常数秒で完了します。';
+
+  @override
+  String get pendingPairingCodes => '保留中のペアリングコード';
+
+  @override
+  String get noPendingCodes => 'Telegramボットにメッセージを送ると、ペアリングコードがここに表示されます。';
+
+  @override
+  String get tapToApprove => 'タップして承認';
+
+  @override
+  String get pairingApproved => 'ペアリングが承認されました！';
+
+  @override
+  String get dismiss => '無視';
 }
