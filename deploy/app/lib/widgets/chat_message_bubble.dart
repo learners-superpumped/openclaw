@@ -95,12 +95,24 @@ class ChatMessageBubble extends StatelessWidget {
               constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85,
               ),
-              child: message.isStreaming && message.content.isEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: TypingIndicator(),
-                    )
-                  : _buildMarkdownContent(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(isFirstInGroup ? 18 : 6),
+                    topRight: const Radius.circular(18),
+                    bottomLeft: Radius.circular(isLastInGroup ? 4 : 6),
+                    bottomRight: const Radius.circular(18),
+                  ),
+                ),
+                child: message.isStreaming && message.content.isEmpty
+                    ? const TypingIndicator()
+                    : _buildMarkdownContent(context),
+              ),
             ),
           ),
         ],
