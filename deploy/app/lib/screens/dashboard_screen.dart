@@ -430,53 +430,64 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               final isApproving = _approvingCode == code;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Material(
-                  color: AppColors.surfaceLight,
-                  borderRadius: BorderRadius.circular(12),
-                  child: InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
                     borderRadius: BorderRadius.circular(12),
-                    onTap: isApproving ? null : () => _approvePairing(code),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.vpn_key_rounded, size: 20, color: AppColors.accent),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              code,
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                letterSpacing: 2,
-                              ),
+                  ),
+                  padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4, right: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          code,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            letterSpacing: 2,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      if (isApproving)
+                        const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                          ),
+                        )
+                      else ...[
+                        IconButton(
+                          onPressed: () => _approvePairing(code),
+                          icon: const Icon(Icons.check_rounded, size: 18),
+                          style: IconButton.styleFrom(
+                            foregroundColor: AppColors.accent,
+                            backgroundColor: AppColors.accent.withValues(alpha: 0.1),
+                            minimumSize: const Size(36, 36),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          if (isApproving)
-                            const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
-                            )
-                          else ...[
-                            Text(
-                              l10n.approve,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.accent,
-                              ),
+                          tooltip: l10n.approve,
+                        ),
+                        const SizedBox(width: 4),
+                        IconButton(
+                          onPressed: () => _dismissPairing(code),
+                          icon: const Icon(Icons.close_rounded, size: 18),
+                          style: IconButton.styleFrom(
+                            foregroundColor: AppColors.textTertiary,
+                            minimumSize: const Size(36, 36),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.chevron_right, size: 18, color: AppColors.accent),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: () => _dismissPairing(code),
-                              child: const Icon(Icons.close, size: 16, color: AppColors.textTertiary),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                          ),
+                          tooltip: l10n.dismiss,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               );
