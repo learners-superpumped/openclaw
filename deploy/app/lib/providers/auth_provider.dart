@@ -46,6 +46,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = const AuthState(status: AuthStatus.unauthenticated);
       }
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      if (statusCode == 401 || statusCode == 404) {
+        final authService = _ref.read(authServiceProvider);
+        await authService.signOut();
+        state = const AuthState(status: AuthStatus.unauthenticated);
+      } else {
+        state = AuthState(status: AuthStatus.error, error: e.toString());
+      }
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
     }
@@ -162,9 +171,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> deleteAccount() async {
-    final apiClient = _ref.read(apiClientProvider);
-    await apiClient.deleteAccount();
-    await Purchases.logOut();
+    try {
+      final apiClient = _ref.read(apiClientProvider);
+      await apiClient.deleteAccount();
+    } catch (_) {
+      // 서버 호출 실패해도 로컬 정리 진행
+    }
+    try { await Purchases.logOut(); } catch (_) {}
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
     _ref.read(instanceProvider.notifier).resetState();
