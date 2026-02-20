@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -117,10 +118,13 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
           SnackBar(content: Text(l10n.installSuccess)),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
+        final detail = e is DioException
+            ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.installFailed)
+            : l10n.installFailed;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.installFailed)),
+          SnackBar(content: Text(detail.toString())),
         );
       }
     }
@@ -154,10 +158,13 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
           SnackBar(content: Text(l10n.uninstallSuccess)),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
+        final detail = e is DioException
+            ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.uninstallFailed)
+            : l10n.uninstallFailed;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.uninstallFailed)),
+          SnackBar(content: Text(detail.toString())),
         );
       }
     }

@@ -22,7 +22,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen>
     with WidgetsBindingObserver {
-  static const _consentKey = 'ai_data_consent_accepted';
+  static const _consentKey = 'ai_data_consent_v2';
   ChatNotifier? _chatNotifier;
 
   @override

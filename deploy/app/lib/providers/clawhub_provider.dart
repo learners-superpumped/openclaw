@@ -128,6 +128,7 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
       }
     } catch (e) {
       state = state.copyWith(error: e.toString());
+      rethrow;
     } finally {
       state = state.copyWith(
         installingSlugs: {...state.installingSlugs}..remove(slug),
@@ -152,6 +153,7 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
       }
     } catch (e) {
       state = state.copyWith(error: e.toString());
+      rethrow;
     } finally {
       state = state.copyWith(
         uninstallingSlugs: {...state.uninstallingSlugs}..remove(slug),

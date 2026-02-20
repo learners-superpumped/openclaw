@@ -39,7 +39,7 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
       }
 
       final storage = ref.read(secureStorageProvider);
-      final consent = await storage.read(key: 'ai_data_consent_accepted');
+      final consent = await storage.read(key: 'ai_data_consent_v2');
       if (consent == 'true') {
         ref.read(aiDisclosureAcceptedProvider.notifier).state = true;
       }

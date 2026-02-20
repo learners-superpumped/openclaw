@@ -14,7 +14,7 @@ import '../theme/app_theme.dart';
 import '../widgets/ai_consent_sheet.dart';
 
 const _kTelegramSetupSkipped = 'telegram_setup_skipped';
-const _kAiDataConsentAccepted = 'ai_data_consent_accepted';
+const _kAiDataConsentAccepted = 'ai_data_consent_v2';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});

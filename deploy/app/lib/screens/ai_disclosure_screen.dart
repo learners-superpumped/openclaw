@@ -12,7 +12,7 @@ import '../theme/app_theme.dart';
 class AiDisclosureScreen extends ConsumerWidget {
   const AiDisclosureScreen({super.key});
 
-  static const _consentKey = 'ai_data_consent_accepted';
+  static const _consentKey = 'ai_data_consent_v2';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

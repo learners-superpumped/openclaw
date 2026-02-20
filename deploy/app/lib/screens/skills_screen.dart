@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -272,7 +273,20 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
             isInstalling: isInstalling,
             isUninstalling: isUninstalling,
             onTap: () => context.push('/dashboard/skills/${skill.slug}'),
-            onInstall: () => ref.read(clawHubProvider.notifier).installSkill(skill.slug),
+            onInstall: () async {
+              try {
+                await ref.read(clawHubProvider.notifier).installSkill(skill.slug);
+              } catch (e) {
+                if (!context.mounted) return;
+                final l10n = AppLocalizations.of(context)!;
+                final detail = e is DioException
+                    ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.installFailed)
+                    : l10n.installFailed;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(detail.toString())),
+                );
+              }
+            },
             onUninstall: () => _confirmUninstall(context, l10n, skill.slug),
           );
         },
@@ -292,9 +306,19 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
             child: Text(l10n.cancel),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              ref.read(clawHubProvider.notifier).uninstallSkill(slug);
+              try {
+                await ref.read(clawHubProvider.notifier).uninstallSkill(slug);
+              } catch (e) {
+                if (!context.mounted) return;
+                final detail = e is DioException
+                    ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.uninstallFailed)
+                    : l10n.uninstallFailed;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(detail.toString())),
+                );
+              }
             },
             child: Text(l10n.uninstall, style: const TextStyle(color: AppColors.error)),
           ),
