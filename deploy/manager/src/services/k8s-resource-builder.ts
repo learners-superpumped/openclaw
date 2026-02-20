@@ -78,7 +78,7 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
         },
         agents: {
           defaults: {
-            model: { primary: "openrouter/openai/gpt-5-nano" },
+            model: { primary: "openrouter/minimax/minimax-m2.5" },
           },
         },
       }),
