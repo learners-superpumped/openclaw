@@ -445,4 +445,79 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get uninstallConfirmMessage =>
       'This skill will be removed from your instance.';
+
+  @override
+  String get aiDataProcessing => 'AI Data Processing';
+
+  @override
+  String get aiDataSharing => 'AI Data Sharing';
+
+  @override
+  String get aiDataProviders => 'AI Data Providers';
+
+  @override
+  String get requestDataDeletion => 'Request Data Deletion';
+
+  @override
+  String get aiConsentDataSentTitle => 'Data Sent to AI Services';
+
+  @override
+  String get aiConsentDataSentMessages => 'Text messages you send in chat';
+
+  @override
+  String get aiConsentDataSentImages =>
+      'Image attachments (JPEG, PNG, GIF, WebP)';
+
+  @override
+  String get aiConsentDataSentContext =>
+      'Conversation context for AI responses';
+
+  @override
+  String get aiConsentRecipientsTitle => 'Data Recipients';
+
+  @override
+  String get aiConsentRecipientOpenRouter => 'OpenRouter (AI request routing)';
+
+  @override
+  String get aiConsentRecipientProviders =>
+      'OpenAI, Anthropic, Google (AI model providers)';
+
+  @override
+  String get aiConsentUsageTitle => 'How Your Data Is Used';
+
+  @override
+  String get aiConsentUsageResponses => 'Used solely to generate AI responses';
+
+  @override
+  String get aiConsentUsageNoTraining => 'Not used for AI model training';
+
+  @override
+  String get aiConsentUsageDeletion => 'Deleted when you delete your account';
+
+  @override
+  String get aiConsentViewPrivacy => 'View Privacy Policy';
+
+  @override
+  String get revokeAiConsentTitle => 'Revoke AI Data Consent?';
+
+  @override
+  String get revokeAiConsentMessage =>
+      'You will need to agree again before using the chat feature.';
+
+  @override
+  String get revoke => 'Revoke';
+
+  @override
+  String get aiDataProvidersTitle => 'AI Service Providers';
+
+  @override
+  String get aiDataProvidersDesc =>
+      'Your data may be processed by the following third-party AI services:';
+
+  @override
+  String get aiDisclosureAgree => 'Agree & Continue';
+
+  @override
+  String get aiConsentRequired =>
+      'AI data consent is required to use this service.';
 }

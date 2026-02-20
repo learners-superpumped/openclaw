@@ -452,4 +452,83 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get uninstallConfirmMessage =>
       'Ce skill sera supprimé de votre instance.';
+
+  @override
+  String get aiDataProcessing => 'Traitement des données IA';
+
+  @override
+  String get aiDataSharing => 'Partage des données IA';
+
+  @override
+  String get aiDataProviders => 'Fournisseurs de données IA';
+
+  @override
+  String get requestDataDeletion => 'Demander la suppression des données';
+
+  @override
+  String get aiConsentDataSentTitle => 'Données envoyées aux services IA';
+
+  @override
+  String get aiConsentDataSentMessages => 'Messages texte envoyés dans le chat';
+
+  @override
+  String get aiConsentDataSentImages =>
+      'Pièces jointes images (JPEG, PNG, GIF, WebP)';
+
+  @override
+  String get aiConsentDataSentContext =>
+      'Contexte de conversation pour les réponses IA';
+
+  @override
+  String get aiConsentRecipientsTitle => 'Destinataires des données';
+
+  @override
+  String get aiConsentRecipientOpenRouter =>
+      'OpenRouter (routage des requêtes IA)';
+
+  @override
+  String get aiConsentRecipientProviders =>
+      'OpenAI, Anthropic, Google (fournisseurs de modèles IA)';
+
+  @override
+  String get aiConsentUsageTitle => 'Utilisation de vos données';
+
+  @override
+  String get aiConsentUsageResponses =>
+      'Utilisées uniquement pour générer des réponses IA';
+
+  @override
+  String get aiConsentUsageNoTraining =>
+      'Non utilisées pour l\'entraînement des modèles IA';
+
+  @override
+  String get aiConsentUsageDeletion =>
+      'Supprimées lors de la suppression de votre compte';
+
+  @override
+  String get aiConsentViewPrivacy => 'Voir la politique de confidentialité';
+
+  @override
+  String get revokeAiConsentTitle => 'Révoquer le consentement IA ?';
+
+  @override
+  String get revokeAiConsentMessage =>
+      'Vous devrez accepter à nouveau avant d\'utiliser la fonction de chat.';
+
+  @override
+  String get revoke => 'Révoquer';
+
+  @override
+  String get aiDataProvidersTitle => 'Fournisseurs de services IA';
+
+  @override
+  String get aiDataProvidersDesc =>
+      'Vos données peuvent être traitées par les services IA tiers suivants :';
+
+  @override
+  String get aiDisclosureAgree => 'Accepter et continuer';
+
+  @override
+  String get aiConsentRequired =>
+      'Le consentement au traitement des données IA est requis pour utiliser ce service.';
 }

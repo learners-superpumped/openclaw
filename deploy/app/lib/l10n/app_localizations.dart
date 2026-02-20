@@ -935,6 +935,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This skill will be removed from your instance.'**
   String get uninstallConfirmMessage;
+
+  /// AI data processing section header
+  ///
+  /// In en, this message translates to:
+  /// **'AI Data Processing'**
+  String get aiDataProcessing;
+
+  /// AI data sharing toggle title
+  ///
+  /// In en, this message translates to:
+  /// **'AI Data Sharing'**
+  String get aiDataSharing;
+
+  /// AI data providers settings item
+  ///
+  /// In en, this message translates to:
+  /// **'AI Data Providers'**
+  String get aiDataProviders;
+
+  /// Request data deletion settings item
+  ///
+  /// In en, this message translates to:
+  /// **'Request Data Deletion'**
+  String get requestDataDeletion;
+
+  /// Consent data sent section title
+  ///
+  /// In en, this message translates to:
+  /// **'Data Sent to AI Services'**
+  String get aiConsentDataSentTitle;
+
+  /// Consent data sent - messages
+  ///
+  /// In en, this message translates to:
+  /// **'Text messages you send in chat'**
+  String get aiConsentDataSentMessages;
+
+  /// Consent data sent - images
+  ///
+  /// In en, this message translates to:
+  /// **'Image attachments (JPEG, PNG, GIF, WebP)'**
+  String get aiConsentDataSentImages;
+
+  /// Consent data sent - context
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation context for AI responses'**
+  String get aiConsentDataSentContext;
+
+  /// Consent recipients section title
+  ///
+  /// In en, this message translates to:
+  /// **'Data Recipients'**
+  String get aiConsentRecipientsTitle;
+
+  /// Consent recipient - OpenRouter
+  ///
+  /// In en, this message translates to:
+  /// **'OpenRouter (AI request routing)'**
+  String get aiConsentRecipientOpenRouter;
+
+  /// Consent recipient - providers
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI, Anthropic, Google (AI model providers)'**
+  String get aiConsentRecipientProviders;
+
+  /// Consent usage section title
+  ///
+  /// In en, this message translates to:
+  /// **'How Your Data Is Used'**
+  String get aiConsentUsageTitle;
+
+  /// Consent usage - responses
+  ///
+  /// In en, this message translates to:
+  /// **'Used solely to generate AI responses'**
+  String get aiConsentUsageResponses;
+
+  /// Consent usage - no training
+  ///
+  /// In en, this message translates to:
+  /// **'Not used for AI model training'**
+  String get aiConsentUsageNoTraining;
+
+  /// Consent usage - deletion
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted when you delete your account'**
+  String get aiConsentUsageDeletion;
+
+  /// View privacy policy link
+  ///
+  /// In en, this message translates to:
+  /// **'View Privacy Policy'**
+  String get aiConsentViewPrivacy;
+
+  /// Revoke consent confirmation title
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke AI Data Consent?'**
+  String get revokeAiConsentTitle;
+
+  /// Revoke consent confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'You will need to agree again before using the chat feature.'**
+  String get revokeAiConsentMessage;
+
+  /// Revoke button
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get revoke;
+
+  /// AI providers bottom sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'AI Service Providers'**
+  String get aiDataProvidersTitle;
+
+  /// AI providers bottom sheet description
+  ///
+  /// In en, this message translates to:
+  /// **'Your data may be processed by the following third-party AI services:'**
+  String get aiDataProvidersDesc;
+
+  /// AI disclosure agree button
+  ///
+  /// In en, this message translates to:
+  /// **'Agree & Continue'**
+  String get aiDisclosureAgree;
+
+  /// Consent required snackbar message
+  ///
+  /// In en, this message translates to:
+  /// **'AI data consent is required to use this service.'**
+  String get aiConsentRequired;
 }
 
 class _AppLocalizationsDelegate

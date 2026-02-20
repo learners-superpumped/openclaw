@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'providers/onboarding_provider.dart';
+import 'screens/ai_disclosure_screen.dart';
 import 'screens/auth_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/main_shell.dart';
@@ -53,6 +54,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const SignupScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/setup/ai-disclosure',
+        builder: (context, state) => const Scaffold(
+          body: AiDisclosureScreen(),
+        ),
       ),
       ShellRoute(
         builder: (context, state, child) => OnboardingShell(child: child),
@@ -130,6 +137,8 @@ String _locationForStep(OnboardingStep step) {
       return '/paywall';
     case OnboardingStep.auth:
       return '/auth';
+    case OnboardingStep.aiDisclosure:
+      return '/setup/ai-disclosure';
     case OnboardingStep.instanceLoading:
       return '/setup/loading';
     case OnboardingStep.telegramSetup:

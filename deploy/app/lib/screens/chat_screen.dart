@@ -6,7 +6,9 @@ import '../models/chat_message.dart';
 import '../providers/api_provider.dart';
 import '../providers/chat_provider.dart';
 import '../providers/instance_provider.dart';
+import '../providers/onboarding_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/ai_consent_sheet.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/chat_message_bubble.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
@@ -40,42 +42,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
       return;
     }
     if (!mounted) return;
-    final l10n = AppLocalizations.of(context)!;
-    final agreed = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.border),
-        ),
-        title: Text(l10n.aiDataConsentTitle),
-        content: Text(l10n.aiDataConsentMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              l10n.decline,
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              l10n.agree,
-              style: TextStyle(
-                color: AppColors.accent,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    final agreed = await AiConsentSheet.show(context);
     if (agreed == true) {
       await storage.write(key: _consentKey, value: 'true');
-      if (mounted) _connectWhenReady();
+      if (mounted) {
+        ref.read(aiDisclosureAcceptedProvider.notifier).state = true;
+        _connectWhenReady();
+      }
     } else {
       if (mounted) Navigator.of(context).pop();
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'l10n/app_localizations.dart';
+import 'providers/api_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/instance_provider.dart';
 import 'providers/onboarding_provider.dart';
@@ -35,6 +36,12 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
 
       if (ref.read(authProvider).status == AuthStatus.authenticated) {
         await ref.read(instanceProvider.notifier).loadExisting();
+      }
+
+      final storage = ref.read(secureStorageProvider);
+      final consent = await storage.read(key: 'ai_data_consent_accepted');
+      if (consent == 'true') {
+        ref.read(aiDisclosureAcceptedProvider.notifier).state = true;
       }
 
       ref.read(appInitializedProvider.notifier).state = true;

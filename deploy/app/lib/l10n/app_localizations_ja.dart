@@ -438,4 +438,74 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get uninstallConfirmMessage => 'このスキルはインスタンスから削除されます。';
+
+  @override
+  String get aiDataProcessing => 'AIデータ処理';
+
+  @override
+  String get aiDataSharing => 'AIデータ共有';
+
+  @override
+  String get aiDataProviders => 'AIデータプロバイダー';
+
+  @override
+  String get requestDataDeletion => 'データ削除リクエスト';
+
+  @override
+  String get aiConsentDataSentTitle => 'AIサービスに送信されるデータ';
+
+  @override
+  String get aiConsentDataSentMessages => 'チャットで送信するテキストメッセージ';
+
+  @override
+  String get aiConsentDataSentImages => '画像添付ファイル（JPEG、PNG、GIF、WebP）';
+
+  @override
+  String get aiConsentDataSentContext => 'AI応答のための会話コンテキスト';
+
+  @override
+  String get aiConsentRecipientsTitle => 'データ受信者';
+
+  @override
+  String get aiConsentRecipientOpenRouter => 'OpenRouter（AIリクエストルーティング）';
+
+  @override
+  String get aiConsentRecipientProviders =>
+      'OpenAI、Anthropic、Google（AIモデルプロバイダー）';
+
+  @override
+  String get aiConsentUsageTitle => 'データの使用方法';
+
+  @override
+  String get aiConsentUsageResponses => 'AI応答の生成にのみ使用';
+
+  @override
+  String get aiConsentUsageNoTraining => 'AIモデルのトレーニングには使用されません';
+
+  @override
+  String get aiConsentUsageDeletion => 'アカウント削除時に削除';
+
+  @override
+  String get aiConsentViewPrivacy => 'プライバシーポリシーを見る';
+
+  @override
+  String get revokeAiConsentTitle => 'AIデータの同意を撤回しますか？';
+
+  @override
+  String get revokeAiConsentMessage => 'チャット機能を使用するには再度同意が必要です。';
+
+  @override
+  String get revoke => '撤回';
+
+  @override
+  String get aiDataProvidersTitle => 'AIサービスプロバイダー';
+
+  @override
+  String get aiDataProvidersDesc => 'お客様のデータは以下のサードパーティAIサービスによって処理される場合があります：';
+
+  @override
+  String get aiDisclosureAgree => '同意して続ける';
+
+  @override
+  String get aiConsentRequired => 'このサービスを利用するにはAIデータの同意が必要です。';
 }

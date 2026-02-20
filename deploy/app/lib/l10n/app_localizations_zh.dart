@@ -436,4 +436,73 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get uninstallConfirmMessage => '此技能将从您的实例中移除。';
+
+  @override
+  String get aiDataProcessing => 'AI数据处理';
+
+  @override
+  String get aiDataSharing => 'AI数据共享';
+
+  @override
+  String get aiDataProviders => 'AI数据提供商';
+
+  @override
+  String get requestDataDeletion => '请求删除数据';
+
+  @override
+  String get aiConsentDataSentTitle => '发送至AI服务的数据';
+
+  @override
+  String get aiConsentDataSentMessages => '您在聊天中发送的文字消息';
+
+  @override
+  String get aiConsentDataSentImages => '图片附件（JPEG、PNG、GIF、WebP）';
+
+  @override
+  String get aiConsentDataSentContext => '用于AI回复的对话上下文';
+
+  @override
+  String get aiConsentRecipientsTitle => '数据接收方';
+
+  @override
+  String get aiConsentRecipientOpenRouter => 'OpenRouter（AI请求路由）';
+
+  @override
+  String get aiConsentRecipientProviders => 'OpenAI、Anthropic、Google（AI模型提供商）';
+
+  @override
+  String get aiConsentUsageTitle => '数据使用方式';
+
+  @override
+  String get aiConsentUsageResponses => '仅用于生成AI回复';
+
+  @override
+  String get aiConsentUsageNoTraining => '不用于AI模型训练';
+
+  @override
+  String get aiConsentUsageDeletion => '删除账户时一并删除';
+
+  @override
+  String get aiConsentViewPrivacy => '查看隐私政策';
+
+  @override
+  String get revokeAiConsentTitle => '撤回AI数据同意？';
+
+  @override
+  String get revokeAiConsentMessage => '使用聊天功能前需要重新同意。';
+
+  @override
+  String get revoke => '撤回';
+
+  @override
+  String get aiDataProvidersTitle => 'AI服务提供商';
+
+  @override
+  String get aiDataProvidersDesc => '您的数据可能由以下第三方AI服务处理：';
+
+  @override
+  String get aiDisclosureAgree => '同意并继续';
+
+  @override
+  String get aiConsentRequired => '使用此服务需要同意AI数据处理。';
 }
