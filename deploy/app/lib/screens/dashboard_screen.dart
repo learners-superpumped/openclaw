@@ -19,7 +19,8 @@ class DashboardScreen extends ConsumerStatefulWidget {
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+class _DashboardScreenState extends ConsumerState<DashboardScreen>
+    with WidgetsBindingObserver {
   Map<String, dynamic>? _telegramStatus;
   String? _botUsername;
   Timer? _refreshTimer;
@@ -31,15 +32,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadStatus();
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) => _loadStatus());
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _refreshTimer?.cancel();
     _codesPollTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadStatus();
+      if (_botUsername != null) {
+        _pollPendingCodes();
+      }
+    }
   }
 
   Future<void> _loadStatus() async {
@@ -53,18 +66,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           probe: needProbe,
         );
         if (mounted) {
-          final wasConnected = _telegramStatus != null && _telegramStatus!['connected'] == true;
-          final isNowConnected = status['connected'] == true;
+          final hadBot = _botUsername != null;
           setState(() {
             _telegramStatus = status;
             if (needProbe) {
               _botUsername = _extractBotUsername(status);
             }
           });
-          if (isNowConnected && !wasConnected) {
-            _startCodePolling();
-          }
-          if (isNowConnected && _codesPollTimer == null) {
+          // Start code polling as soon as bot is configured
+          if (_botUsername != null && (!hadBot || _codesPollTimer == null)) {
             _startCodePolling();
           }
         }
@@ -196,7 +206,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         onRefresh: () async {
           ref.read(instanceProvider.notifier).refresh();
           await _loadStatus();
-          if (_telegramStatus != null && _telegramStatus!['connected'] == true) {
+          if (_botUsername != null) {
             await _pollPendingCodes();
           }
         },
@@ -318,55 +328,55 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ],
               ),
             const SizedBox(height: 16),
-            // Telegram CTA (disconnected) or Pending Codes (connected)
+            // Pending codes / pairing guide (bot configured) or Connect Telegram CTA (no bot)
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               alignment: Alignment.topCenter,
-              child: _telegramStatus != null && !isTelegramConnected
-                  ? Card(
-                      clipBehavior: Clip.antiAlias,
-                      color: AppColors.accent.withValues(alpha: 0.06),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          child: Row(
-                            children: [
-                              Icon(Icons.telegram, color: AppColors.accent, size: 24),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      l10n.connectTelegram,
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      l10n.connectTelegramDesc,
-                                      style: Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 16),
-                            ],
+              child: _botUsername != null && visibleCodes.isNotEmpty
+                  ? _buildPairingCard(l10n, visibleCodes)
+                  : _telegramStatus != null && _botUsername == null
+                      ? Card(
+                          clipBehavior: Clip.antiAlias,
+                          color: AppColors.accent.withValues(alpha: 0.06),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
                           ),
-                        ),
-                      ),
-                    )
-                  : isTelegramConnected && visibleCodes.isNotEmpty
-                      ? _buildPendingCodesCard(l10n, visibleCodes)
+                          child: InkWell(
+                            onTap: () {
+                              ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.telegram, color: AppColors.accent, size: 24),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          l10n.connectTelegram,
+                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          l10n.connectTelegramDesc,
+                                          style: Theme.of(context).textTheme.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 16),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
                       : const SizedBox.shrink(),
             ),
           ],
@@ -375,7 +385,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildPendingCodesCard(AppLocalizations l10n, List<Map<String, dynamic>> codes) {
+  Widget _buildPairingCard(AppLocalizations l10n, List<Map<String, dynamic>> codes) {
     return Card(
       clipBehavior: Clip.antiAlias,
       color: AppColors.accent.withValues(alpha: 0.06),
@@ -390,76 +400,88 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             Row(
               children: [
-                Icon(Icons.vpn_key_rounded, color: AppColors.accent, size: 20),
+                Icon(Icons.telegram, color: AppColors.accent, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  l10n.pendingPairingCodes,
+                  codes.isEmpty ? l10n.telegramPairing : l10n.pendingPairingCodes,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),
                 ),
               ],
             ),
             const SizedBox(height: 12),
+            if (codes.isEmpty) ...[
+              Text(
+                l10n.noPendingCodes,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              if (_botUsername != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: _openTelegramBot,
+                  icon: const Icon(Icons.open_in_new, size: 16),
+                  label: Text(l10n.openBotOnTelegram(_botUsername!)),
+                ),
+              ],
+            ] else ...[
             ...codes.map((item) {
               final code = item['code'] as String? ?? '';
               final isApproving = _approvingCode == code;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceLight,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          code,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            letterSpacing: 2,
+                child: Material(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: isApproving ? null : () => _approvePairing(code),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.vpn_key_rounded, size: 20, color: AppColors.accent),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              code,
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                letterSpacing: 2,
+                              ),
+                            ),
                           ),
-                        ),
+                          if (isApproving)
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                            )
+                          else ...[
+                            Text(
+                              l10n.approve,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.accent,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.chevron_right, size: 18, color: AppColors.accent),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () => _dismissPairing(code),
+                              child: const Icon(Icons.close, size: 16, color: AppColors.textTertiary),
+                            ),
+                          ],
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        height: 32,
-                        child: FilledButton(
-                          onPressed: isApproving ? null : () => _approvePairing(code),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                          ),
-                          child: isApproving
-                              ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                )
-                              : Text(l10n.approve),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: IconButton(
-                          onPressed: isApproving ? null : () => _dismissPairing(code),
-                          icon: const Icon(Icons.close, size: 16),
-                          padding: EdgeInsets.zero,
-                          style: IconButton.styleFrom(
-                            foregroundColor: AppColors.textTertiary,
-                          ),
-                          tooltip: l10n.dismiss,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               );
             }),
+            ],
           ],
         ),
       ),

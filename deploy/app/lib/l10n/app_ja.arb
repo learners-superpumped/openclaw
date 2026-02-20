@@ -165,6 +165,8 @@
 
   "connectingBot": "Telegramボットに接続中...",
   "connectingBotDesc": "ボットに接続しています。\n通常数秒で完了します。",
+  "botRestarting": "ボットを再起動中...",
+  "botRestartingDesc": "新しい設定でボットを再起動しています。\n通常数秒で完了します。",
   "pendingPairingCodes": "保留中のペアリングコード",
   "noPendingCodes": "Telegramボットにメッセージを送ると、ペアリングコードがここに表示されます。",
   "tapToApprove": "タップして承認",

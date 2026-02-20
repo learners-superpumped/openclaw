@@ -108,8 +108,9 @@ telegramRouter.get("/status", async (req: Request<{ userId: string }>, res: Resp
       accounts: payload?.channelAccounts?.telegram ?? null,
     });
   } catch (err) {
-    console.error("Telegram status error:", err);
-    res.status(500).json({ error: "Failed to get status", details: String(err) });
+    // Gateway may be restarting — return offline status instead of 500
+    const { userId } = req.params;
+    res.json({ userId, connected: false, restarting: true, telegram: null });
   }
 });
 

@@ -165,6 +165,8 @@
 
   "connectingBot": "Conectando seu bot do Telegram...",
   "connectingBotDesc": "Por favor, aguarde enquanto conectamos ao seu bot.\nIsso geralmente leva alguns segundos.",
+  "botRestarting": "Reiniciando seu bot...",
+  "botRestartingDesc": "Seu bot está reiniciando com a nova configuração.\nIsso geralmente leva alguns segundos.",
   "pendingPairingCodes": "Códigos de pareamento pendentes",
   "noPendingCodes": "Envie uma mensagem para seu bot do Telegram e o código de pareamento aparecerá aqui.",
   "tapToApprove": "Toque para aprovar",

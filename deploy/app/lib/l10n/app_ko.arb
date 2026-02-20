@@ -165,6 +165,8 @@
 
   "connectingBot": "Telegram 봇 연결 중...",
   "connectingBotDesc": "봇에 연결하는 중입니다.\n보통 몇 초 정도 소요됩니다.",
+  "botRestarting": "봇 재시작 중...",
+  "botRestartingDesc": "새 설정으로 봇을 재시작하고 있습니다.\n보통 몇 초 정도 소요됩니다.",
   "pendingPairingCodes": "대기 중인 페어링 코드",
   "noPendingCodes": "Telegram 봇에 메시지를 보내면 페어링 코드가 여기에 나타납니다.",
   "tapToApprove": "탭하여 승인",

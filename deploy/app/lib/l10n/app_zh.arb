@@ -165,6 +165,8 @@
 
   "connectingBot": "正在连接Telegram机器人...",
   "connectingBotDesc": "正在连接您的机器人。\n通常只需几秒钟。",
+  "botRestarting": "正在重启机器人...",
+  "botRestartingDesc": "正在使用新配置重启机器人。\n通常只需几秒钟。",
   "pendingPairingCodes": "待处理的配对码",
   "noPendingCodes": "向Telegram机器人发送消息后，配对码将显示在此处。",
   "tapToApprove": "点击以确认",

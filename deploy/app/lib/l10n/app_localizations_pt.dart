@@ -536,6 +536,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Por favor, aguarde enquanto conectamos ao seu bot.\nIsso geralmente leva alguns segundos.';
 
   @override
+  String get botRestarting => 'Reiniciando seu bot...';
+
+  @override
+  String get botRestartingDesc =>
+      'Seu bot está reiniciando com a nova configuração.\nIsso geralmente leva alguns segundos.';
+
+  @override
   String get pendingPairingCodes => 'Códigos de pareamento pendentes';
 
   @override

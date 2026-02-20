@@ -165,6 +165,8 @@
 
   "connectingBot": "Connexion à votre bot Telegram...",
   "connectingBotDesc": "Veuillez patienter pendant la connexion à votre bot.\nCela ne prend généralement que quelques secondes.",
+  "botRestarting": "Redémarrage de votre bot...",
+  "botRestartingDesc": "Votre bot redémarre avec la nouvelle configuration.\nCela ne prend généralement que quelques secondes.",
   "pendingPairingCodes": "Codes d'appairage en attente",
   "noPendingCodes": "Envoyez un message à votre bot Telegram et le code d'appairage apparaîtra ici.",
   "tapToApprove": "Appuyer pour approuver",

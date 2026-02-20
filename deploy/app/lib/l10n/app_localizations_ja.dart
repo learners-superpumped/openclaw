@@ -516,6 +516,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connectingBotDesc => 'ボットに接続しています。\n通常数秒で完了します。';
 
   @override
+  String get botRestarting => 'ボットを再起動中...';
+
+  @override
+  String get botRestartingDesc => '新しい設定でボットを再起動しています。\n通常数秒で完了します。';
+
+  @override
   String get pendingPairingCodes => '保留中のペアリングコード';
 
   @override

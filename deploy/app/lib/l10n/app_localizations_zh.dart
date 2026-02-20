@@ -513,6 +513,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connectingBotDesc => '正在连接您的机器人。\n通常只需几秒钟。';
 
   @override
+  String get botRestarting => '正在重启机器人...';
+
+  @override
+  String get botRestartingDesc => '正在使用新配置重启机器人。\n通常只需几秒钟。';
+
+  @override
   String get pendingPairingCodes => '待处理的配对码';
 
   @override

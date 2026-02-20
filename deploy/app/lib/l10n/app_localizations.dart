@@ -1086,6 +1086,18 @@ abstract class AppLocalizations {
   /// **'Please wait while we connect to your bot.\nThis usually takes a few seconds.'**
   String get connectingBotDesc;
 
+  /// Bot restarting loading title
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting your bot...'**
+  String get botRestarting;
+
+  /// Bot restarting loading description
+  ///
+  /// In en, this message translates to:
+  /// **'Your bot is restarting with the new configuration.\nThis usually takes a few seconds.'**
+  String get botRestartingDesc;
+
   /// Pending pairing codes section header
   ///
   /// In en, this message translates to:

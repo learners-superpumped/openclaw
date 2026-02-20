@@ -529,6 +529,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please wait while we connect to your bot.\nThis usually takes a few seconds.';
 
   @override
+  String get botRestarting => 'Restarting your bot...';
+
+  @override
+  String get botRestartingDesc =>
+      'Your bot is restarting with the new configuration.\nThis usually takes a few seconds.';
+
+  @override
   String get pendingPairingCodes => 'Pending Pairing Codes';
 
   @override

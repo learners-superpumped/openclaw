@@ -516,6 +516,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get connectingBotDesc => '봇에 연결하는 중입니다.\n보통 몇 초 정도 소요됩니다.';
 
   @override
+  String get botRestarting => '봇 재시작 중...';
+
+  @override
+  String get botRestartingDesc => '새 설정으로 봇을 재시작하고 있습니다.\n보통 몇 초 정도 소요됩니다.';
+
+  @override
   String get pendingPairingCodes => '대기 중인 페어링 코드';
 
   @override

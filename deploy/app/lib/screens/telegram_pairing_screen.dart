@@ -21,12 +21,14 @@ class TelegramPairingScreen extends ConsumerStatefulWidget {
   ConsumerState<TelegramPairingScreen> createState() => _TelegramPairingScreenState();
 }
 
-class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
+class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
+    with WidgetsBindingObserver {
   final _codeController = TextEditingController();
   bool _isSubmitting = false;
   String? _error;
   String? _botUsername;
   bool _botReady = false;
+  bool _isRestarting = false;
   List<Map<String, dynamic>> _pendingCodes = [];
   Timer? _botPollTimer;
   Timer? _codesPollTimer;
@@ -34,15 +36,28 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _startBotPolling();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _botPollTimer?.cancel();
     _codesPollTimer?.cancel();
     _codeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!_botReady) {
+        _pollBotStatus();
+      } else {
+        _pollPendingCodes();
+      }
+    }
   }
 
   void _startBotPolling() {
@@ -56,6 +71,11 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
       final status = await apiClient.getTelegramStatus(instance.instanceId, probe: true);
+      final restarting = status['restarting'] == true;
+      if (mounted && restarting) {
+        setState(() => _isRestarting = true);
+        return;
+      }
       final telegram = status['telegram'] as Map<String, dynamic>?;
       final probe = telegram?['probe'] as Map<String, dynamic>?;
       final bot = probe?['bot'] as Map<String, dynamic>?;
@@ -65,10 +85,14 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
         setState(() {
           _botUsername = username;
           _botReady = true;
+          _isRestarting = false;
         });
         _startCodePolling();
       }
-    } catch (_) {}
+    } catch (_) {
+      // Gateway unreachable — treat as restarting
+      if (mounted) setState(() => _isRestarting = true);
+    }
   }
 
   void _startCodePolling() {
@@ -139,12 +163,12 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen> {
           const BrandedLogoLoader(animate: true, showProgressBar: true),
           const SizedBox(height: 32),
           Text(
-            l10n.connectingBot,
+            _isRestarting ? l10n.botRestarting : l10n.connectingBot,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.connectingBotDesc,
+            _isRestarting ? l10n.botRestartingDesc : l10n.connectingBotDesc,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
