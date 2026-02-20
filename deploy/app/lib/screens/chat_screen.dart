@@ -319,35 +319,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                 context,
               ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                _buildSuggestionChip('Explain my codebase'),
-                _buildSuggestionChip('Debug an error'),
-                _buildSuggestionChip('Write a new feature'),
-              ],
-            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSuggestionChip(String label) {
-    return ActionChip(
-      label: Text(label),
-      labelStyle: Theme.of(
-        context,
-      ).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
-      backgroundColor: AppColors.surfaceLight,
-      side: const BorderSide(color: AppColors.border),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      onPressed: () {
-        ref.read(chatProvider.notifier).sendMessage(label);
-      },
     );
   }
 
