@@ -327,4 +327,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agentStarting => 'Agent is starting up...';
+
+  @override
+  String get chatTitle => 'ClawBox AI';
+
+  @override
+  String get statusOnline => 'Online';
+
+  @override
+  String get statusConnecting => 'Connecting...';
+
+  @override
+  String get statusOffline => 'Offline';
+
+  @override
+  String get statusAuthenticating => 'Authenticating...';
+
+  @override
+  String get statusWaitingForConnection => 'Waiting for connection...';
+
+  @override
+  String get emptyChatTitle => 'How can I help you today?';
+
+  @override
+  String get emptyChatSubtitle => 'Ask me anything about your project';
+
+  @override
+  String get dateToday => 'Today';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String get connectionError => 'Connection Error';
+
+  @override
+  String get reconnect => 'Reconnect';
+
+  @override
+  String get typeMessage => 'Type a message...';
+
+  @override
+  String get sessions => 'Sessions';
+
+  @override
+  String get newSession => 'New session';
+
+  @override
+  String get noSessionsYet => 'No sessions yet';
+
+  @override
+  String get timeNow => 'now';
+
+  @override
+  String timeMinutes(int minutes) {
+    return '${minutes}m';
+  }
+
+  @override
+  String timeHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String timeDays(int days) {
+    return '${days}d';
+  }
 }

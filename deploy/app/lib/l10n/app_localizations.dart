@@ -713,6 +713,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Agent is starting up...'**
   String get agentStarting;
+
+  /// Chat screen app bar title
+  ///
+  /// In en, this message translates to:
+  /// **'ClawBox AI'**
+  String get chatTitle;
+
+  /// Chat connection online status
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get statusOnline;
+
+  /// Chat connection connecting status
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get statusConnecting;
+
+  /// Chat connection offline status
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get statusOffline;
+
+  /// Chat connection authenticating status
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticating...'**
+  String get statusAuthenticating;
+
+  /// Chat connection waiting status
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for connection...'**
+  String get statusWaitingForConnection;
+
+  /// Empty chat state title
+  ///
+  /// In en, this message translates to:
+  /// **'How can I help you today?'**
+  String get emptyChatTitle;
+
+  /// Empty chat state subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything about your project'**
+  String get emptyChatSubtitle;
+
+  /// Date separator for today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dateToday;
+
+  /// Date separator for yesterday
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateYesterday;
+
+  /// Chat connection error title
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get connectionError;
+
+  /// Reconnect button label
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect'**
+  String get reconnect;
+
+  /// Chat input placeholder text
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get typeMessage;
+
+  /// Session drawer title
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessions;
+
+  /// New session button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'New session'**
+  String get newSession;
+
+  /// Empty session list message
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions yet'**
+  String get noSessionsYet;
+
+  /// Relative time label for just now
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get timeNow;
+
+  /// Relative time in minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m'**
+  String timeMinutes(int minutes);
+
+  /// Relative time in hours
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h'**
+  String timeHours(int hours);
+
+  /// Relative time in days
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d'**
+  String timeDays(int days);
 }
 
 class _AppLocalizationsDelegate

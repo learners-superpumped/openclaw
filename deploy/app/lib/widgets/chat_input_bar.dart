@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/chat_message.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
+import 'package:clawbox/l10n/app_localizations.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   const ChatInputBar({super.key});
@@ -216,7 +217,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
       textCapitalization: TextCapitalization.sentences,
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
-        hintText: 'Type a message...',
+        hintText: AppLocalizations.of(context)!.typeMessage,
         hintStyle: const TextStyle(color: AppColors.textTertiary),
         filled: true,
         fillColor: AppColors.surfaceLight,

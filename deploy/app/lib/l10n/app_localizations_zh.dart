@@ -319,4 +319,70 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get agentStarting => '智能助手正在启动...';
+
+  @override
+  String get chatTitle => 'ClawBox AI';
+
+  @override
+  String get statusOnline => '在线';
+
+  @override
+  String get statusConnecting => '连接中...';
+
+  @override
+  String get statusOffline => '离线';
+
+  @override
+  String get statusAuthenticating => '认证中...';
+
+  @override
+  String get statusWaitingForConnection => '等待连接...';
+
+  @override
+  String get emptyChatTitle => '有什么我可以帮您的？';
+
+  @override
+  String get emptyChatSubtitle => '关于您的项目，随时提问';
+
+  @override
+  String get dateToday => '今天';
+
+  @override
+  String get dateYesterday => '昨天';
+
+  @override
+  String get connectionError => '连接错误';
+
+  @override
+  String get reconnect => '重新连接';
+
+  @override
+  String get typeMessage => '输入消息...';
+
+  @override
+  String get sessions => '会话';
+
+  @override
+  String get newSession => '新会话';
+
+  @override
+  String get noSessionsYet => '暂无会话';
+
+  @override
+  String get timeNow => '刚刚';
+
+  @override
+  String timeMinutes(int minutes) {
+    return '$minutes分钟';
+  }
+
+  @override
+  String timeHours(int hours) {
+    return '$hours小时';
+  }
+
+  @override
+  String timeDays(int days) {
+    return '$days天';
+  }
 }

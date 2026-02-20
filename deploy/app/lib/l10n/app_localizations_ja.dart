@@ -321,4 +321,70 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get agentStarting => 'エージェントを起動中...';
+
+  @override
+  String get chatTitle => 'ClawBox AI';
+
+  @override
+  String get statusOnline => 'オンライン';
+
+  @override
+  String get statusConnecting => '接続中...';
+
+  @override
+  String get statusOffline => 'オフライン';
+
+  @override
+  String get statusAuthenticating => '認証中...';
+
+  @override
+  String get statusWaitingForConnection => '接続を待っています...';
+
+  @override
+  String get emptyChatTitle => '何かお手伝いできますか？';
+
+  @override
+  String get emptyChatSubtitle => 'プロジェクトについて何でも聞いてください';
+
+  @override
+  String get dateToday => '今日';
+
+  @override
+  String get dateYesterday => '昨日';
+
+  @override
+  String get connectionError => '接続エラー';
+
+  @override
+  String get reconnect => '再接続';
+
+  @override
+  String get typeMessage => 'メッセージを入力...';
+
+  @override
+  String get sessions => 'セッション';
+
+  @override
+  String get newSession => '新しいセッション';
+
+  @override
+  String get noSessionsYet => 'セッションはまだありません';
+
+  @override
+  String get timeNow => '今';
+
+  @override
+  String timeMinutes(int minutes) {
+    return '$minutes分';
+  }
+
+  @override
+  String timeHours(int hours) {
+    return '$hours時間';
+  }
+
+  @override
+  String timeDays(int days) {
+    return '$days日';
+  }
 }

@@ -144,6 +144,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   }
 
   PreferredSizeWidget _buildAppBar(ChatState chatState) {
+    final l10n = AppLocalizations.of(context)!;
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
@@ -171,7 +172,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ClawBox AI',
+                  l10n.chatTitle,
                   style: Theme.of(
                     context,
                   ).textTheme.titleMedium?.copyWith(fontSize: 15),
@@ -186,22 +187,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   }
 
   Widget _buildConnectionStatus(ChatConnectionState connectionState) {
+    final l10n = AppLocalizations.of(context)!;
     Color dotColor;
     String label;
     switch (connectionState) {
       case ChatConnectionState.connected:
         dotColor = AppColors.accentGreen;
-        label = 'Online';
+        label = l10n.statusOnline;
         break;
       case ChatConnectionState.connecting:
       case ChatConnectionState.authenticating:
         dotColor = AppColors.warning;
-        label = 'Connecting...';
+        label = l10n.statusConnecting;
         break;
       case ChatConnectionState.error:
       case ChatConnectionState.disconnected:
         dotColor = AppColors.error;
-        label = 'Offline';
+        label = l10n.statusOffline;
         break;
     }
 
@@ -239,16 +241,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   }
 
   Widget _buildLoadingState(ChatConnectionState connectionState) {
+    final l10n = AppLocalizations.of(context)!;
     String message;
     switch (connectionState) {
       case ChatConnectionState.connecting:
-        message = 'Connecting...';
+        message = l10n.statusConnecting;
         break;
       case ChatConnectionState.authenticating:
-        message = 'Authenticating...';
+        message = l10n.statusAuthenticating;
         break;
       default:
-        message = 'Waiting for connection...';
+        message = l10n.statusWaitingForConnection;
         break;
     }
 
@@ -307,14 +310,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             ),
             const SizedBox(height: 20),
             Text(
-              'How can I help you today?',
+              AppLocalizations.of(context)!.emptyChatTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
             ),
             const SizedBox(height: 8),
             Text(
-              'Ask me anything about your project',
+              AppLocalizations.of(context)!.emptyChatSubtitle,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
@@ -414,11 +417,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     final messageDay = DateTime(date.year, date.month, date.day);
     final diff = today.difference(messageDay).inDays;
 
+    final l10n = AppLocalizations.of(context)!;
     String label;
     if (diff == 0) {
-      label = 'Today';
+      label = l10n.dateToday;
     } else if (diff == 1) {
-      label = 'Yesterday';
+      label = l10n.dateYesterday;
     } else {
       label = DateFormat('MMM d, yyyy').format(date);
     }
@@ -466,7 +470,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             ),
             const SizedBox(height: 16),
             Text(
-              'Connection Error',
+              AppLocalizations.of(context)!.connectionError,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
@@ -492,7 +496,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                 }
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Reconnect'),
+              label: Text(AppLocalizations.of(context)!.reconnect),
               style: FilledButton.styleFrom(minimumSize: const Size(160, 48)),
             ),
           ],

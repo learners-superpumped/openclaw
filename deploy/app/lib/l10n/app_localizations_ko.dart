@@ -321,4 +321,70 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get agentStarting => '에이전트를 시작하는 중...';
+
+  @override
+  String get chatTitle => 'ClawBox AI';
+
+  @override
+  String get statusOnline => '온라인';
+
+  @override
+  String get statusConnecting => '연결 중...';
+
+  @override
+  String get statusOffline => '오프라인';
+
+  @override
+  String get statusAuthenticating => '인증 중...';
+
+  @override
+  String get statusWaitingForConnection => '연결 대기 중...';
+
+  @override
+  String get emptyChatTitle => '무엇을 도와드릴까요?';
+
+  @override
+  String get emptyChatSubtitle => '프로젝트에 대해 무엇이든 물어보세요';
+
+  @override
+  String get dateToday => '오늘';
+
+  @override
+  String get dateYesterday => '어제';
+
+  @override
+  String get connectionError => '연결 오류';
+
+  @override
+  String get reconnect => '다시 연결';
+
+  @override
+  String get typeMessage => '메시지를 입력하세요...';
+
+  @override
+  String get sessions => '세션';
+
+  @override
+  String get newSession => '새 세션';
+
+  @override
+  String get noSessionsYet => '아직 세션이 없습니다';
+
+  @override
+  String get timeNow => '방금';
+
+  @override
+  String timeMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String timeHours(int hours) {
+    return '$hours시간';
+  }
+
+  @override
+  String timeDays(int days) {
+    return '$days일';
+  }
 }
