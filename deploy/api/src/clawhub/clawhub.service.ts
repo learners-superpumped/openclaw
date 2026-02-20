@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { ManagerService } from "../manager/manager.service.js";
@@ -11,6 +12,8 @@ import { ClawHubApiService } from "./clawhub-api.service.js";
 
 @Injectable()
 export class ClawHubService {
+  private readonly logger = new Logger(ClawHubService.name);
+
   constructor(
     @Inject(ClawHubApiService) private clawHubApi: ClawHubApiService,
     @Inject(PrismaService) private prisma: PrismaService,
@@ -34,53 +37,77 @@ export class ClawHubService {
   // ── Install / Uninstall ──
 
   async installSkill(userId: string, instanceId: string, slug: string, version?: string) {
+    this.logger.log(`[install] start: slug=${slug}, instanceId=${instanceId}`);
+
     const instance = await this.verifyOwnership(userId, instanceId);
+    this.logger.log(`[install] ownership verified: instance.id=${instance.id}`);
 
     // Validate slug exists on ClawHub
     const skillInfo = await this.clawHubApi.getSkill(slug);
+    this.logger.log(
+      `[install] ClawHub API ok: name=${skillInfo.skill?.name}, latestVersion=${skillInfo.latestVersion?.version}`,
+    );
 
     // Call Manager to install via clawhub CLI
     try {
-      await this.managerService.hubInstallSkill(instanceId, slug, version);
+      const managerResult = await this.managerService.hubInstallSkill(instanceId, slug, version);
+      this.logger.log(`[install] Manager ok: ${JSON.stringify(managerResult).slice(0, 200)}`);
     } catch (err: any) {
+      this.logger.error(`[install] Manager failed: ${err.message ?? err}`);
       throw new BadRequestException(`Skill install failed: ${err.message ?? err}`);
     }
 
     // Upsert DB record
     const resolvedVersion = version ?? skillInfo.latestVersion?.version ?? "latest";
-    const record = await this.prisma.installedSkill.upsert({
-      where: { instanceId_slug: { instanceId: instance.id, slug } },
-      create: {
-        instanceId: instance.id,
-        slug,
-        version: resolvedVersion,
-        displayName: skillInfo.skill?.name ?? slug,
-        summary: skillInfo.skill?.summary ?? null,
-      },
-      update: {
-        version: resolvedVersion,
-        displayName: skillInfo.skill?.name ?? slug,
-        summary: skillInfo.skill?.summary ?? null,
-      },
-    });
-
-    return record;
+    try {
+      const record = await this.prisma.installedSkill.upsert({
+        where: { instanceId_slug: { instanceId: instance.id, slug } },
+        create: {
+          instanceId: instance.id,
+          slug,
+          version: resolvedVersion,
+          displayName: skillInfo.skill?.name ?? slug,
+          summary: skillInfo.skill?.summary ?? null,
+        },
+        update: {
+          version: resolvedVersion,
+          displayName: skillInfo.skill?.name ?? slug,
+          summary: skillInfo.skill?.summary ?? null,
+        },
+      });
+      this.logger.log(`[install] DB upsert ok: id=${record.id}, slug=${record.slug}`);
+      return record;
+    } catch (dbErr: any) {
+      this.logger.error(`[install] DB upsert failed: ${dbErr.message}`);
+      throw dbErr;
+    }
   }
 
   async uninstallSkill(userId: string, instanceId: string, slug: string) {
+    this.logger.log(`[uninstall] start: slug=${slug}, instanceId=${instanceId}`);
+
     const instance = await this.verifyOwnership(userId, instanceId);
+    this.logger.log(`[uninstall] ownership verified: instance.id=${instance.id}`);
 
     // Call Manager to uninstall via clawhub CLI
     try {
-      await this.managerService.hubUninstallSkill(instanceId, slug);
+      const managerResult = await this.managerService.hubUninstallSkill(instanceId, slug);
+      this.logger.log(`[uninstall] Manager ok: ${JSON.stringify(managerResult).slice(0, 200)}`);
     } catch (err: any) {
+      this.logger.error(`[uninstall] Manager failed: ${err.message ?? err}`);
       throw new BadRequestException(`Skill uninstall failed: ${err.message ?? err}`);
     }
 
     // Delete DB record
-    await this.prisma.installedSkill.deleteMany({
-      where: { instanceId: instance.id, slug },
-    });
+    try {
+      await this.prisma.installedSkill.deleteMany({
+        where: { instanceId: instance.id, slug },
+      });
+      this.logger.log(`[uninstall] DB delete ok`);
+    } catch (dbErr: any) {
+      this.logger.error(`[uninstall] DB delete failed: ${dbErr.message}`);
+      throw dbErr;
+    }
 
     return { success: true };
   }

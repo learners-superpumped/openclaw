@@ -41,8 +41,8 @@ export class ClawHubApiService {
     }
     const sorted = Object.keys(params)
       .toSorted()
-      .filter((k) => params[k] !== undefined && params[k] !== null)
-      .map((k) => `${k}=${params[k]}`)
+      .filter((k: string) => params[k] !== undefined && params[k] !== null)
+      .map((k: string) => `${k}=${params[k]}`)
       .join("&");
     return `clawhub:${prefix}:${sorted}`;
   }

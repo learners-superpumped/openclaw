@@ -9,6 +9,7 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
   try {
     const { userId } = req.params;
     const { slug, version } = req.body as { slug?: string; version?: string };
+    console.log(`[hub-install] start: userId=${userId}, slug=${slug}, version=${version}`);
 
     if (!slug || typeof slug !== "string") {
       res.status(400).json({ error: "slug is required and must be a string" });
@@ -17,28 +18,38 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
 
     const check = await ensureInstanceReady(userId);
     if (!check.ok) {
+      console.log(`[hub-install] instance not ready: ${check.error}`);
       res.status(check.status).json({ error: check.error });
       return;
     }
+    console.log(`[hub-install] instance ready`);
 
     const podName = await findPodName(userId);
     if (!podName) {
+      console.log(`[hub-install] no pod found for ${userId}`);
       res.status(503).json({ error: `No running pod found for ${userId}` });
       return;
     }
+    console.log(`[hub-install] pod=${podName}`);
 
-    const command = ["clawhub", "install", slug, "--workdir", "/data", "--no-input"];
+    const command = ["clawhub", "install", slug, "--workdir", "/data", "--no-input", "--force"];
     if (version) {
       command.push("--version", version);
     }
 
     const result = await execInPod(podName, command, 120_000);
+    console.log(
+      `[hub-install] exec ok: stdout=${result.stdout.slice(0, 200)}, stderr=${result.stderr.slice(0, 200)}`,
+    );
 
     // Verify installation by checking lock.json
     try {
       const lockResult = await execInPod(podName, ["cat", "/data/.clawhub/lock.json"], 10_000);
       const lock = JSON.parse(lockResult.stdout);
       const found = Array.isArray(lock.skills) && lock.skills.some((s: any) => s.slug === slug);
+      console.log(
+        `[hub-install] lock.json verified: found=${found}, skills=${JSON.stringify(lock.skills?.map((s: any) => s.slug))}`,
+      );
       if (!found) {
         res.status(500).json({
           error: "Install verification failed: skill not found in lock.json",
@@ -48,6 +59,7 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
         return;
       }
     } catch (verifyErr) {
+      console.error(`[hub-install] lock.json verification failed:`, verifyErr);
       res.status(500).json({
         error: "Install verification failed: could not read lock.json",
         stdout: result.stdout,
@@ -57,9 +69,10 @@ skillsRouter.post("/hub-install", async (req: Request<{ userId: string }>, res: 
       return;
     }
 
+    console.log(`[hub-install] success: slug=${slug}`);
     res.json({ success: true, stdout: result.stdout, stderr: result.stderr });
   } catch (err) {
-    console.error("Hub install error:", err);
+    console.error("[hub-install] error:", err);
     res.status(500).json({ error: "Skill install failed", details: String(err) });
   }
 });
