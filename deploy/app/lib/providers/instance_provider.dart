@@ -44,8 +44,8 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
       if (instances.isNotEmpty) {
         final instance = instances.first;
         if (instance.isReady) {
-          state = InstanceState(status: InstanceStatus.ready, instance: instance);
           await _checkTelegramSetup(instance);
+          state = InstanceState(status: InstanceStatus.ready, instance: instance);
         } else {
           state = InstanceState(status: InstanceStatus.polling, instance: instance);
           _startPolling(instance.instanceId);
@@ -77,8 +77,8 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
       if (instances.isNotEmpty) {
         final instance = instances.first;
         if (instance.isReady) {
-          state = InstanceState(status: InstanceStatus.ready, instance: instance);
           await _checkTelegramSetup(instance);
+          state = InstanceState(status: InstanceStatus.ready, instance: instance);
         } else {
           state = InstanceState(status: InstanceStatus.polling, instance: instance);
           _startPolling(instance.instanceId);
@@ -98,8 +98,8 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         state = state.copyWith(instance: instance);
         if (instance.isReady) {
           _pollTimer?.cancel();
-          state = state.copyWith(status: InstanceStatus.ready);
           await _checkTelegramSetup(instance);
+          state = state.copyWith(status: InstanceStatus.ready);
         }
       } catch (_) {}
     });

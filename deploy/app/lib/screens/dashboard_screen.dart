@@ -86,6 +86,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final instanceState = ref.watch(instanceProvider);
     final instance = instanceState.instance;
     final user = authState.user;
+    final isTelegramLoading = _telegramStatus == null;
     final isTelegramConnected = _telegramStatus != null && _telegramStatus!['connected'] == true;
 
     return Scaffold(
@@ -177,8 +178,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     height: 7,
                                     decoration: BoxDecoration(
                                       color: instance.isReady
-                                          ? AppColors.accentGreen
-                                          : AppColors.warning,
+                                          ? AppColors.accent
+                                          : AppColors.textTertiary,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -189,7 +190,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         : l10n.agentStarting,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: instance.isReady
-                                          ? AppColors.accentGreen
+                                          ? AppColors.accent
                                           : AppColors.textTertiary,
                                     ),
                                   ),
@@ -229,10 +230,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     child: _StatusTile(
                       icon: Icons.telegram,
                       label: 'Telegram',
+                      isLoading: isTelegramLoading,
                       isActive: isTelegramConnected,
-                      statusText: isTelegramConnected
-                          ? l10n.statusConnected
-                          : l10n.statusDisconnected,
+                      statusText: isTelegramLoading
+                          ? l10n.statusWaiting
+                          : isTelegramConnected
+                              ? l10n.statusConnected
+                              : l10n.statusDisconnected,
                       subtitle: isTelegramConnected && _botUsername != null
                           ? '@$_botUsername'
                           : null,
@@ -245,48 +249,54 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             const SizedBox(height: 16),
             // Telegram CTA (disconnected only)
-            if (_telegramStatus != null && !isTelegramConnected)
-              Card(
-                clipBehavior: Clip.antiAlias,
-                color: AppColors.accentGreen.withValues(alpha: 0.08),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: AppColors.accentGreen.withValues(alpha: 0.3)),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Row(
-                      children: [
-                        Icon(Icons.telegram, color: AppColors.accent, size: 24),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _telegramStatus != null && !isTelegramConnected
+                  ? Card(
+                      clipBehavior: Clip.antiAlias,
+                      color: AppColors.accent.withValues(alpha: 0.06),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramSetup;
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          child: Row(
                             children: [
-                              Text(
-                                l10n.connectTelegram,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontSize: 14,
+                              Icon(Icons.telegram, color: AppColors.accent, size: 24),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.connectTelegram,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      l10n.connectTelegramDesc,
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                l10n.connectTelegramDesc,
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
+                              Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 16),
                             ],
                           ),
                         ),
-                        Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 16),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),
@@ -297,6 +307,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 class _StatusTile extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool isLoading;
   final bool isActive;
   final String statusText;
   final String? subtitle;
@@ -305,6 +316,7 @@ class _StatusTile extends StatelessWidget {
   const _StatusTile({
     required this.icon,
     required this.label,
+    this.isLoading = false,
     required this.isActive,
     required this.statusText,
     this.subtitle,
@@ -324,7 +336,7 @@ class _StatusTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: AppColors.accent, size: 18),
+                  Icon(icon, color: AppColors.textSecondary, size: 18),
                   const SizedBox(width: 6),
                   Text(
                     label,
@@ -337,20 +349,34 @@ class _StatusTile extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Container(
-                    width: 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: isActive ? AppColors.accentGreen : AppColors.warning,
-                      shape: BoxShape.circle,
+                  if (isLoading)
+                    SizedBox(
+                      width: 10,
+                      height: 10,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
+                        color: AppColors.textTertiary,
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: isActive ? AppColors.accent : AppColors.textTertiary,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       statusText,
                       style: TextStyle(
-                        color: isActive ? AppColors.accentGreen : AppColors.warning,
+                        color: isLoading
+                            ? AppColors.textTertiary
+                            : isActive
+                                ? AppColors.accent
+                                : AppColors.textTertiary,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
