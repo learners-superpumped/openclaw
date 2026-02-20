@@ -5,93 +5,106 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../models/chat_message.dart';
 import '../theme/app_theme.dart';
+import 'typing_indicator.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   final ChatMessage message;
+  final bool isFirstInGroup;
+  final bool isLastInGroup;
 
-  const ChatMessageBubble({super.key, required this.message});
+  const ChatMessageBubble({
+    super.key,
+    required this.message,
+    this.isFirstInGroup = true,
+    this.isLastInGroup = true,
+  });
 
   bool get _isUser => message.role == 'user';
 
   @override
   Widget build(BuildContext context) {
+    if (_isUser) {
+      return _buildUserMessage(context);
+    }
+    return _buildAssistantMessage(context);
+  }
+
+  Widget _buildUserMessage(BuildContext context) {
     return Align(
-      alignment: _isUser ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.8,
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
-        child: Column(
-          crossAxisAlignment:
-              _isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            _buildBubble(context),
-            const SizedBox(height: 4),
-            _buildTimestamp(context),
-            if (!_isUser && message.usage != null && message.stopReason != null)
-              _buildUsageInfo(context),
-          ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: AppColors.accent.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(18),
+              topRight: Radius.circular(isFirstInGroup ? 18 : 6),
+              bottomLeft: const Radius.circular(18),
+              bottomRight: Radius.circular(isLastInGroup ? 4 : 6),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (message.attachments != null &&
+                  message.attachments!.isNotEmpty)
+                _buildAttachments(context),
+              if (message.content.isNotEmpty)
+                Text(
+                  message.content,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildBubble(BuildContext context) {
-    if (_isUser) {
-      return _buildUserBubble(context);
-    }
-    return _buildAssistantBubble(context);
-  }
-
-  Widget _buildUserBubble(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.15),
-        border: Border.all(
-          color: AppColors.accent.withValues(alpha: 0.3),
-        ),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(4),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildAssistantMessage(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (message.attachments != null && message.attachments!.isNotEmpty)
-            _buildAttachments(context),
-          if (message.content.isNotEmpty)
-            Text(
-              message.content,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(color: AppColors.textPrimary),
+          if (isLastInGroup)
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: AppColors.accent,
+                size: 16,
+              ),
+            )
+          else
+            const SizedBox(width: 28),
+          const SizedBox(width: 8),
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.85,
+              ),
+              child: message.isStreaming && message.content.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: TypingIndicator(),
+                    )
+                  : _buildMarkdownContent(context),
             ),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAssistantBubble(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
-        border: Border.all(color: AppColors.border),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-          bottomLeft: Radius.circular(4),
-          bottomRight: Radius.circular(16),
-        ),
-      ),
-      child: message.isStreaming && message.content.isEmpty
-          ? const _StreamingCursor()
-          : _buildMarkdownContent(context),
     );
   }
 
@@ -105,19 +118,18 @@ class ChatMessageBubble extends StatelessWidget {
           data: content,
           selectable: true,
           styleSheet: MarkdownStyleSheet(
-            p: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(color: AppColors.textPrimary),
-            h1: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-            h2: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-            h3: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+            p: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
+            h1: Theme.of(
+              context,
+            ).textTheme.displayMedium?.copyWith(color: AppColors.textPrimary),
+            h2: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
+            h3: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
             code: TextStyle(
               color: AppColors.accent,
               backgroundColor: AppColors.surface,
@@ -138,26 +150,28 @@ class ChatMessageBubble extends StatelessWidget {
                 ),
               ),
             ),
-            blockquotePadding:
-                const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+            blockquotePadding: const EdgeInsets.only(
+              left: 12,
+              top: 4,
+              bottom: 4,
+            ),
             a: const TextStyle(color: AppColors.accent),
-            listBullet: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(color: AppColors.textPrimary),
+            listBullet: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
             strong: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
             em: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontStyle: FontStyle.italic,
-                ),
+              color: AppColors.textPrimary,
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ),
         if (message.isStreaming) ...[
-          const SizedBox(height: 2),
-          const _StreamingCursor(),
+          const SizedBox(height: 4),
+          const TypingIndicator(),
         ],
       ],
     );
@@ -178,7 +192,9 @@ class ChatMessageBubble extends StatelessWidget {
   }
 
   Widget _buildAttachmentImage(
-      BuildContext context, ChatAttachment attachment) {
+    BuildContext context,
+    ChatAttachment attachment,
+  ) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Image.memory(
@@ -198,84 +214,6 @@ class ChatMessageBubble extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildTimestamp(BuildContext context) {
-    final time = message.timestamp;
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
-        '$hour:$minute',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textTertiary,
-              fontSize: 11,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildUsageInfo(BuildContext context) {
-    final usage = message.usage!;
-    return Padding(
-      padding: const EdgeInsets.only(top: 2, left: 4, right: 4),
-      child: Text(
-        '${usage.inputTokens} in / ${usage.outputTokens} out tokens',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textTertiary,
-              fontSize: 10,
-            ),
-      ),
-    );
-  }
-}
-
-class _StreamingCursor extends StatefulWidget {
-  const _StreamingCursor();
-
-  @override
-  State<_StreamingCursor> createState() => _StreamingCursorState();
-}
-
-class _StreamingCursorState extends State<_StreamingCursor>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Opacity(
-          opacity: _controller.value,
-          child: const Text(
-            '\u258d',
-            style: TextStyle(
-              color: AppColors.accent,
-              fontSize: 16,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-        );
-      },
     );
   }
 }

@@ -55,12 +55,14 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
         final mimeType = _getMimeType(image.path);
 
         setState(() {
-          _attachments.add(ChatAttachment(
-            type: 'image',
-            mimeType: mimeType,
-            content: base64Content,
-            fileName: image.name,
-          ));
+          _attachments.add(
+            ChatAttachment(
+              type: 'image',
+              mimeType: mimeType,
+              content: base64Content,
+              fileName: image.name,
+            ),
+          );
         });
       }
     } catch (_) {}
@@ -96,10 +98,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
         ? List<ChatAttachment>.from(_attachments)
         : null;
 
-    ref.read(chatProvider.notifier).sendMessage(
-          text,
-          images: attachments,
-        );
+    ref.read(chatProvider.notifier).sendMessage(text, images: attachments);
 
     _textController.clear();
     setState(() {
@@ -120,9 +119,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border, width: 1),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: SafeArea(
         bottom: true,
@@ -204,7 +201,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
     return IconButton(
       onPressed: _pickImage,
       icon: const Icon(Icons.add_photo_alternate_outlined),
-      color: AppColors.accent,
+      color: AppColors.textTertiary,
       padding: const EdgeInsets.all(8),
       constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
     );
@@ -223,15 +220,17 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
         hintStyle: const TextStyle(color: AppColors.textTertiary),
         filled: true,
         fillColor: AppColors.surfaceLight,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
@@ -259,14 +258,13 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
 
     return IconButton(
       onPressed: _hasContent ? _sendMessage : null,
-      icon: const Icon(Icons.send_rounded),
-      color: AppColors.accent,
-      disabledColor: AppColors.textTertiary,
+      icon: const Icon(Icons.arrow_upward_rounded),
+      color: _hasContent ? AppColors.background : AppColors.textTertiary,
       padding: const EdgeInsets.all(8),
       constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
       style: _hasContent
           ? IconButton.styleFrom(
-              backgroundColor: AppColors.accent.withValues(alpha: 0.15),
+              backgroundColor: AppColors.accent,
               shape: const CircleBorder(),
             )
           : null,
