@@ -276,7 +276,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
         );
       }).toList();
 
-      state = state.copyWith(messages: messages);
+      final filtered = _filterHeartbeatMessages(messages);
+      state = state.copyWith(messages: filtered);
     } catch (_) {}
   }
 
@@ -323,6 +324,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     final text = (textBlock as Map<String, dynamic>)['text'] as String? ?? '';
 
+    if (_isHeartbeatMessage(text, 'assistant')) return;
+
     // Delta events contain the full accumulated text, not incremental chunks
     state = state.copyWith(streamingContent: text);
   }
@@ -333,6 +336,15 @@ class ChatNotifier extends StateNotifier<ChatState> {
     final content = message != null
         ? _extractTextContent(message['content'])
         : state.streamingContent;
+
+    // Skip heartbeat acknowledgement messages
+    if (_isHeartbeatMessage(content, 'assistant')) {
+      state = state.copyWith(
+        isAgentRunning: false,
+        streamingContent: '',
+      );
+      return;
+    }
 
     // Skip adding empty assistant messages (e.g., silent replies)
     if (content.isEmpty) {
@@ -388,6 +400,79 @@ class ChatNotifier extends StateNotifier<ChatState> {
       );
     }
   }
+
+  // ── Heartbeat filtering ──────────────────────────────────────────
+
+  static final _timestampEnvelope = RegExp(r'^\[[^\]]*\d{4}-\d{2}-\d{2}[^\]]*\]\s*');
+
+  static String _stripTimestampEnvelope(String text) {
+    return text.replaceFirst(_timestampEnvelope, '');
+  }
+
+  static bool _isHeartbeatMessage(String content, String role) {
+    final trimmed = content.trim();
+    final lower = trimmed.toLowerCase();
+
+    if (role == 'user') {
+      final stripped = _stripTimestampEnvelope(lower);
+      if (stripped.startsWith('read heartbeat.md')) return true;
+      if (stripped.contains('heartbeat.md') &&
+          stripped.contains('heartbeat_ok') &&
+          stripped.length < 500) {
+        return true;
+      }
+      return false;
+    }
+
+    if (role == 'assistant') {
+      final cleaned = trimmed
+          .replaceAll(RegExp(r'<[^>]*>'), '')
+          .replaceAll(RegExp(r'[*`~_]+'), '')
+          .trim();
+      if (cleaned == 'HEARTBEAT_OK') return true;
+      if (cleaned.length < 30 &&
+          (cleaned.startsWith('HEARTBEAT_OK') ||
+              cleaned.endsWith('HEARTBEAT_OK'))) {
+        final remainder = cleaned
+            .replaceAll('HEARTBEAT_OK', '')
+            .replaceAll(RegExp(r'[\s.!,;:]+'), '');
+        if (remainder.length < 10) return true;
+      }
+      return false;
+    }
+
+    return false;
+  }
+
+  static List<ChatMessage> _filterHeartbeatMessages(List<ChatMessage> messages) {
+    final skip = <int>{};
+    for (var i = 0; i < messages.length; i++) {
+      if (skip.contains(i)) continue;
+      if (!_isHeartbeatMessage(messages[i].content, messages[i].role)) continue;
+      skip.add(i);
+      // User heartbeat → skip the following assistant response too
+      if (messages[i].role == 'user' &&
+          i + 1 < messages.length &&
+          messages[i + 1].role == 'assistant') {
+        skip.add(i + 1);
+      }
+      // Assistant heartbeat ack → skip the preceding user prompt if heartbeat
+      if (messages[i].role == 'assistant' &&
+          i > 0 &&
+          !skip.contains(i - 1)) {
+        if (_isHeartbeatMessage(messages[i - 1].content, 'user')) {
+          skip.add(i - 1);
+        }
+      }
+    }
+    if (skip.isEmpty) return messages;
+    return [
+      for (var i = 0; i < messages.length; i++)
+        if (!skip.contains(i)) messages[i],
+    ];
+  }
+
+  // ── User content cleaning ─────────────────────────────────────────
 
   static final _inboundMetaBlock = RegExp(
     r'^[^\n]+ \(untrusted[^\n]*\):\n```(?:json)?\n[\s\S]*?\n```\s*',
