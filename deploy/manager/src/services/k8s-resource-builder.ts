@@ -200,14 +200,18 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
                 allowPrivilegeEscalation: false,
                 capabilities: { drop: ["NET_RAW"] },
               },
-              readinessProbe: {
+              startupProbe: {
                 tcpSocket: { port: config.gateway.port },
                 initialDelaySeconds: 10,
+                periodSeconds: 10,
+                failureThreshold: 30,
+              },
+              readinessProbe: {
+                tcpSocket: { port: config.gateway.port },
                 periodSeconds: 15,
               },
               livenessProbe: {
                 tcpSocket: { port: config.gateway.port },
-                initialDelaySeconds: 30,
                 periodSeconds: 30,
               },
             },
