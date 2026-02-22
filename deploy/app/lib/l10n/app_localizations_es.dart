@@ -114,7 +114,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get startingInstanceDesc =>
-      'Tu instancia se está iniciando.\nEsto suele tardar 1-2 minutos.';
+      'Tu instancia se está iniciando.\nEsto suele tardar 4-5 minutos.\nPuedes hacer otras cosas y volver después.';
 
   @override
   String get pleaseWait => 'Por favor espera...';

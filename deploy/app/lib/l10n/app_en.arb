@@ -66,7 +66,7 @@
   "@preparing": { "description": "Preparing status" },
   "creatingInstanceDesc": "Creating your AI instance.\nPlease wait.",
   "@creatingInstanceDesc": { "description": "Creating instance description" },
-  "startingInstanceDesc": "Your instance is starting up.\nThis usually takes 1-2 minutes.",
+  "startingInstanceDesc": "Your instance is starting up.\nThis usually takes 4-5 minutes.\nFeel free to leave and come back later.",
   "@startingInstanceDesc": { "description": "Starting instance description" },
   "pleaseWait": "Please wait...",
   "@pleaseWait": { "description": "Please wait message" },

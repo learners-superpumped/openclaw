@@ -33,7 +33,7 @@
   "settingUp": "Configurando...",
   "preparing": "Preparando...",
   "creatingInstanceDesc": "Criando sua instância de IA.\nPor favor, aguarde.",
-  "startingInstanceDesc": "Sua instância está sendo iniciada.\nIsso geralmente leva 1-2 minutos.",
+  "startingInstanceDesc": "Sua instância está sendo iniciada.\nIsso geralmente leva 4-5 minutos.\nVocê pode fazer outras coisas e voltar depois.",
   "pleaseWait": "Por favor, aguarde...",
   "telegramBotSetup": "Configuração do bot do Telegram",
   "telegramBotSetupDesc": "Crie um bot através do @BotFather no Telegram.",

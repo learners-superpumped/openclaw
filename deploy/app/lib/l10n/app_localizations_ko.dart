@@ -109,7 +109,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get creatingInstanceDesc => 'AI 인스턴스를 생성하고 있습니다.\n잠시만 기다려주세요.';
 
   @override
-  String get startingInstanceDesc => '인스턴스가 시작되고 있습니다.\n보통 1-2분 정도 소요됩니다.';
+  String get startingInstanceDesc =>
+      '인스턴스가 시작되고 있습니다.\n보통 4~5분 정도 소요됩니다.\n다른 작업을 하다 돌아오셔도 됩니다.';
 
   @override
   String get pleaseWait => '잠시만 기다려주세요...';

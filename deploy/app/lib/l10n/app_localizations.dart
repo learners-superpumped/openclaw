@@ -309,7 +309,7 @@ abstract class AppLocalizations {
   /// Starting instance description
   ///
   /// In en, this message translates to:
-  /// **'Your instance is starting up.\nThis usually takes 1-2 minutes.'**
+  /// **'Your instance is starting up.\nThis usually takes 4-5 minutes.\nFeel free to leave and come back later.'**
   String get startingInstanceDesc;
 
   /// Please wait message

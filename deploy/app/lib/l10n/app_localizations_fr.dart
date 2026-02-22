@@ -114,7 +114,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get startingInstanceDesc =>
-      'Votre instance démarre.\nCela prend généralement 1 à 2 minutes.';
+      'Votre instance démarre.\nCela prend généralement 4 à 5 minutes.\nVous pouvez faire autre chose et revenir plus tard.';
 
   @override
   String get pleaseWait => 'Veuillez patienter...';

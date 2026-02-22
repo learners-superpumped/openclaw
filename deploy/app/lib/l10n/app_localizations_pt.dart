@@ -113,7 +113,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get startingInstanceDesc =>
-      'Sua instância está sendo iniciada.\nIsso geralmente leva 1-2 minutos.';
+      'Sua instância está sendo iniciada.\nIsso geralmente leva 4-5 minutos.\nVocê pode fazer outras coisas e voltar depois.';
 
   @override
   String get pleaseWait => 'Por favor, aguarde...';

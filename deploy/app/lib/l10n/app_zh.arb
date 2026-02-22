@@ -33,7 +33,7 @@
   "settingUp": "正在设置...",
   "preparing": "准备中...",
   "creatingInstanceDesc": "正在创建您的AI实例。\n请稍候。",
-  "startingInstanceDesc": "实例正在启动中。\n通常需要1-2分钟。",
+  "startingInstanceDesc": "实例正在启动中。\n通常需要4-5分钟。\n您可以先做其他事情，稍后再回来。",
   "pleaseWait": "请稍候...",
   "telegramBotSetup": "Telegram机器人设置",
   "telegramBotSetupDesc": "在Telegram中通过@BotFather创建机器人。",

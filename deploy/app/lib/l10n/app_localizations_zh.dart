@@ -108,7 +108,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get creatingInstanceDesc => '正在创建您的AI实例。\n请稍候。';
 
   @override
-  String get startingInstanceDesc => '实例正在启动中。\n通常需要1-2分钟。';
+  String get startingInstanceDesc => '实例正在启动中。\n通常需要4-5分钟。\n您可以先做其他事情，稍后再回来。';
 
   @override
   String get pleaseWait => '请稍候...';

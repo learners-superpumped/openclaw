@@ -33,7 +33,7 @@
   "settingUp": "設定中...",
   "preparing": "準備中...",
   "creatingInstanceDesc": "AIインスタンスを作成しています。\nしばらくお待ちください。",
-  "startingInstanceDesc": "インスタンスを起動しています。\n通常1〜2分かかります。",
+  "startingInstanceDesc": "インスタンスを起動しています。\n通常4〜5分かかります。\n他の作業をしてから戻っても大丈夫です。",
   "pleaseWait": "しばらくお待ちください...",
   "telegramBotSetup": "Telegramボット設定",
   "telegramBotSetupDesc": "Telegramで@BotFatherからボットを作成してください。",
