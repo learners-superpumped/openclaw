@@ -1127,6 +1127,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dismiss'**
   String get dismiss;
+
+  /// Web paywall title
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Your AI Assistant'**
+  String get paywallTitle;
+
+  /// Web paywall feature 1
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal AI assistant on Telegram'**
+  String get paywallFeature1;
+
+  /// Web paywall feature 2
+  ///
+  /// In en, this message translates to:
+  /// **'Chat anytime, get instant replies'**
+  String get paywallFeature2;
+
+  /// Web paywall feature 3
+  ///
+  /// In en, this message translates to:
+  /// **'One-tap setup, ready in minutes'**
+  String get paywallFeature3;
+
+  /// Web paywall user review
+  ///
+  /// In en, this message translates to:
+  /// **'I just message my bot on Telegram and get answers instantly. It\'s like having a personal assistant in my pocket.'**
+  String get paywallReview;
+
+  /// Web paywall review author
+  ///
+  /// In en, this message translates to:
+  /// **'Alex K'**
+  String get paywallReviewAuthor;
+
+  /// Subscribe button
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get subscribe;
+
+  /// Cancel anytime notice
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel anytime'**
+  String get cancelAnytime;
+
+  /// Restore purchases button
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore;
+
+  /// Restore purchases footer link
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get restorePurchases;
+
+  /// Weekly plan label
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get weekly;
+
+  /// Monthly plan label
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthly;
+
+  /// Annual plan label
+  ///
+  /// In en, this message translates to:
+  /// **'Annual'**
+  String get annual;
+
+  /// Lifetime plan label
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime'**
+  String get lifetime;
+
+  /// Savings percentage badge
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String savePercent(int percent);
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +50,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
       );
 
       if (image != null) {
-        final bytes = await File(image.path).readAsBytes();
+        final bytes = await image.readAsBytes();
         final base64Content = base64Encode(bytes);
         final mimeType = _getMimeType(image.path);
 

@@ -369,5 +369,41 @@
   "pairingApproved": "Pairing approved successfully!",
   "@pairingApproved": { "description": "Pairing approved success snackbar" },
   "dismiss": "Dismiss",
-  "@dismiss": { "description": "Dismiss button tooltip" }
+  "@dismiss": { "description": "Dismiss button tooltip" },
+
+  "paywallTitle": "Unlock Your AI Assistant",
+  "@paywallTitle": { "description": "Web paywall title" },
+  "paywallFeature1": "Your personal AI assistant on Telegram",
+  "@paywallFeature1": { "description": "Web paywall feature 1" },
+  "paywallFeature2": "Chat anytime, get instant replies",
+  "@paywallFeature2": { "description": "Web paywall feature 2" },
+  "paywallFeature3": "One-tap setup, ready in minutes",
+  "@paywallFeature3": { "description": "Web paywall feature 3" },
+  "paywallReview": "I just message my bot on Telegram and get answers instantly. It's like having a personal assistant in my pocket.",
+  "@paywallReview": { "description": "Web paywall user review" },
+  "paywallReviewAuthor": "Alex K",
+  "@paywallReviewAuthor": { "description": "Web paywall review author" },
+  "subscribe": "Subscribe",
+  "@subscribe": { "description": "Subscribe button" },
+  "cancelAnytime": "Cancel anytime",
+  "@cancelAnytime": { "description": "Cancel anytime notice" },
+  "restore": "Restore",
+  "@restore": { "description": "Restore purchases button" },
+  "restorePurchases": "Restore Purchases",
+  "@restorePurchases": { "description": "Restore purchases footer link" },
+  "weekly": "Weekly",
+  "@weekly": { "description": "Weekly plan label" },
+  "monthly": "Monthly",
+  "@monthly": { "description": "Monthly plan label" },
+  "annual": "Annual",
+  "@annual": { "description": "Annual plan label" },
+  "lifetime": "Lifetime",
+  "@lifetime": { "description": "Lifetime plan label" },
+  "savePercent": "Save {percent}%",
+  "@savePercent": {
+    "description": "Savings percentage badge",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  }
 }

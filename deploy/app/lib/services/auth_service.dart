@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -79,7 +78,10 @@ class AuthService {
     await _storage.delete(key: 'refresh_token');
   }
 
-  bool get isAppleSignInAvailable => Platform.isIOS || Platform.isMacOS;
+  bool get isAppleSignInAvailable =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS);
 
   Future<void> _saveTokens(AuthTokens tokens) async {
     await _storage.write(key: 'access_token', value: tokens.accessToken);

@@ -171,5 +171,20 @@
   "noPendingCodes": "Envía un mensaje a tu bot de Telegram y el código de emparejamiento aparecerá aquí.",
   "tapToApprove": "Toca para aprobar",
   "pairingApproved": "¡Emparejamiento aprobado!",
-  "dismiss": "Ignorar"
+  "dismiss": "Ignorar",
+  "paywallTitle": "Desbloquea tu asistente IA",
+  "paywallFeature1": "Tu asistente IA personal en Telegram",
+  "paywallFeature2": "Chatea en cualquier momento, respuestas instantáneas",
+  "paywallFeature3": "Configuración en un toque, listo en minutos",
+  "paywallReview": "Solo envío un mensaje a mi bot en Telegram y obtengo respuestas al instante. Es como tener un asistente personal en el bolsillo.",
+  "paywallReviewAuthor": "Alex K",
+  "subscribe": "Suscribirse",
+  "cancelAnytime": "Cancela cuando quieras",
+  "restore": "Restaurar",
+  "restorePurchases": "Restaurar compras",
+  "weekly": "Semanal",
+  "monthly": "Mensual",
+  "annual": "Anual",
+  "lifetime": "Vitalicio",
+  "savePercent": "Ahorra {percent}%"
 }

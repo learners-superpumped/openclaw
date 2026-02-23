@@ -171,5 +171,20 @@
   "noPendingCodes": "向Telegram机器人发送消息后，配对码将显示在此处。",
   "tapToApprove": "点击以确认",
   "pairingApproved": "配对已批准！",
-  "dismiss": "忽略"
+  "dismiss": "忽略",
+  "paywallTitle": "解锁你的AI助手",
+  "paywallFeature1": "Telegram上的个人AI助手",
+  "paywallFeature2": "随时聊天，即时回复",
+  "paywallFeature3": "一键设置，几分钟即可就绪",
+  "paywallReview": "我只需在Telegram上给机器人发消息，就能立刻得到回答。就像口袋里有个私人助理一样。",
+  "paywallReviewAuthor": "Alex K",
+  "subscribe": "订阅",
+  "cancelAnytime": "随时取消",
+  "restore": "恢复",
+  "restorePurchases": "恢复购买",
+  "weekly": "每周",
+  "monthly": "每月",
+  "annual": "每年",
+  "lifetime": "终身",
+  "savePercent": "节省{percent}%"
 }

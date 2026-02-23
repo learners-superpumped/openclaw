@@ -536,4 +536,52 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dismiss => '無視';
+
+  @override
+  String get paywallTitle => 'AIアシスタントを有効化';
+
+  @override
+  String get paywallFeature1 => 'Telegramであなた専用のAIアシスタント';
+
+  @override
+  String get paywallFeature2 => 'いつでもチャット、即座に返信';
+
+  @override
+  String get paywallFeature3 => 'ワンタップ設定、数分で準備完了';
+
+  @override
+  String get paywallReview =>
+      'Telegramでボットにメッセージを送るだけで、すぐに答えが返ってきます。ポケットの中のパーソナルアシスタントみたいです。';
+
+  @override
+  String get paywallReviewAuthor => 'Alex K';
+
+  @override
+  String get subscribe => '購読する';
+
+  @override
+  String get cancelAnytime => 'いつでもキャンセル可能';
+
+  @override
+  String get restore => '復元';
+
+  @override
+  String get restorePurchases => '購入を復元';
+
+  @override
+  String get weekly => '週間';
+
+  @override
+  String get monthly => '月間';
+
+  @override
+  String get annual => '年間';
+
+  @override
+  String get lifetime => '永久';
+
+  @override
+  String savePercent(int percent) {
+    return '$percent%お得';
+  }
 }

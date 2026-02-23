@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,7 +222,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   icon: const Icon(Icons.g_mobiledata, size: 24),
                   label: Text(l10n.continueWithGoogle),
                 ),
-                if (Platform.isIOS || Platform.isMacOS) ...[
+                if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS)) ...[
                   const SizedBox(height: 12),
                   LoadingButton(
                     onPressed: () => ref.read(authProvider.notifier).signInWithApple(),

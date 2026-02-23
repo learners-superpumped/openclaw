@@ -536,4 +536,52 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dismiss => '무시';
+
+  @override
+  String get paywallTitle => 'AI 어시스턴트 활성화';
+
+  @override
+  String get paywallFeature1 => '텔레그램에서 나만의 AI 어시스턴트';
+
+  @override
+  String get paywallFeature2 => '언제든 채팅하고, 즉시 답변 받기';
+
+  @override
+  String get paywallFeature3 => '간편 설정, 몇 분이면 준비 완료';
+
+  @override
+  String get paywallReview =>
+      '텔레그램에서 봇에게 메시지를 보내면 바로 답변을 받아요. 마치 주머니 속 개인 비서 같아요.';
+
+  @override
+  String get paywallReviewAuthor => 'Alex K';
+
+  @override
+  String get subscribe => '구독하기';
+
+  @override
+  String get cancelAnytime => '언제든 취소 가능';
+
+  @override
+  String get restore => '복원';
+
+  @override
+  String get restorePurchases => '구매 복원';
+
+  @override
+  String get weekly => '주간';
+
+  @override
+  String get monthly => '월간';
+
+  @override
+  String get annual => '연간';
+
+  @override
+  String get lifetime => '평생';
+
+  @override
+  String savePercent(int percent) {
+    return '$percent% 할인';
+  }
 }

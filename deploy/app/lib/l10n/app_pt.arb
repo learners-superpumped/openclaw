@@ -171,5 +171,20 @@
   "noPendingCodes": "Envie uma mensagem para seu bot do Telegram e o código de pareamento aparecerá aqui.",
   "tapToApprove": "Toque para aprovar",
   "pairingApproved": "Pareamento aprovado!",
-  "dismiss": "Ignorar"
+  "dismiss": "Ignorar",
+  "paywallTitle": "Desbloqueie seu assistente IA",
+  "paywallFeature1": "Seu assistente IA pessoal no Telegram",
+  "paywallFeature2": "Converse a qualquer momento, respostas instantâneas",
+  "paywallFeature3": "Configuração em um toque, pronto em minutos",
+  "paywallReview": "Eu apenas envio uma mensagem para meu bot no Telegram e recebo respostas instantaneamente. É como ter um assistente pessoal no bolso.",
+  "paywallReviewAuthor": "Alex K",
+  "subscribe": "Assinar",
+  "cancelAnytime": "Cancele quando quiser",
+  "restore": "Restaurar",
+  "restorePurchases": "Restaurar compras",
+  "weekly": "Semanal",
+  "monthly": "Mensal",
+  "annual": "Anual",
+  "lifetime": "Vitalício",
+  "savePercent": "Economize {percent}%"
 }

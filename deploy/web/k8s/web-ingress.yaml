@@ -1,0 +1,29 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: openclaw-web-cert
+  namespace: openclaw
+spec:
+  domains:
+    - app.openclaw.zazz.buzz
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openclaw-web
+  namespace: openclaw
+  annotations:
+    networking.gke.io/managed-certificates: openclaw-web-cert
+    kubernetes.io/ingress.class: gce
+spec:
+  rules:
+    - host: app.openclaw.zazz.buzz
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: openclaw-web
+                port:
+                  number: 80

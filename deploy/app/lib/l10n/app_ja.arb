@@ -171,5 +171,20 @@
   "noPendingCodes": "Telegramボットにメッセージを送ると、ペアリングコードがここに表示されます。",
   "tapToApprove": "タップして承認",
   "pairingApproved": "ペアリングが承認されました！",
-  "dismiss": "無視"
+  "dismiss": "無視",
+  "paywallTitle": "AIアシスタントを有効化",
+  "paywallFeature1": "Telegramであなた専用のAIアシスタント",
+  "paywallFeature2": "いつでもチャット、即座に返信",
+  "paywallFeature3": "ワンタップ設定、数分で準備完了",
+  "paywallReview": "Telegramでボットにメッセージを送るだけで、すぐに答えが返ってきます。ポケットの中のパーソナルアシスタントみたいです。",
+  "paywallReviewAuthor": "Alex K",
+  "subscribe": "購読する",
+  "cancelAnytime": "いつでもキャンセル可能",
+  "restore": "復元",
+  "restorePurchases": "購入を復元",
+  "weekly": "週間",
+  "monthly": "月間",
+  "annual": "年間",
+  "lifetime": "永久",
+  "savePercent": "{percent}%お得"
 }

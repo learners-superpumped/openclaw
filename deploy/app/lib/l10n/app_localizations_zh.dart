@@ -532,4 +532,51 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dismiss => '忽略';
+
+  @override
+  String get paywallTitle => '解锁你的AI助手';
+
+  @override
+  String get paywallFeature1 => 'Telegram上的个人AI助手';
+
+  @override
+  String get paywallFeature2 => '随时聊天，即时回复';
+
+  @override
+  String get paywallFeature3 => '一键设置，几分钟即可就绪';
+
+  @override
+  String get paywallReview => '我只需在Telegram上给机器人发消息，就能立刻得到回答。就像口袋里有个私人助理一样。';
+
+  @override
+  String get paywallReviewAuthor => 'Alex K';
+
+  @override
+  String get subscribe => '订阅';
+
+  @override
+  String get cancelAnytime => '随时取消';
+
+  @override
+  String get restore => '恢复';
+
+  @override
+  String get restorePurchases => '恢复购买';
+
+  @override
+  String get weekly => '每周';
+
+  @override
+  String get monthly => '每月';
+
+  @override
+  String get annual => '每年';
+
+  @override
+  String get lifetime => '终身';
+
+  @override
+  String savePercent(int percent) {
+    return '节省$percent%';
+  }
 }

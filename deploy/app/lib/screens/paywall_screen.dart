@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/api_provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../services/api_client.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
+import 'auth_screen.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class PaywallScreen extends ConsumerWidget {
@@ -39,7 +42,7 @@ class PaywallScreen extends ConsumerWidget {
               const Spacer(flex: 3),
               FilledButton(
                 onPressed: () async {
-                  await RevenueCatService.showPaywall();
+                  await RevenueCatService.showPaywall(context: context);
                   ref.read(isProProvider.notifier).refresh();
                 },
                 child: Text(AppLocalizations.of(context)!.getStarted),
@@ -60,12 +63,45 @@ class PaywallScreen extends ConsumerWidget {
                   style: TextStyle(color: AppColors.textTertiary),
                 ),
               ),
+              if (kIsWeb) ...[
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => _loginAndRestore(context, ref),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.alreadyHaveAccount,
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        AppLocalizations.of(context)!.logIn,
+                        style: TextStyle(
+                          color: AppColors.accent,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _loginAndRestore(BuildContext context, WidgetRef ref) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const _AuthScreenAutoClose()),
+    );
+    final authState = ref.read(authProvider);
+    if (authState.status == AuthStatus.authenticated) {
+      ref.read(isProProvider.notifier).refresh();
+    }
   }
 
   void _showReferralCodeDialog(BuildContext context, WidgetRef ref) {
@@ -204,5 +240,19 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
         ],
       ),
     );
+  }
+}
+
+class _AuthScreenAutoClose extends ConsumerWidget {
+  const _AuthScreenAutoClose();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (next.status == AuthStatus.authenticated) {
+        Navigator.of(context).pop();
+      }
+    });
+    return const AuthScreen();
   }
 }

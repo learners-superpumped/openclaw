@@ -1,6 +1,8 @@
 const String revenueCatTestApiKey = 'test_FglvSIILymNhNCKNRShrMBSYqRq';
 const String revenueCatAndroidApiKey = 'goog_KdIvvjUIdUWMGrpVgADANqYqlZT';
 const String revenueCatIosApiKey = 'appl_LtTrTyzevtYImhqDGGukTqaIJXJ';
+const String revenueCatWebApiKey = 'rcb_ciSAcinpToXdqWGZuKCxEhcAKIiq';
+const String revenueCatWebSandboxApiKey = 'rcb_sb_JpfXNKJtaHNXfJgEHWEAmQupG';
 const String entitlementId = 'ClawBox Pro';
 const String apiBaseUrl = 'https://api.openclaw.zazz.buzz';
 

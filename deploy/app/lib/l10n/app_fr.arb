@@ -171,5 +171,20 @@
   "noPendingCodes": "Envoyez un message à votre bot Telegram et le code d'appairage apparaîtra ici.",
   "tapToApprove": "Appuyer pour approuver",
   "pairingApproved": "Appairage approuvé !",
-  "dismiss": "Ignorer"
+  "dismiss": "Ignorer",
+  "paywallTitle": "Débloquez votre assistant IA",
+  "paywallFeature1": "Votre assistant IA personnel sur Telegram",
+  "paywallFeature2": "Discutez à tout moment, réponses instantanées",
+  "paywallFeature3": "Configuration en un clic, prêt en minutes",
+  "paywallReview": "J'envoie juste un message à mon bot sur Telegram et j'obtiens des réponses instantanément. C'est comme avoir un assistant personnel dans ma poche.",
+  "paywallReviewAuthor": "Alex K",
+  "subscribe": "S'abonner",
+  "cancelAnytime": "Annulez à tout moment",
+  "restore": "Restaurer",
+  "restorePurchases": "Restaurer les achats",
+  "weekly": "Hebdomadaire",
+  "monthly": "Mensuel",
+  "annual": "Annuel",
+  "lifetime": "À vie",
+  "savePercent": "Économisez {percent}%"
 }

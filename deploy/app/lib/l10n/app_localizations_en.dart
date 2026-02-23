@@ -550,4 +550,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dismiss => 'Dismiss';
+
+  @override
+  String get paywallTitle => 'Unlock Your AI Assistant';
+
+  @override
+  String get paywallFeature1 => 'Your personal AI assistant on Telegram';
+
+  @override
+  String get paywallFeature2 => 'Chat anytime, get instant replies';
+
+  @override
+  String get paywallFeature3 => 'One-tap setup, ready in minutes';
+
+  @override
+  String get paywallReview =>
+      'I just message my bot on Telegram and get answers instantly. It\'s like having a personal assistant in my pocket.';
+
+  @override
+  String get paywallReviewAuthor => 'Alex K';
+
+  @override
+  String get subscribe => 'Subscribe';
+
+  @override
+  String get cancelAnytime => 'Cancel anytime';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String get restorePurchases => 'Restore Purchases';
+
+  @override
+  String get weekly => 'Weekly';
+
+  @override
+  String get monthly => 'Monthly';
+
+  @override
+  String get annual => 'Annual';
+
+  @override
+  String get lifetime => 'Lifetime';
+
+  @override
+  String savePercent(int percent) {
+    return 'Save $percent%';
+  }
 }
