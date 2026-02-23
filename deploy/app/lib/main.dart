@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:purchases_flutter/purchases_flutter.dart';
+
 import 'l10n/app_localizations.dart';
 import 'providers/api_provider.dart';
 import 'providers/auth_provider.dart';
@@ -35,6 +37,10 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
       ]);
 
       if (ref.read(authProvider).status == AuthStatus.authenticated) {
+        try {
+          await Purchases.logIn(ref.read(authProvider).user!.id);
+          await ref.read(isProProvider.notifier).refresh();
+        } catch (_) {}
         await ref.read(instanceProvider.notifier).loadExisting();
       }
 
