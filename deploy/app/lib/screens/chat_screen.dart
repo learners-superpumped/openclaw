@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -70,16 +71,32 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.paused:
-      case AppLifecycleState.inactive:
-        ref.read(chatProvider.notifier).disconnect();
-        break;
-      case AppLifecycleState.resumed:
-        _connectWhenReady();
-        break;
-      default:
-        break;
+    if (kIsWeb) {
+      // 웹: 탭이 완전히 숨겨질 때(다른 탭으로 전환)만 disconnect
+      // inactive(포커스 잃음)에서는 연결 유지
+      switch (state) {
+        case AppLifecycleState.hidden:
+          ref.read(chatProvider.notifier).disconnect();
+          break;
+        case AppLifecycleState.resumed:
+          _connectWhenReady();
+          break;
+        default:
+          break;
+      }
+    } else {
+      // 모바일: 기존 동작 유지
+      switch (state) {
+        case AppLifecycleState.paused:
+        case AppLifecycleState.inactive:
+          ref.read(chatProvider.notifier).disconnect();
+          break;
+        case AppLifecycleState.resumed:
+          _connectWhenReady();
+          break;
+        default:
+          break;
+      }
     }
   }
 
