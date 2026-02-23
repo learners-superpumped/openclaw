@@ -186,5 +186,20 @@
   "monthly": "月間",
   "annual": "年間",
   "lifetime": "永久",
-  "savePercent": "{percent}%お得"
+  "savePercent": "{percent}%お得",
+
+  "channels": "チャンネル",
+  "channelsDesc": "メッセージングチャンネルの管理",
+  "channelConnected": "接続済み",
+  "channelDisconnected": "未接続",
+  "whatsapp": "WhatsApp",
+  "connectWhatsApp": "WhatsAppを接続",
+  "generateQrCode": "QRコードを再生成",
+  "scanQrCode": "WhatsAppでQRコードをスキャン",
+  "waitingForScan": "スキャン待機中...",
+  "disconnectChannel": "切断",
+  "disconnectConfirmTitle": "チャンネルを切断しますか？",
+  "disconnectConfirmMessage": "このチャンネルが切断されます。後で再接続できます。",
+  "pendingCount": "{count}件保留中",
+  "channelsSummary": "{connected}件接続済み"
 }

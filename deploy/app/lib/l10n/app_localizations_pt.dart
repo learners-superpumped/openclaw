@@ -606,4 +606,51 @@ class AppLocalizationsPt extends AppLocalizations {
   String savePercent(int percent) {
     return 'Economize $percent%';
   }
+
+  @override
+  String get channels => 'Canais';
+
+  @override
+  String get channelsDesc => 'Gerencie seus canais de mensagens';
+
+  @override
+  String get channelConnected => 'Conectado';
+
+  @override
+  String get channelDisconnected => 'Desconectado';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get connectWhatsApp => 'Conectar WhatsApp';
+
+  @override
+  String get generateQrCode => 'Regenerar código QR';
+
+  @override
+  String get scanQrCode => 'Escaneie o código QR com o WhatsApp';
+
+  @override
+  String get waitingForScan => 'Aguardando escaneamento...';
+
+  @override
+  String get disconnectChannel => 'Desconectar';
+
+  @override
+  String get disconnectConfirmTitle => 'Desconectar canal?';
+
+  @override
+  String get disconnectConfirmMessage =>
+      'Este canal será desconectado. Você pode reconectá-lo mais tarde.';
+
+  @override
+  String pendingCount(int count) {
+    return '$count pendentes';
+  }
+
+  @override
+  String channelsSummary(int connected) {
+    return '$connected conectados';
+  }
 }

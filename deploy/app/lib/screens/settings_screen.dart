@@ -24,13 +24,11 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool? _telegramConnected;
   bool _aiConsentEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    _loadTelegramStatus();
     _loadAiConsentStatus();
   }
 
@@ -42,21 +40,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         _aiConsentEnabled = consent == 'true';
       });
     }
-  }
-
-  Future<void> _loadTelegramStatus() async {
-    try {
-      final apiClient = ref.read(apiClientProvider);
-      final instance = ref.read(instanceProvider).instance;
-      if (instance != null) {
-        final status = await apiClient.getTelegramStatus(instance.instanceId);
-        if (mounted) {
-          setState(() {
-            _telegramConnected = status['connected'] == true;
-          });
-        }
-      }
-    } catch (_) {}
   }
 
   @override
@@ -79,15 +62,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: l10n.manageSubscription,
                 onTap: () => RevenueCatService.showCustomerCenter(),
               ),
-              if (_telegramConnected == false)
-                _SettingsItem(
-                  icon: Icons.telegram,
-                  title: l10n.connectTelegram,
-                  onTap: () async {
-                    await context.push('/dashboard/connect-telegram');
-                    if (mounted) _loadTelegramStatus();
-                  },
-                ),
+              _SettingsItem(
+                icon: Icons.forum_outlined,
+                title: l10n.channels,
+                onTap: () => context.push('/dashboard/channels'),
+              ),
             ],
           ),
           const SizedBox(height: 24),

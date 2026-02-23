@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'providers/onboarding_provider.dart';
 import 'screens/ai_disclosure_screen.dart';
 import 'screens/auth_screen.dart';
+import 'screens/channels_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/skill_detail_screen.dart';
@@ -14,8 +15,10 @@ import 'screens/onboarding_shell.dart';
 import 'screens/paywall_screen.dart';
 import 'screens/setup_complete_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/telegram_detail_screen.dart';
 import 'screens/telegram_pairing_screen.dart';
 import 'screens/telegram_setup_screen.dart';
+import 'screens/whatsapp_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final step = ref.watch(onboardingStepProvider);
@@ -97,31 +100,50 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
-            path: 'connect-telegram',
-            builder: (context, state) {
-              final router = GoRouter.of(context);
-              return Scaffold(
-                appBar: AppBar(),
-                body: TelegramSetupScreen(
-                  onTokenSubmitted: () async {
-                    await router.push('/dashboard/connect-telegram/pairing');
-                    if (context.mounted) router.pop();
-                  },
-                  onSkipped: () => router.pop(),
-                ),
-              );
-            },
+            path: 'channels',
+            builder: (context, state) => const ChannelsScreen(),
             routes: [
               GoRoute(
-                path: 'pairing',
-                builder: (context, state) => Scaffold(
-                  appBar: AppBar(),
-                  body: TelegramPairingScreen(
-                    onPairingComplete: () => GoRouter.of(context).pop(),
+                path: 'telegram',
+                builder: (context, state) => const TelegramDetailScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'setup',
+                    builder: (context, state) {
+                      final router = GoRouter.of(context);
+                      return Scaffold(
+                        appBar: AppBar(),
+                        body: TelegramSetupScreen(
+                          onTokenSubmitted: () async {
+                            await router.push('/dashboard/channels/telegram/pairing');
+                            if (context.mounted) router.pop();
+                          },
+                          onSkipped: () => router.pop(),
+                        ),
+                      );
+                    },
                   ),
-                ),
+                  GoRoute(
+                    path: 'pairing',
+                    builder: (context, state) => Scaffold(
+                      appBar: AppBar(),
+                      body: TelegramPairingScreen(
+                        onPairingComplete: () => GoRouter.of(context).pop(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'whatsapp',
+                builder: (context, state) => const WhatsAppDetailScreen(),
               ),
             ],
+          ),
+          // Legacy route redirect
+          GoRoute(
+            path: 'connect-telegram',
+            redirect: (context, state) => '/dashboard/channels/telegram',
           ),
         ],
       ),

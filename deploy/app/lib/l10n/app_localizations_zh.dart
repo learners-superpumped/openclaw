@@ -579,4 +579,50 @@ class AppLocalizationsZh extends AppLocalizations {
   String savePercent(int percent) {
     return '节省$percent%';
   }
+
+  @override
+  String get channels => '频道';
+
+  @override
+  String get channelsDesc => '管理您的消息频道';
+
+  @override
+  String get channelConnected => '已连接';
+
+  @override
+  String get channelDisconnected => '未连接';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get connectWhatsApp => '连接WhatsApp';
+
+  @override
+  String get generateQrCode => '重新生成二维码';
+
+  @override
+  String get scanQrCode => '使用WhatsApp扫描二维码';
+
+  @override
+  String get waitingForScan => '等待扫描...';
+
+  @override
+  String get disconnectChannel => '断开连接';
+
+  @override
+  String get disconnectConfirmTitle => '断开频道连接？';
+
+  @override
+  String get disconnectConfirmMessage => '此频道将被断开连接。您可以稍后重新连接。';
+
+  @override
+  String pendingCount(int count) {
+    return '$count个待处理';
+  }
+
+  @override
+  String channelsSummary(int connected) {
+    return '$connected个已连接';
+  }
 }

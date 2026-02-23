@@ -1217,6 +1217,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save {percent}%'**
   String savePercent(int percent);
+
+  /// Channels screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get channels;
+
+  /// Channels description
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your messaging channels'**
+  String get channelsDesc;
+
+  /// Channel connected status
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get channelConnected;
+
+  /// Channel disconnected status
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get channelDisconnected;
+
+  /// WhatsApp channel name
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsapp;
+
+  /// Connect WhatsApp button
+  ///
+  /// In en, this message translates to:
+  /// **'Connect WhatsApp'**
+  String get connectWhatsApp;
+
+  /// Regenerate QR code button
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate QR Code'**
+  String get generateQrCode;
+
+  /// QR code scan instruction
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code with WhatsApp'**
+  String get scanQrCode;
+
+  /// Waiting for QR scan status
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for scan...'**
+  String get waitingForScan;
+
+  /// Disconnect channel button
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get disconnectChannel;
+
+  /// Disconnect confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect Channel?'**
+  String get disconnectConfirmTitle;
+
+  /// Disconnect confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'This channel will be disconnected. You can reconnect it later.'**
+  String get disconnectConfirmMessage;
+
+  /// Pending pairing count badge
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String pendingCount(int count);
+
+  /// Channels summary on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'{connected} connected'**
+  String channelsSummary(int connected);
 }
 
 class _AppLocalizationsDelegate

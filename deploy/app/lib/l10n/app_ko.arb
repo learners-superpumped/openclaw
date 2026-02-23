@@ -186,5 +186,20 @@
   "monthly": "월간",
   "annual": "연간",
   "lifetime": "평생",
-  "savePercent": "{percent}% 할인"
+  "savePercent": "{percent}% 할인",
+
+  "channels": "채널",
+  "channelsDesc": "메시징 채널 관리",
+  "channelConnected": "연결됨",
+  "channelDisconnected": "미연결",
+  "whatsapp": "WhatsApp",
+  "connectWhatsApp": "WhatsApp 연결",
+  "generateQrCode": "QR 코드 재생성",
+  "scanQrCode": "WhatsApp으로 QR 코드 스캔",
+  "waitingForScan": "스캔 대기 중...",
+  "disconnectChannel": "연결 해제",
+  "disconnectConfirmTitle": "채널 연결을 해제할까요?",
+  "disconnectConfirmMessage": "이 채널의 연결이 해제됩니다. 나중에 다시 연결할 수 있습니다.",
+  "pendingCount": "{count}개 대기 중",
+  "channelsSummary": "{connected}개 연결됨"
 }

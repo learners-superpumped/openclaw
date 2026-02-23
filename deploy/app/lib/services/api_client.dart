@@ -103,6 +103,29 @@ class ApiClient {
     return response.data;
   }
 
+  Future<void> logoutTelegram(String instanceId) async {
+    await _dio.post('/instances/$instanceId/telegram/logout');
+  }
+
+  // WhatsApp
+  Future<Map<String, dynamic>> requestWhatsappQr(String instanceId) async {
+    final response = await _dio.post('/instances/$instanceId/whatsapp/qr');
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> waitForWhatsappQr(String instanceId) async {
+    final response = await _dio.post(
+      '/instances/$instanceId/whatsapp/wait',
+      options: Options(receiveTimeout: const Duration(seconds: 65)),
+    );
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getWhatsappStatus(String instanceId) async {
+    final response = await _dio.get('/instances/$instanceId/whatsapp/status');
+    return response.data;
+  }
+
   // Referral
   Future<bool> validateReferral(String code) async {
     final response = await _dio.post('/promo/validate', data: {'code': code});

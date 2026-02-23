@@ -405,5 +405,44 @@
     "placeholders": {
       "percent": { "type": "int" }
     }
+  },
+
+  "channels": "Channels",
+  "@channels": { "description": "Channels screen title" },
+  "channelsDesc": "Manage your messaging channels",
+  "@channelsDesc": { "description": "Channels description" },
+  "channelConnected": "Connected",
+  "@channelConnected": { "description": "Channel connected status" },
+  "channelDisconnected": "Disconnected",
+  "@channelDisconnected": { "description": "Channel disconnected status" },
+  "whatsapp": "WhatsApp",
+  "@whatsapp": { "description": "WhatsApp channel name" },
+  "connectWhatsApp": "Connect WhatsApp",
+  "@connectWhatsApp": { "description": "Connect WhatsApp button" },
+  "generateQrCode": "Regenerate QR Code",
+  "@generateQrCode": { "description": "Regenerate QR code button" },
+  "scanQrCode": "Scan QR Code with WhatsApp",
+  "@scanQrCode": { "description": "QR code scan instruction" },
+  "waitingForScan": "Waiting for scan...",
+  "@waitingForScan": { "description": "Waiting for QR scan status" },
+  "disconnectChannel": "Disconnect",
+  "@disconnectChannel": { "description": "Disconnect channel button" },
+  "disconnectConfirmTitle": "Disconnect Channel?",
+  "@disconnectConfirmTitle": { "description": "Disconnect confirmation dialog title" },
+  "disconnectConfirmMessage": "This channel will be disconnected. You can reconnect it later.",
+  "@disconnectConfirmMessage": { "description": "Disconnect confirmation dialog message" },
+  "pendingCount": "{count} pending",
+  "@pendingCount": {
+    "description": "Pending pairing count badge",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "channelsSummary": "{connected} connected",
+  "@channelsSummary": {
+    "description": "Channels summary on dashboard",
+    "placeholders": {
+      "connected": { "type": "int" }
+    }
   }
 }

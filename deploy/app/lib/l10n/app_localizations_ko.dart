@@ -584,4 +584,50 @@ class AppLocalizationsKo extends AppLocalizations {
   String savePercent(int percent) {
     return '$percent% 할인';
   }
+
+  @override
+  String get channels => '채널';
+
+  @override
+  String get channelsDesc => '메시징 채널 관리';
+
+  @override
+  String get channelConnected => '연결됨';
+
+  @override
+  String get channelDisconnected => '미연결';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get connectWhatsApp => 'WhatsApp 연결';
+
+  @override
+  String get generateQrCode => 'QR 코드 재생성';
+
+  @override
+  String get scanQrCode => 'WhatsApp으로 QR 코드 스캔';
+
+  @override
+  String get waitingForScan => '스캔 대기 중...';
+
+  @override
+  String get disconnectChannel => '연결 해제';
+
+  @override
+  String get disconnectConfirmTitle => '채널 연결을 해제할까요?';
+
+  @override
+  String get disconnectConfirmMessage => '이 채널의 연결이 해제됩니다. 나중에 다시 연결할 수 있습니다.';
+
+  @override
+  String pendingCount(int count) {
+    return '$count개 대기 중';
+  }
+
+  @override
+  String channelsSummary(int connected) {
+    return '$connected개 연결됨';
+  }
 }

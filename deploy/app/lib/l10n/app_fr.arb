@@ -186,5 +186,20 @@
   "monthly": "Mensuel",
   "annual": "Annuel",
   "lifetime": "À vie",
-  "savePercent": "Économisez {percent}%"
+  "savePercent": "Économisez {percent}%",
+
+  "channels": "Canaux",
+  "channelsDesc": "Gérez vos canaux de messagerie",
+  "channelConnected": "Connecté",
+  "channelDisconnected": "Déconnecté",
+  "whatsapp": "WhatsApp",
+  "connectWhatsApp": "Connecter WhatsApp",
+  "generateQrCode": "Régénérer le code QR",
+  "scanQrCode": "Scannez le code QR avec WhatsApp",
+  "waitingForScan": "En attente du scan...",
+  "disconnectChannel": "Déconnecter",
+  "disconnectConfirmTitle": "Déconnecter le canal ?",
+  "disconnectConfirmMessage": "Ce canal sera déconnecté. Vous pourrez le reconnecter plus tard.",
+  "pendingCount": "{count} en attente",
+  "channelsSummary": "{connected} connectés"
 }

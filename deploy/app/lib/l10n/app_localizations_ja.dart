@@ -584,4 +584,50 @@ class AppLocalizationsJa extends AppLocalizations {
   String savePercent(int percent) {
     return '$percent%お得';
   }
+
+  @override
+  String get channels => 'チャンネル';
+
+  @override
+  String get channelsDesc => 'メッセージングチャンネルの管理';
+
+  @override
+  String get channelConnected => '接続済み';
+
+  @override
+  String get channelDisconnected => '未接続';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get connectWhatsApp => 'WhatsAppを接続';
+
+  @override
+  String get generateQrCode => 'QRコードを再生成';
+
+  @override
+  String get scanQrCode => 'WhatsAppでQRコードをスキャン';
+
+  @override
+  String get waitingForScan => 'スキャン待機中...';
+
+  @override
+  String get disconnectChannel => '切断';
+
+  @override
+  String get disconnectConfirmTitle => 'チャンネルを切断しますか？';
+
+  @override
+  String get disconnectConfirmMessage => 'このチャンネルが切断されます。後で再接続できます。';
+
+  @override
+  String pendingCount(int count) {
+    return '$count件保留中';
+  }
+
+  @override
+  String channelsSummary(int connected) {
+    return '$connected件接続済み';
+  }
 }
