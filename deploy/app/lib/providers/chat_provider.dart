@@ -258,7 +258,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
       final payload = res['payload'] as Map<String, dynamic>?;
       final messagesList = payload?['messages'] as List<dynamic>? ?? [];
 
-      final messages = messagesList.map((m) {
+      final messages = messagesList.where((m) {
+        final role = (m as Map<String, dynamic>)['role'] as String?;
+        return role == 'user' || role == 'assistant';
+      }).map((m) {
         final msg = m as Map<String, dynamic>;
         return ChatMessage(
           id: msg['id'] as String? ?? '',
