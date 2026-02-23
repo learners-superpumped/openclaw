@@ -12,6 +12,7 @@ import '../theme/app_theme.dart';
 import '../widgets/ai_consent_sheet.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/chat_message_bubble.dart';
+import '../widgets/compaction_indicator.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -25,14 +26,37 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     with WidgetsBindingObserver {
   static const _consentKey = 'ai_data_consent_v2';
   ChatNotifier? _chatNotifier;
+  final ScrollController _scrollController = ScrollController();
+  bool _isNearBottom = true;
+  bool _showNewMessagesFab = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _scrollController.addListener(_onScroll);
     Future.microtask(() {
       if (mounted) _checkConsentAndConnect();
     });
+  }
+
+  void _onScroll() {
+    // In reversed list, position 0 is the bottom (newest messages)
+    final nearBottom = _scrollController.offset < 100;
+    if (nearBottom != _isNearBottom) {
+      setState(() {
+        _isNearBottom = nearBottom;
+        if (nearBottom) _showNewMessagesFab = false;
+      });
+    }
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   Future<void> _checkConsentAndConnect() async {
@@ -72,8 +96,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (kIsWeb) {
-      // 웹: 탭이 완전히 숨겨질 때(다른 탭으로 전환)만 disconnect
-      // inactive(포커스 잃음)에서는 연결 유지
       switch (state) {
         case AppLifecycleState.hidden:
           ref.read(chatProvider.notifier).disconnect();
@@ -85,7 +107,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           break;
       }
     } else {
-      // 모바일: 기존 동작 유지
       switch (state) {
         case AppLifecycleState.paused:
         case AppLifecycleState.inactive:
@@ -103,6 +124,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     final notifier = _chatNotifier;
     super.dispose();
     if (notifier != null) {
@@ -124,6 +147,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             ref.read(chatProvider.notifier).connect(next.instance!.instanceId);
           }
         });
+      }
+    });
+
+    // Listen for new messages while scrolled up
+    ref.listen<ChatState>(chatProvider, (previous, next) {
+      if (previous != null &&
+          next.messages.length > previous.messages.length &&
+          !_isNearBottom) {
+        setState(() => _showNewMessagesFab = true);
+      }
+      // Show snackbar when compaction completes
+      if (previous != null &&
+          previous.isCompacting &&
+          !next.isCompacting &&
+          mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.contextCompacted),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     });
 
@@ -268,10 +314,67 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
     return Column(
       children: [
+        // Compaction indicator
+        if (chatState.isCompacting) const CompactionIndicator(),
         Expanded(
-          child: messages.isEmpty && streamingMessage == null
-              ? _buildEmptyState()
-              : _buildMessageList(messages, streamingMessage),
+          child: Stack(
+            children: [
+              messages.isEmpty && streamingMessage == null
+                  ? _buildEmptyState()
+                  : _buildMessageList(messages, streamingMessage, chatState),
+              // "New messages" FAB
+              if (_showNewMessagesFab)
+                Positioned(
+                  bottom: 12,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        _scrollToBottom();
+                        setState(() => _showNewMessagesFab = false);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.accent,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.arrow_downward_rounded,
+                              size: 16,
+                              color: AppColors.background,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              AppLocalizations.of(context)!.newMessagesBelow,
+                              style: const TextStyle(
+                                color: AppColors.background,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
         const ChatInputBar(),
       ],
@@ -321,6 +424,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   Widget _buildMessageList(
     List<ChatMessage> messages,
     ChatMessage? streamingMessage,
+    ChatState chatState,
   ) {
     // Build a flat list of all messages including streaming
     final allMessages = <ChatMessage>[...messages, ?streamingMessage];
@@ -328,11 +432,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     // Compute group info for each message
     final groupInfo = _computeGroupInfo(allMessages);
 
+    // History pagination info
+    final int? total = chatState.totalMessageCount;
+    final int resolvedTotal = total ?? 0;
+    final hasHiddenMessages = total != null && resolvedTotal > allMessages.length;
+
     return ListView.builder(
+      controller: _scrollController,
       reverse: true,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: allMessages.length,
+      itemCount: allMessages.length + (hasHiddenMessages ? 1 : 0),
       itemBuilder: (context, index) {
+        // Extra item at the end (top of reversed list) for pagination info
+        if (hasHiddenMessages && index == allMessages.length) {
+          return _buildHiddenMessagesInfo(
+            resolvedTotal,
+            allMessages.length,
+          );
+        }
+
         // reversed list: index 0 = most recent
         final messageIndex = allMessages.length - 1 - index;
         final message = allMessages[messageIndex];
@@ -366,6 +484,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           child: bubble,
         );
       },
+    );
+  }
+
+  Widget _buildHiddenMessagesInfo(int total, int showing) {
+    final l10n = AppLocalizations.of(context)!;
+    final hidden = total - showing;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceLight,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '${l10n.showingLastMessages} $showing (${l10n.messagesHidden} $hidden)',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textTertiary,
+              fontSize: 11,
+            ),
+          ),
+        ),
+      ),
     );
   }
 

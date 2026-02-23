@@ -7,6 +7,8 @@ class ChatMessage {
   final bool isStreaming;
   final String? stopReason;
   final ChatUsage? usage;
+  final String? thinkingContent;
+  final List<ToolCardData>? toolCards;
 
   const ChatMessage({
     required this.id,
@@ -17,6 +19,8 @@ class ChatMessage {
     this.isStreaming = false,
     this.stopReason,
     this.usage,
+    this.thinkingContent,
+    this.toolCards,
   });
 
   ChatMessage copyWith({
@@ -24,6 +28,8 @@ class ChatMessage {
     bool? isStreaming,
     String? stopReason,
     ChatUsage? usage,
+    String? thinkingContent,
+    List<ToolCardData>? toolCards,
   }) {
     return ChatMessage(
       id: id,
@@ -34,6 +40,8 @@ class ChatMessage {
       isStreaming: isStreaming ?? this.isStreaming,
       stopReason: stopReason ?? this.stopReason,
       usage: usage ?? this.usage,
+      thinkingContent: thinkingContent ?? this.thinkingContent,
+      toolCards: toolCards ?? this.toolCards,
     );
   }
 }
@@ -73,4 +81,54 @@ class ChatUsage {
       outputTokens: json['outputTokens'] as int? ?? 0,
     );
   }
+}
+
+class ToolCardData {
+  final String kind; // 'call' | 'result'
+  final String name;
+  final dynamic args;
+  final String? output;
+  final String? toolCallId;
+  final bool isStreaming;
+
+  const ToolCardData({
+    required this.kind,
+    required this.name,
+    this.args,
+    this.output,
+    this.toolCallId,
+    this.isStreaming = false,
+  });
+
+  ToolCardData copyWith({
+    String? kind,
+    String? name,
+    dynamic args,
+    String? output,
+    String? toolCallId,
+    bool? isStreaming,
+  }) {
+    return ToolCardData(
+      kind: kind ?? this.kind,
+      name: name ?? this.name,
+      args: args ?? this.args,
+      output: output ?? this.output,
+      toolCallId: toolCallId ?? this.toolCallId,
+      isStreaming: isStreaming ?? this.isStreaming,
+    );
+  }
+}
+
+class QueuedMessage {
+  final String id;
+  final String text;
+  final List<ChatAttachment>? attachments;
+  final DateTime queuedAt;
+
+  const QueuedMessage({
+    required this.id,
+    required this.text,
+    this.attachments,
+    required this.queuedAt,
+  });
 }

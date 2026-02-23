@@ -5,6 +5,7 @@ import '../models/chat_session.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
+import 'session_config_sheet.dart';
 
 class SessionDrawer extends ConsumerWidget {
   const SessionDrawer({super.key});
@@ -127,19 +128,135 @@ class SessionDrawer extends ConsumerWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: session.updatedAt != null
-            ? Text(
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isActive)
+              IconButton(
+                icon: const Icon(Icons.settings_outlined, size: 18),
+                color: AppColors.textTertiary,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  SessionConfigSheet.show(context);
+                },
+              ),
+            if (session.updatedAt != null)
+              Text(
                 _formatLastActivity(session.updatedAt!, AppLocalizations.of(context)!),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.textTertiary,
                       fontSize: 11,
                     ),
-              )
-            : null,
+              ),
+          ],
+        ),
         onTap: () {
           ref.read(chatProvider.notifier).switchSession(session.key);
           Navigator.of(context).pop();
         },
+        onLongPress: () {
+          _showSessionContextMenu(context, ref, session);
+        },
+      ),
+    );
+  }
+
+  void _showSessionContextMenu(
+    BuildContext context,
+    WidgetRef ref,
+    ChatSession session,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 8),
+                width: 32,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.textTertiary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                session.title,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined, color: AppColors.textSecondary),
+              title: Text(l10n.editSessionLabel),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                Navigator.of(context).pop();
+                SessionConfigSheet.show(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: AppColors.error),
+              title: Text(
+                l10n.deleteSession,
+                style: const TextStyle(color: AppColors.error),
+              ),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _confirmDeleteSession(context, ref, session);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmDeleteSession(
+    BuildContext context,
+    WidgetRef ref,
+    ChatSession session,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(l10n.deleteSession),
+        content: Text(l10n.deleteSessionConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ref.read(chatProvider.notifier).deleteSession(session.key);
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.error,
+            ),
+            child: Text(l10n.delete),
+          ),
+        ],
       ),
     );
   }

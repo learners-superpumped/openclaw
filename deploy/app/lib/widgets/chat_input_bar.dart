@@ -8,6 +8,7 @@ import '../models/chat_message.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
+import 'message_queue_indicator.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   const ChatInputBar({super.key});
@@ -21,6 +22,8 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   final FocusNode _focusNode = FocusNode();
   final ImagePicker _imagePicker = ImagePicker();
   final List<ChatAttachment> _attachments = [];
+
+  static const _largeTextWarningThreshold = 5000;
 
   bool get _hasContent =>
       _textController.text.trim().isNotEmpty || _attachments.isNotEmpty;
@@ -90,9 +93,33 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
     });
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final text = _textController.text.trim();
     if (text.isEmpty && _attachments.isEmpty) return;
+
+    // Large text warning
+    if (text.length > _largeTextWarningThreshold) {
+      final l10n = AppLocalizations.of(context)!;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          title: Text(l10n.largeMessageWarning),
+          content: Text('${text.length} characters'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.next),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
 
     final attachments = _attachments.isNotEmpty
         ? List<ChatAttachment>.from(_attachments)
@@ -115,6 +142,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatProvider);
     final isAgentRunning = chatState.isAgentRunning;
+    final hasQueue = chatState.messageQueue.isNotEmpty;
 
     return Container(
       decoration: const BoxDecoration(
@@ -127,6 +155,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (hasQueue) const MessageQueueIndicator(),
             if (_attachments.isNotEmpty) _buildAttachmentPreview(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

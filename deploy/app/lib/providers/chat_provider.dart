@@ -6,9 +6,11 @@ import 'package:uuid/uuid.dart';
 import '../models/chat_message.dart';
 import '../models/chat_session.dart';
 import '../services/chat_service.dart';
+import '../utils/message_extract.dart';
 import 'api_provider.dart';
 
 const _uuid = Uuid();
+const _toolStreamLimit = 50;
 
 enum ChatConnectionState {
   disconnected,
@@ -25,6 +27,12 @@ class ChatState {
   final String? currentSessionKey;
   final bool isAgentRunning;
   final String streamingContent;
+  final String? streamingThinking;
+  final Map<String, ToolCardData> toolStreamById;
+  final List<String> toolStreamOrder;
+  final List<QueuedMessage> messageQueue;
+  final bool isCompacting;
+  final int? totalMessageCount;
   final String? error;
 
   const ChatState({
@@ -34,6 +42,12 @@ class ChatState {
     this.currentSessionKey,
     this.isAgentRunning = false,
     this.streamingContent = '',
+    this.streamingThinking,
+    this.toolStreamById = const {},
+    this.toolStreamOrder = const [],
+    this.messageQueue = const [],
+    this.isCompacting = false,
+    this.totalMessageCount,
     this.error,
   });
 
@@ -47,13 +61,30 @@ class ChatState {
 
   /// Build a streaming ChatMessage if content is being streamed.
   ChatMessage? get streamingMessage {
-    if (streamingContent.isEmpty && !isAgentRunning) return null;
+    if (streamingContent.isEmpty &&
+        streamingThinking == null &&
+        toolStreamById.isEmpty &&
+        !isAgentRunning) {
+      return null;
+    }
+
+    // Collect active tool cards from stream
+    List<ToolCardData>? activeToolCards;
+    if (toolStreamById.isNotEmpty) {
+      activeToolCards = toolStreamOrder
+          .where((id) => toolStreamById.containsKey(id))
+          .map((id) => toolStreamById[id]!)
+          .toList();
+    }
+
     return ChatMessage(
       id: 'streaming',
       role: 'assistant',
       content: streamingContent,
       timestamp: DateTime.now(),
       isStreaming: true,
+      thinkingContent: streamingThinking,
+      toolCards: activeToolCards,
     );
   }
 
@@ -64,6 +95,12 @@ class ChatState {
     String? currentSessionKey,
     bool? isAgentRunning,
     String? streamingContent,
+    String? streamingThinking,
+    Map<String, ToolCardData>? toolStreamById,
+    List<String>? toolStreamOrder,
+    List<QueuedMessage>? messageQueue,
+    bool? isCompacting,
+    int? totalMessageCount,
     String? error,
   }) {
     return ChatState(
@@ -73,6 +110,12 @@ class ChatState {
       currentSessionKey: currentSessionKey ?? this.currentSessionKey,
       isAgentRunning: isAgentRunning ?? this.isAgentRunning,
       streamingContent: streamingContent ?? this.streamingContent,
+      streamingThinking: streamingThinking ?? this.streamingThinking,
+      toolStreamById: toolStreamById ?? this.toolStreamById,
+      toolStreamOrder: toolStreamOrder ?? this.toolStreamOrder,
+      messageQueue: messageQueue ?? this.messageQueue,
+      isCompacting: isCompacting ?? this.isCompacting,
+      totalMessageCount: totalMessageCount ?? this.totalMessageCount,
       error: error,
     );
   }
@@ -144,12 +187,49 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   /// Send a user message with optional image attachments.
+  /// If agent is running, queue the message instead.
+  /// Special commands (/stop, /abort, /new, /reset) are always handled immediately.
   Future<void> sendMessage(
     String text, {
     List<ChatAttachment>? images,
   }) async {
     if (_chatService == null || !_chatService!.isConnected) return;
 
+    final sessionKey = state.currentSessionKey;
+    if (sessionKey == null) return;
+
+    // Special commands — always execute immediately, never queue
+    final trimmed = text.trim();
+    if (trimmed == '/stop' || trimmed == '/abort') {
+      await abortChat();
+      return;
+    }
+    if (trimmed == '/new' || trimmed == '/reset') {
+      await switchSession(null);
+      return;
+    }
+
+    // Queue if agent is running
+    if (state.isAgentRunning) {
+      final queued = QueuedMessage(
+        id: _uuid.v4(),
+        text: text,
+        attachments: images,
+        queuedAt: DateTime.now(),
+      );
+      state = state.copyWith(
+        messageQueue: [...state.messageQueue, queued],
+      );
+      return;
+    }
+
+    await _sendMessageDirect(text, images: images);
+  }
+
+  Future<void> _sendMessageDirect(
+    String text, {
+    List<ChatAttachment>? images,
+  }) async {
     final sessionKey = state.currentSessionKey;
     if (sessionKey == null) return;
 
@@ -166,6 +246,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
       messages: [...state.messages, userMessage],
       isAgentRunning: true,
       streamingContent: '',
+      streamingThinking: null,
+      toolStreamById: const {},
+      toolStreamOrder: const [],
       error: null,
     );
 
@@ -193,6 +276,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  /// Remove a message from the queue.
+  void removeFromQueue(String id) {
+    state = state.copyWith(
+      messageQueue: state.messageQueue.where((m) => m.id != id).toList(),
+    );
+  }
+
   /// Abort the current agent response.
   Future<void> abortChat() async {
     final sessionKey = state.currentSessionKey;
@@ -217,6 +307,49 @@ class ChatNotifier extends StateNotifier<ChatState> {
     if (key != null) {
       await _loadHistory();
     }
+  }
+
+  /// Patch current session settings.
+  Future<void> patchSession({
+    String? label,
+    String? reasoningLevel,
+    String? thinkingLevel,
+    String? verboseLevel,
+  }) async {
+    final sessionKey = state.currentSessionKey;
+    if (sessionKey == null) return;
+    try {
+      await _chatService?.patchSession(
+        sessionKey: sessionKey,
+        label: label,
+        reasoningLevel: reasoningLevel,
+        thinkingLevel: thinkingLevel,
+        verboseLevel: verboseLevel,
+      );
+      // Refresh sessions to reflect changes
+      await loadSessions();
+    } catch (_) {}
+  }
+
+  /// Delete a session.
+  Future<void> deleteSession(String sessionKey) async {
+    try {
+      await _chatService?.deleteSession(sessionKey: sessionKey);
+      // If we deleted the current session, switch away
+      if (state.currentSessionKey == sessionKey) {
+        await loadSessions();
+        final remaining = state.sessions
+            .where((s) => s.key != sessionKey)
+            .toList();
+        if (remaining.isNotEmpty) {
+          await switchSession(remaining.first.key);
+        } else {
+          await switchSession(null);
+        }
+      } else {
+        await loadSessions();
+      }
+    } catch (_) {}
   }
 
   /// Load the list of available sessions.
@@ -257,18 +390,23 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       final payload = res['payload'] as Map<String, dynamic>?;
       final messagesList = payload?['messages'] as List<dynamic>? ?? [];
+      final total = payload?['total'] as int?;
 
       final messages = messagesList.where((m) {
         final role = (m as Map<String, dynamic>)['role'] as String?;
         return role == 'user' || role == 'assistant';
       }).map((m) {
         final msg = m as Map<String, dynamic>;
+        final extracted = extractMessageContent(msg['content']);
+
+        final rawText = msg['role'] == 'user'
+            ? _cleanUserContent(extracted.text)
+            : extracted.text;
+
         return ChatMessage(
           id: msg['id'] as String? ?? '',
           role: msg['role'] as String? ?? 'assistant',
-          content: msg['role'] == 'user'
-              ? _cleanUserContent(_extractTextContent(msg['content']))
-              : _extractTextContent(msg['content']),
+          content: rawText,
           timestamp: msg['timestamp'] != null
               ? DateTime.fromMillisecondsSinceEpoch(
                   msg['timestamp'] is int
@@ -276,11 +414,18 @@ class ChatNotifier extends StateNotifier<ChatState> {
                       : int.tryParse(msg['timestamp'].toString()) ?? 0,
                 )
               : DateTime.now(),
+          thinkingContent: msg['role'] == 'assistant' ? extracted.thinking : null,
+          toolCards: msg['role'] == 'assistant' && extracted.toolCards.isNotEmpty
+              ? extracted.toolCards
+              : null,
         );
       }).toList();
 
       final filtered = _filterHeartbeatMessages(messages);
-      state = state.copyWith(messages: filtered);
+      state = state.copyWith(
+        messages: filtered,
+        totalMessageCount: total,
+      );
     } catch (_) {}
   }
 
@@ -291,12 +436,29 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   void _handleEvent(Map<String, dynamic> data) {
     final event = data['event'] as String?;
-    if (event != 'chat') return;
 
+    if (event == 'chat') {
+      _handleChatEvent(data);
+    } else if (event == 'agent') {
+      _handleAgentEvent(data);
+    }
+  }
+
+  void _handleChatEvent(Map<String, dynamic> data) {
     final payload = data['payload'] as Map<String, dynamic>?;
     if (payload == null) return;
 
     final eventState = payload['state'] as String?;
+
+    // Detect compaction
+    if (eventState == 'compacting') {
+      state = state.copyWith(isCompacting: true);
+      return;
+    }
+    if (eventState == 'compacted') {
+      state = state.copyWith(isCompacting: false);
+      return;
+    }
 
     switch (eventState) {
       case 'delta':
@@ -314,47 +476,128 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  void _handleAgentEvent(Map<String, dynamic> data) {
+    final payload = data['payload'] as Map<String, dynamic>?;
+    if (payload == null) return;
+
+    final stream = payload['stream'] as String?;
+    if (stream != 'tool') return;
+
+    final phase = payload['phase'] as String?;
+    final toolCallId = payload['toolCallId'] as String? ?? payload['id'] as String? ?? '';
+
+    switch (phase) {
+      case 'start':
+        if (state.toolStreamOrder.length >= _toolStreamLimit) return;
+        final name = payload['name'] as String? ?? 'tool';
+        final args = payload['args'];
+        final newMap = Map<String, ToolCardData>.from(state.toolStreamById);
+        newMap[toolCallId] = ToolCardData(
+          kind: 'call',
+          name: name,
+          args: args,
+          toolCallId: toolCallId,
+          isStreaming: true,
+        );
+        state = state.copyWith(
+          toolStreamById: newMap,
+          toolStreamOrder: [...state.toolStreamOrder, toolCallId],
+        );
+        break;
+
+      case 'update':
+        if (!state.toolStreamById.containsKey(toolCallId)) return;
+        final output = payload['output'] as String? ?? '';
+        final newMap = Map<String, ToolCardData>.from(state.toolStreamById);
+        newMap[toolCallId] = newMap[toolCallId]!.copyWith(output: output);
+        state = state.copyWith(toolStreamById: newMap);
+        break;
+
+      case 'result':
+        if (!state.toolStreamById.containsKey(toolCallId)) return;
+        final output = payload['output'] as String? ?? payload['result'] as String? ?? '';
+        final newMap = Map<String, ToolCardData>.from(state.toolStreamById);
+        newMap[toolCallId] = newMap[toolCallId]!.copyWith(
+          kind: 'result',
+          output: output,
+          isStreaming: false,
+        );
+        state = state.copyWith(toolStreamById: newMap);
+        break;
+    }
+  }
+
   void _handleDelta(Map<String, dynamic> payload) {
     final message = payload['message'] as Map<String, dynamic>?;
-    final content = message?['content'] as List<dynamic>?;
-    if (content == null || content.isEmpty) return;
+    final content = message?['content'];
 
-    final textBlock = content.firstWhere(
-      (c) => (c as Map<String, dynamic>)['type'] == 'text',
-      orElse: () => null,
-    );
-    if (textBlock == null) return;
+    if (content is List) {
+      String? textAccum;
+      String? thinkingAccum;
 
-    final text = (textBlock as Map<String, dynamic>)['text'] as String? ?? '';
+      for (final block in content) {
+        if (block is! Map<String, dynamic>) continue;
+        final type = block['type'] as String?;
+        if (type == 'text') {
+          textAccum = block['text'] as String? ?? '';
+        } else if (type == 'thinking') {
+          thinkingAccum = block['thinking'] as String? ??
+              block['text'] as String? ?? '';
+        }
+      }
+
+      if (textAccum != null && _isHeartbeatMessage(textAccum, 'assistant')) {
+        return;
+      }
+
+      state = state.copyWith(
+        streamingContent: textAccum ?? state.streamingContent,
+        streamingThinking: thinkingAccum ?? state.streamingThinking,
+      );
+      return;
+    }
+
+    // Fallback: content is string or null
+    if (content == null && message == null) return;
+    final text = content is String
+        ? content
+        : (message?['content'] is String ? message!['content'] as String : null);
+    if (text == null) return;
 
     if (_isHeartbeatMessage(text, 'assistant')) return;
 
-    // Delta events contain the full accumulated text, not incremental chunks
     state = state.copyWith(streamingContent: text);
   }
 
   void _handleFinal(Map<String, dynamic> payload) {
     final message = payload['message'] as Map<String, dynamic>?;
 
-    final content = message != null
-        ? _extractTextContent(message['content'])
-        : state.streamingContent;
+    String content;
+    String? thinking;
+    List<ToolCardData>? toolCards;
+
+    if (message != null) {
+      final extracted = extractMessageContent(message['content']);
+      content = extracted.text;
+      thinking = extracted.thinking ?? state.streamingThinking;
+      toolCards = extracted.toolCards.isNotEmpty
+          ? extracted.toolCards
+          : _collectToolStreamCards();
+    } else {
+      content = state.streamingContent;
+      thinking = state.streamingThinking;
+      toolCards = _collectToolStreamCards();
+    }
 
     // Skip heartbeat acknowledgement messages
     if (_isHeartbeatMessage(content, 'assistant')) {
-      state = state.copyWith(
-        isAgentRunning: false,
-        streamingContent: '',
-      );
+      _resetStreamingState();
       return;
     }
 
     // Skip adding empty assistant messages (e.g., silent replies)
-    if (content.isEmpty) {
-      state = state.copyWith(
-        isAgentRunning: false,
-        streamingContent: '',
-      );
+    if (content.isEmpty && thinking == null && (toolCards == null || toolCards.isEmpty)) {
+      _resetStreamingState();
       return;
     }
 
@@ -363,13 +606,40 @@ class ChatNotifier extends StateNotifier<ChatState> {
       role: 'assistant',
       content: content,
       timestamp: DateTime.now(),
+      thinkingContent: thinking,
+      toolCards: toolCards != null && toolCards.isNotEmpty ? toolCards : null,
     );
 
     state = state.copyWith(
       messages: [...state.messages, assistantMessage],
       isAgentRunning: false,
       streamingContent: '',
+      streamingThinking: null,
+      toolStreamById: const {},
+      toolStreamOrder: const [],
     );
+
+    // Flush message queue
+    _flushQueue();
+  }
+
+  List<ToolCardData>? _collectToolStreamCards() {
+    if (state.toolStreamOrder.isEmpty) return null;
+    return state.toolStreamOrder
+        .where((id) => state.toolStreamById.containsKey(id))
+        .map((id) => state.toolStreamById[id]!)
+        .toList();
+  }
+
+  void _resetStreamingState() {
+    state = state.copyWith(
+      isAgentRunning: false,
+      streamingContent: '',
+      streamingThinking: null,
+      toolStreamById: const {},
+      toolStreamOrder: const [],
+    );
+    _flushQueue();
   }
 
   void _handleError(Map<String, dynamic> payload) {
@@ -377,31 +647,56 @@ class ChatNotifier extends StateNotifier<ChatState> {
     state = state.copyWith(
       isAgentRunning: false,
       streamingContent: '',
+      streamingThinking: null,
+      toolStreamById: const {},
+      toolStreamOrder: const [],
       error: error,
     );
+    _flushQueue();
   }
 
   void _handleAborted() {
     // If there was any streamed content before abort, save it as a partial message
-    if (state.streamingContent.isNotEmpty) {
+    if (state.streamingContent.isNotEmpty ||
+        state.streamingThinking != null) {
+      final toolCards = _collectToolStreamCards();
       final partialMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         role: 'assistant',
         content: state.streamingContent,
         timestamp: DateTime.now(),
         stopReason: 'aborted',
+        thinkingContent: state.streamingThinking,
+        toolCards: toolCards != null && toolCards.isNotEmpty ? toolCards : null,
       );
       state = state.copyWith(
         messages: [...state.messages, partialMessage],
         isAgentRunning: false,
         streamingContent: '',
+        streamingThinking: null,
+        toolStreamById: const {},
+        toolStreamOrder: const [],
       );
     } else {
       state = state.copyWith(
         isAgentRunning: false,
         streamingContent: '',
+        streamingThinking: null,
+        toolStreamById: const {},
+        toolStreamOrder: const [],
       );
     }
+    _flushQueue();
+  }
+
+  /// Flush the message queue: send next queued message if available.
+  void _flushQueue() {
+    if (state.messageQueue.isEmpty) return;
+    final next = state.messageQueue.first;
+    state = state.copyWith(
+      messageQueue: state.messageQueue.sublist(1),
+    );
+    _sendMessageDirect(next.text, images: next.attachments);
   }
 
   // ── Heartbeat filtering ──────────────────────────────────────────
@@ -505,21 +800,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
     // Strip message_id hints
     result = result.replaceAll(_messageIdLine, '');
     return result.trim();
-  }
-
-  /// Extract text from a content array (list of content blocks) or plain string.
-  String _extractTextContent(dynamic content) {
-    if (content is String) return content;
-    if (content is List) {
-      final buffer = StringBuffer();
-      for (final block in content) {
-        if (block is Map<String, dynamic> && block['type'] == 'text') {
-          buffer.write(block['text'] as String? ?? '');
-        }
-      }
-      return buffer.toString();
-    }
-    return '';
   }
 
   @override

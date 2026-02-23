@@ -209,6 +209,32 @@ class ChatService {
     });
   }
 
+  /// Patch session settings (label, reasoning, thinking, verbose).
+  Future<Map<String, dynamic>> patchSession({
+    required String sessionKey,
+    String? label,
+    String? reasoningLevel,
+    String? thinkingLevel,
+    String? verboseLevel,
+  }) {
+    return sendRpc('sessions.patch', {
+      'sessionKey': sessionKey,
+      if (label != null) 'label': label,
+      if (reasoningLevel != null) 'reasoningLevel': reasoningLevel,
+      if (thinkingLevel != null) 'thinkingLevel': thinkingLevel,
+      if (verboseLevel != null) 'verboseLevel': verboseLevel,
+    });
+  }
+
+  /// Delete a session.
+  Future<Map<String, dynamic>> deleteSession({
+    required String sessionKey,
+  }) {
+    return sendRpc('sessions.delete', {
+      'sessionKey': sessionKey,
+    });
+  }
+
   /// List available sessions.
   Future<List<ChatSession>> listSessions() async {
     final res = await sendRpc('sessions.list', {
