@@ -1,0 +1,6 @@
+NEW: Skill Hub
+• Browse and install skills directly from the app
+• Search skills by name or keyword
+• One-tap install and uninstall
+• View skill details, versions, and changelogs
+• Powered by ClawHub — the open skill marketplace
