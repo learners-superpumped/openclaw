@@ -51,7 +51,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         title: Text(l10n.settings),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.fromLTRB(
+          20, 16, 20, 16 + MediaQuery.of(context).padding.bottom + 24,
+        ),
         children: [
           // General section
           _SectionHeader(title: l10n.general),
@@ -141,6 +143,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 40),
         ],
       ),
     );
