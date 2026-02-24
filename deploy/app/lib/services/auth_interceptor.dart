@@ -10,19 +10,25 @@ class AuthInterceptor extends Interceptor {
 
   AuthInterceptor(this._dio, this._storage);
 
+  bool _isAuthPath(String path) {
+    return path.startsWith('/auth/');
+  }
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    final accessToken = await _storage.read(key: 'access_token');
-    if (accessToken != null) {
-      options.headers['Authorization'] = 'Bearer $accessToken';
-      _maybeRefreshToken(accessToken);
+    if (!_isAuthPath(options.path)) {
+      final accessToken = await _storage.read(key: 'access_token');
+      if (accessToken != null) {
+        options.headers['Authorization'] = 'Bearer $accessToken';
+        _maybeRefreshToken(accessToken);
+      }
     }
     handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401 && !_isRefreshing) {
+    if (err.response?.statusCode == 401 && !_isRefreshing && !_isAuthPath(err.requestOptions.path)) {
       try {
         await _performRefresh();
         final newAccessToken = await _storage.read(key: 'access_token');
