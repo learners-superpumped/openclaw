@@ -92,6 +92,7 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.approvePairing(instance.instanceId, 'discord', code);
+      ref.read(analyticsProvider).logPairingApproved(channel: 'discord');
       if (mounted) {
         setState(() {
           _pendingCodes.removeWhere((c) => c['code'] == code);
@@ -145,6 +146,7 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.logoutDiscord(instance.instanceId);
+      ref.read(analyticsProvider).logChannelDisconnected(channel: 'discord');
       ref.read(channelProvider.notifier).loadAll();
       if (mounted) {
         setState(() {

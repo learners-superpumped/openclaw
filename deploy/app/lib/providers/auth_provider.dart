@@ -42,6 +42,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (isAuth) {
         final apiClient = _ref.read(apiClientProvider);
         final user = await apiClient.getMe();
+        final analytics = _ref.read(analyticsProvider);
+        analytics.setUserId(user.id);
         state = AuthState(status: AuthStatus.authenticated, user: user);
       } else {
         state = const AuthState(status: AuthStatus.unauthenticated);
@@ -76,6 +78,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         }
       }
       _ref.read(instanceProvider.notifier).resetState();
+      final analytics = _ref.read(analyticsProvider);
+      analytics.setUserId(user.id);
+      analytics.logLogin(method: 'google');
+      analytics.setUserProperties(authProvider: 'google');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
@@ -98,6 +104,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         }
       }
       _ref.read(instanceProvider.notifier).resetState();
+      final analytics = _ref.read(analyticsProvider);
+      analytics.setUserId(user.id);
+      analytics.logLogin(method: 'apple');
+      analytics.setUserProperties(authProvider: 'apple');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: e.toString());
@@ -120,6 +130,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         }
       }
       _ref.read(instanceProvider.notifier).resetState();
+      final analytics = _ref.read(analyticsProvider);
+      analytics.setUserId(user.id);
+      analytics.logLogin(method: 'email');
+      analytics.setUserProperties(authProvider: 'email');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: _parseError(e));
@@ -142,6 +156,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         }
       }
       _ref.read(instanceProvider.notifier).resetState();
+      final analytics = _ref.read(analyticsProvider);
+      analytics.setUserId(user.id);
+      analytics.logSignUp(method: 'email');
+      analytics.setUserProperties(authProvider: 'email');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
       state = AuthState(status: AuthStatus.error, error: _parseError(e));
@@ -164,6 +182,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> signOut() async {
+    final analytics = _ref.read(analyticsProvider);
+    analytics.logLogout();
+    analytics.setUserId(null);
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
     _ref.read(instanceProvider.notifier).resetState();
@@ -171,6 +192,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> deleteAccount() async {
+    final analytics = _ref.read(analyticsProvider);
+    analytics.logAccountDeleted();
+    analytics.setUserId(null);
     try {
       final apiClient = _ref.read(apiClientProvider);
       await apiClient.deleteAccount();

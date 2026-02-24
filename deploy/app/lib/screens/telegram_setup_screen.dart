@@ -48,6 +48,7 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.setupTelegram(instance.instanceId, token);
+      ref.read(analyticsProvider).logChannelConnected(channel: 'telegram');
       if (mounted) {
         if (widget.onTokenSubmitted != null) {
           widget.onTokenSubmitted!();

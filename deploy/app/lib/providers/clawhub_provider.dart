@@ -121,6 +121,7 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
     try {
       final apiClient = _ref.read(apiClientProvider);
       await apiClient.installSkill(instanceId, slug);
+      _ref.read(analyticsProvider).logSkillInstalled(slug: slug);
       if (state.filterInstalled) {
         await loadInstalledSkills();
       } else {
@@ -146,6 +147,7 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
     try {
       final apiClient = _ref.read(apiClientProvider);
       await apiClient.uninstallSkill(instanceId, slug);
+      _ref.read(analyticsProvider).logSkillUninstalled(slug: slug);
       if (state.filterInstalled) {
         await loadInstalledSkills();
       } else {

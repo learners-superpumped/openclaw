@@ -43,6 +43,7 @@ class _DiscordSetupScreenState extends ConsumerState<DiscordSetupScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.setupDiscord(instance.instanceId, token);
+      ref.read(analyticsProvider).logChannelConnected(channel: 'discord');
       if (mounted) {
         widget.onTokenSubmitted?.call();
       }

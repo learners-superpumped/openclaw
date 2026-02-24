@@ -260,6 +260,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       error: null,
     );
 
+    _ref.read(analyticsProvider).logMessageSent(sessionKey: sessionKey);
+
     try {
       final res = await _chatService!.sendChatMessage(
         sessionKey: sessionKey,
@@ -352,6 +354,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   /// Delete a session.
   Future<void> deleteSession(String sessionKey) async {
+    _ref.read(analyticsProvider).logSessionDeleted();
     try {
       await _chatService?.deleteSession(sessionKey: sessionKey);
       // If we deleted the current session, switch away
@@ -696,6 +699,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// After /new or /reset completes, reset session key, reload sessions,
   /// and load the new session's history.
   Future<void> _refreshAfterNewSession(String runId) async {
+    _ref.read(analyticsProvider).logSessionCreated();
     final newIds = Set<String>.from(state.refreshSessionsAfterRunIds)..remove(runId);
     // Clear current session so loadSessions auto-selects the new one
     state = ChatState(

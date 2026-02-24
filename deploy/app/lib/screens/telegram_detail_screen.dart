@@ -98,6 +98,7 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.approvePairing(instance.instanceId, 'telegram', code);
+      ref.read(analyticsProvider).logPairingApproved(channel: 'telegram');
       if (mounted) {
         setState(() {
           _pendingCodes.removeWhere((c) => c['code'] == code);
@@ -151,6 +152,7 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance!;
       await apiClient.logoutTelegram(instance.instanceId);
+      ref.read(analyticsProvider).logChannelDisconnected(channel: 'telegram');
       ref.read(channelProvider.notifier).loadAll();
       if (mounted) {
         setState(() {
