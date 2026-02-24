@@ -301,9 +301,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _deleteInstance() async {
     final storage = ref.read(secureStorageProvider);
     await storage.delete(key: _kTelegramSetupSkipped);
-    ref.read(instanceProvider.notifier).deleteInstance();
+    await ref.read(instanceProvider.notifier).deleteInstance();
     ref.read(setupProgressProvider.notifier).state =
         OnboardingStep.telegramSetup;
+    ref.read(instanceProvider.notifier).ensureInstance();
   }
 
   void _showDeleteAccountConfirmation(BuildContext context) {
