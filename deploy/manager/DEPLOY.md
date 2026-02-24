@@ -334,16 +334,16 @@ kubectl rollout status deployment/openclaw-manager -n openclaw
 
 ## 환경 변수
 
-| 변수                       | 설명                   | 기본값                                                        |
-| -------------------------- | ---------------------- | ------------------------------------------------------------- |
-| `PORT`                     | 서버 포트              | `3000`                                                        |
-| `OPENCLAW_NAMESPACE`       | K8s 네임스페이스       | `openclaw`                                                    |
-| `OPENCLAW_MANAGER_API_KEY` | Bearer 토큰 인증 키    | (필수)                                                        |
-| `OPENCLAW_IMAGE_REPO`      | 게이트웨이 이미지 레포 | `us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke` |
-| `OPENCLAW_IMAGE_TAG`       | 게이트웨이 이미지 태그 | `latest`                                                      |
-| `OPENCLAW_DOMAIN_BASE`     | Ingress 도메인         | `openclaw.zazz.buzz`                                          |
-| `OPENCLAW_INGRESS_ENABLED` | Ingress 생성 여부      | `false`                                                       |
-| `OPENCLAW_GATEWAY_PORT`    | 게이트웨이 포트        | `18789`                                                       |
+| 변수                       | 설명                                                      | 기본값                                                        |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------------------- |
+| `PORT`                     | 서버 포트                                                 | `3000`                                                        |
+| `OPENCLAW_NAMESPACE`       | K8s 네임스페이스                                          | `openclaw`                                                    |
+| `OPENCLAW_MANAGER_API_KEY` | Bearer 토큰 인증 키                                       | (필수)                                                        |
+| `OPENCLAW_IMAGE_REPO`      | 게이트웨이 이미지 레포                                    | `us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke` |
+| `OPENCLAW_IMAGE_TAG`       | 게이트웨이 이미지 태그 (git SHA 권장, `latest` 사용 금지) | `latest`                                                      |
+| `OPENCLAW_DOMAIN_BASE`     | Ingress 도메인                                            | `openclaw.zazz.buzz`                                          |
+| `OPENCLAW_INGRESS_ENABLED` | Ingress 생성 여부                                         | `false`                                                       |
+| `OPENCLAW_GATEWAY_PORT`    | 게이트웨이 포트                                           | `18789`                                                       |
 
 ---
 

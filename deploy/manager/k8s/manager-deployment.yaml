@@ -40,8 +40,11 @@ spec:
               value: openclaw
             - name: OPENCLAW_IMAGE_REPO
               value: us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke
+            # 중요: latest 사용 금지. imagePullPolicy: IfNotPresent이므로
+            # latest를 재사용하면 노드 캐시로 인해 이전 이미지가 사용됩니다.
+            # 반드시 git SHA 등 고유 태그를 사용하세요.
             - name: OPENCLAW_IMAGE_TAG
-              value: latest
+              value: "27b5d60f3"
             - name: OPENCLAW_DOMAIN_BASE
               value: openclaw.zazz.buzz
             - name: OPENCLAW_MANAGER_API_KEY

@@ -48,11 +48,19 @@ gcloud auth configure-docker us-central1-docker.pkg.dev
 
 GKE Autopilot은 amd64 노드를 사용하므로 Apple Silicon(M1/M2/M3/M4) Mac에서는 반드시 `--platform`을 지정해야 합니다.
 
-```bash
-docker build --platform linux/amd64 -f Dockerfile.gke \
-  -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke:latest .
+> **중요: `latest` 태그를 사용하지 마세요.** Gateway Pod는 `imagePullPolicy: IfNotPresent`로 설정되어 있어, `latest` 태그를 재사용하면 GKE 노드에 캐시된 이전 이미지가 계속 사용됩니다. 반드시 git commit SHA 등 고유한 태그를 사용하세요.
 
-docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke:latest
+```bash
+# 고유 태그 생성 (git short SHA 사용)
+TAG=$(git rev-parse --short HEAD)
+
+docker build --platform linux/amd64 -f Dockerfile.gke \
+  -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke:$TAG .
+
+docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-gke:$TAG
+
+# Manager에 새 태그 반영 (기존 인스턴스는 영향 없음, 새로 생성되는 Pod부터 적용)
+kubectl set env deployment/openclaw-manager -n openclaw OPENCLAW_IMAGE_TAG=$TAG
 ```
 
 > 크로스 빌드이므로 QEMU 에뮬레이션으로 시간이 오래 걸립니다. Docker Desktop의 경우 QEMU가 기본 포함되어 있습니다.
@@ -160,14 +168,14 @@ curl http://localhost:3000/health
 
 `manager-deployment.yaml`에서 설정하는 환경변수:
 
-| 변수                       | 설명                           | 기본값               |
-| -------------------------- | ------------------------------ | -------------------- |
-| `OPENCLAW_MANAGER_API_KEY` | API 인증 키 (Secret에서 주입)  | (필수)               |
-| `OPENCLAW_INGRESS_ENABLED` | Gateway Ingress 공개 노출 여부 | `"false"`            |
-| `OPENCLAW_NAMESPACE`       | K8s 네임스페이스               | `openclaw`           |
-| `OPENCLAW_IMAGE_REPO`      | Gateway 이미지 저장소          | (값 참조)            |
-| `OPENCLAW_IMAGE_TAG`       | Gateway 이미지 태그            | `latest`             |
-| `OPENCLAW_DOMAIN_BASE`     | 도메인 베이스                  | `openclaw.zazz.buzz` |
+| 변수                       | 설명                               | 기본값               |
+| -------------------------- | ---------------------------------- | -------------------- |
+| `OPENCLAW_MANAGER_API_KEY` | API 인증 키 (Secret에서 주입)      | (필수)               |
+| `OPENCLAW_INGRESS_ENABLED` | Gateway Ingress 공개 노출 여부     | `"false"`            |
+| `OPENCLAW_NAMESPACE`       | K8s 네임스페이스                   | `openclaw`           |
+| `OPENCLAW_IMAGE_REPO`      | Gateway 이미지 저장소              | (값 참조)            |
+| `OPENCLAW_IMAGE_TAG`       | Gateway 이미지 태그 (git SHA 권장) | `latest`             |
+| `OPENCLAW_DOMAIN_BASE`     | 도메인 베이스                      | `openclaw.zazz.buzz` |
 
 ## Step 7.5. App API 배포
 
