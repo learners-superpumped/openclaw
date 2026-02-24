@@ -12,7 +12,7 @@ import { SignupDto } from "./dto/signup.dto.js";
 
 const SALT_ROUNDS = 10;
 const ACCESS_TOKEN_EXPIRES = "15m";
-const REFRESH_TOKEN_EXPIRES = "7d";
+const REFRESH_TOKEN_EXPIRES = "30d";
 
 @Injectable()
 export class AuthService {
