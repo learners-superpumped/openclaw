@@ -51,6 +51,17 @@ export class UsersService {
     await this.prisma.user.delete({ where: { id: userId } });
   }
 
+  async getUsage(userId: string) {
+    const key = await this.prisma.openRouterKey.findUnique({ where: { userId } });
+    if (!key) {
+      return { limit: 0, used: 0, remaining: 0, limitReset: null };
+    }
+    const { limit, limitRemaining, limitReset } = await this.openRouterService.getKeyUsage(
+      key.keyHash,
+    );
+    return { limit, used: limit - limitRemaining, remaining: limitRemaining, limitReset };
+  }
+
   async activatePromo(userId: string, code: string) {
     if (!this.promoService.isValidCode(code)) {
       throw new BadRequestException("Invalid promo code");

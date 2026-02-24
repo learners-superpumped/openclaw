@@ -40,6 +40,23 @@ export class OpenRouterService {
     }
   }
 
+  async getKeyUsage(
+    hash: string,
+  ): Promise<{ limit: number; limitRemaining: number; limitReset: string }> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<{
+        data: { limit: number; limit_remaining: number; limit_reset: string };
+      }>(`https://openrouter.ai/api/v1/keys/${hash}`, {
+        headers: { Authorization: `Bearer ${this.managementKey}` },
+      }),
+    );
+    return {
+      limit: data.data.limit,
+      limitRemaining: data.data.limit_remaining,
+      limitReset: data.data.limit_reset,
+    };
+  }
+
   async createKey(
     name: string,
   ): Promise<{ key: string; hash: string; limit: number; limitRemaining: number }> {

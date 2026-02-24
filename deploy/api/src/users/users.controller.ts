@@ -25,6 +25,12 @@ export class UsersController {
     return this.usersService.findById(req.user.sub);
   }
 
+  @Get("me/usage")
+  @ApiOperation({ summary: "내 OpenRouter 사용량 조회" })
+  getUsage(@Request() req: any) {
+    return this.usersService.getUsage(req.user.sub);
+  }
+
   @Patch("me/promo")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "프로모션 코드 활성화" })
