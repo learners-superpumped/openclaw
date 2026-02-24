@@ -124,136 +124,120 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     final state = ref.watch(clawHubProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(l10n.skills),
-      ),
-      body: Column(
-        children: [
-          // ── Search bar ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: _onSearchChanged,
-                textInputAction: TextInputAction.search,
-                style: const TextStyle(fontSize: 15),
-                decoration: InputDecoration(
-                  hintText: l10n.searchSkills,
-                  prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.textTertiary),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18),
-                          onPressed: () {
-                            _searchController.clear();
-                            _onSearchChanged('');
-                          },
-                        )
-                      : null,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
+        child: CustomScrollView(
+          controller: _scrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              centerTitle: false,
+              title: Text(l10n.skills),
+              backgroundColor: AppColors.background,
+              surfaceTintColor: Colors.transparent,
+              scrolledUnderElevation: 0,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(108),
+                child: _SearchAndFilterHeader(
+                  searchController: _searchController,
+                  onSearchChanged: _onSearchChanged,
+                  filterInstalled: state.filterInstalled,
+                  onFilterChanged: (index) {
+                    ref.read(clawHubProvider.notifier).setFilterInstalled(index == 1);
+                  },
                 ),
               ),
             ),
-          ),
-
-          // ── Filter toggle ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: _PillToggle(
-              labels: [l10n.allSkills, l10n.installed],
-              selectedIndex: state.filterInstalled ? 1 : 0,
-              onChanged: (index) {
-                ref.read(clawHubProvider.notifier).setFilterInstalled(index == 1);
-              },
-            ),
-          ),
-
-          // ── Body ──
-          Expanded(
-            child: _buildBody(context, l10n, state),
-          ),
-        ],
+            ..._buildContentSlivers(context, l10n, state),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context, AppLocalizations l10n, ClawHubState state) {
+  List<Widget> _buildContentSlivers(BuildContext context, AppLocalizations l10n, ClawHubState state) {
     if (state.isLoading && state.skills.isEmpty) {
-      return const _SkillListSkeleton();
+      return [
+        const SliverFillRemaining(
+          hasScrollBody: true,
+          child: _SkillListSkeleton(),
+        ),
+      ];
     }
 
     if (state.error != null && state.skills.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.wifi_off_rounded, color: AppColors.error, size: 28),
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.wifi_off_rounded, color: AppColors.error, size: 28),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.error!,
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
+                  child: Text(l10n.retry),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              state.error!,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
-              child: Text(l10n.retry),
-            ),
-          ],
+          ),
         ),
-      );
+      ];
     }
 
     final filteredSkills = ref.read(clawHubProvider.notifier).filteredSkills;
 
     if (filteredSkills.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: AppColors.textTertiary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.extension_off_outlined, color: AppColors.textTertiary, size: 28),
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.textTertiary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.extension_off_outlined, color: AppColors.textTertiary, size: 28),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.noSkillsFound,
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noSkillsFound,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
-            ),
-          ],
+          ),
         ),
-      );
+      ];
     }
 
     final itemCount = filteredSkills.length + (state.isLoadingMore ? 1 : 0);
 
-    return RefreshIndicator(
-      onRefresh: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
-      child: ListView.separated(
-        controller: _scrollController,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+    return [
+      SliverList.separated(
         itemCount: itemCount,
         separatorBuilder: (_, _) => const Divider(indent: 80, height: 1),
         itemBuilder: (context, index) {
@@ -291,7 +275,8 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
           );
         },
       ),
-    );
+      const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
+    ];
   }
 
   void _confirmUninstall(BuildContext context, AppLocalizations l10n, String slug) {
@@ -324,6 +309,72 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Search & Filter Header ─────────────────────────────────────────────
+
+class _SearchAndFilterHeader extends StatelessWidget {
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
+  final bool filterInstalled;
+  final ValueChanged<int> onFilterChanged;
+
+  const _SearchAndFilterHeader({
+    required this.searchController,
+    required this.onSearchChanged,
+    required this.filterInstalled,
+    required this.onFilterChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.surfaceLight,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TextField(
+              controller: searchController,
+              onChanged: onSearchChanged,
+              textInputAction: TextInputAction.search,
+              style: const TextStyle(fontSize: 15),
+              decoration: InputDecoration(
+                hintText: l10n.searchSkills,
+                prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.textTertiary),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          searchController.clear();
+                          onSearchChanged('');
+                        },
+                      )
+                    : null,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: _PillToggle(
+            labels: [l10n.allSkills, l10n.installed],
+            selectedIndex: filterInstalled ? 1 : 0,
+            onChanged: onFilterChanged,
+          ),
+        ),
+      ],
     );
   }
 }
