@@ -231,5 +231,24 @@
   "reasoningLow": "Baixo",
   "reasoningMedium": "Médio",
   "reasoningHigh": "Alto",
-  "editSessionLabel": "Rótulo da sessão"
+  "editSessionLabel": "Rótulo da sessão",
+
+  "discordBotSetup": "Configuração do bot Discord",
+  "discordBotSetupDesc": "Crie um bot no Portal de Desenvolvedores do Discord.",
+  "stepCreateApp": "Vá ao Portal de Desenvolvedores do Discord e crie um aplicativo",
+  "stepAddBot": "Vá para a aba Bot e adicione um bot",
+  "stepEnableIntents": "Ative o Message Content Intent em Privileged Intents",
+  "stepCopyToken": "Copie o token do bot e insira abaixo",
+  "connectingDiscordBot": "Conectando seu bot Discord...",
+  "connectingDiscordBotDesc": "Por favor, aguarde enquanto conectamos ao seu bot.\nIsso geralmente leva alguns segundos.",
+  "discordBotRestarting": "Reiniciando seu bot...",
+  "discordBotRestartingDesc": "Seu bot está reiniciando com a nova configuração.\nIsso geralmente leva alguns segundos.",
+  "discordNoPendingCodes": "Envie uma DM para seu bot Discord e o código de pareamento aparecerá aqui.",
+  "discordPairing": "Pareamento Discord",
+  "discordPairingDesc": "Insira o código de autenticação exibido ao enviar uma DM ao bot.",
+
+  "webAccess": "Acesso Web",
+  "webAccessPreparing": "Preparando acesso web...",
+  "gatewayNetwork": "Rede",
+  "gatewayCertificate": "Certificado"
 }

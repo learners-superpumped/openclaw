@@ -1301,6 +1301,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{connected} connected'**
   String channelsSummary(int connected);
+
+  /// Discord channel name
+  ///
+  /// In en, this message translates to:
+  /// **'Discord'**
+  String get discord;
+
+  /// Connect Discord button
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Discord'**
+  String get connectDiscord;
+
+  /// Discord bot token dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Discord Bot Token'**
+  String get discordBotToken;
+
+  /// Connect button
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connect;
+
+  /// Snackbar after copy action
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedToClipboard;
+
+  /// Paste image button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Paste image'**
+  String get pasteImage;
+
+  /// Empty queue message
+  ///
+  /// In en, this message translates to:
+  /// **'No queued messages'**
+  String get messageQueued;
+
+  /// Queue indicator label
+  ///
+  /// In en, this message translates to:
+  /// **'Messages in queue'**
+  String get messagesInQueue;
+
+  /// Remove queued message action
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from queue'**
+  String get removeFromQueue;
+
+  /// Session config sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Session Settings'**
+  String get sessionSettings;
+
+  /// Reasoning level selector label
+  ///
+  /// In en, this message translates to:
+  /// **'Reasoning Level'**
+  String get reasoningLevel;
+
+  /// Thinking toggle label
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking Mode'**
+  String get thinkingMode;
+
+  /// Verbose level selector label
+  ///
+  /// In en, this message translates to:
+  /// **'Verbose Level'**
+  String get verboseLevel;
+
+  /// Delete session button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Session'**
+  String get deleteSession;
+
+  /// Delete session confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'This session and its history will be permanently deleted. This action cannot be undone.'**
+  String get deleteSessionConfirm;
+
+  /// New messages FAB label
+  ///
+  /// In en, this message translates to:
+  /// **'New messages'**
+  String get newMessagesBelow;
+
+  /// Focus mode toggle label
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Mode'**
+  String get focusMode;
+
+  /// Exit focus mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Focus Mode'**
+  String get exitFocusMode;
+
+  /// Compaction indicator text
+  ///
+  /// In en, this message translates to:
+  /// **'Compacting context...'**
+  String get compactingContext;
+
+  /// Compaction complete toast
+  ///
+  /// In en, this message translates to:
+  /// **'Context compacted'**
+  String get contextCompacted;
+
+  /// History pagination showing prefix
+  ///
+  /// In en, this message translates to:
+  /// **'Showing last'**
+  String get showingLastMessages;
+
+  /// History pagination hidden suffix
+  ///
+  /// In en, this message translates to:
+  /// **'hidden:'**
+  String get messagesHidden;
+
+  /// Large message confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Large message'**
+  String get largeMessageWarning;
+
+  /// Large message plaintext banner
+  ///
+  /// In en, this message translates to:
+  /// **'Large message displayed as plain text'**
+  String get largeMessagePlaintext;
+
+  /// Low reasoning level
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get reasoningLow;
+
+  /// Medium reasoning level
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get reasoningMedium;
+
+  /// High reasoning level
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get reasoningHigh;
+
+  /// Edit session label field title
+  ///
+  /// In en, this message translates to:
+  /// **'Session label'**
+  String get editSessionLabel;
+
+  /// Discord setup screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Discord Bot Setup'**
+  String get discordBotSetup;
+
+  /// Discord setup description
+  ///
+  /// In en, this message translates to:
+  /// **'Create a bot in the Discord Developer Portal.'**
+  String get discordBotSetupDesc;
+
+  /// Discord setup step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Discord Developer Portal and create an application'**
+  String get stepCreateApp;
+
+  /// Discord setup step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Bot tab and add a bot'**
+  String get stepAddBot;
+
+  /// Discord setup step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Message Content Intent under Privileged Intents'**
+  String get stepEnableIntents;
+
+  /// Discord setup step 4
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the bot token and enter it below'**
+  String get stepCopyToken;
+
+  /// Discord bot connection loading title
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting your Discord bot...'**
+  String get connectingDiscordBot;
+
+  /// Discord bot connection loading description
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while we connect to your bot.\nThis usually takes a few seconds.'**
+  String get connectingDiscordBotDesc;
+
+  /// Discord bot restarting loading title
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting your bot...'**
+  String get discordBotRestarting;
+
+  /// Discord bot restarting loading description
+  ///
+  /// In en, this message translates to:
+  /// **'Your bot is restarting with the new configuration.\nThis usually takes a few seconds.'**
+  String get discordBotRestartingDesc;
+
+  /// Discord empty pending codes hint
+  ///
+  /// In en, this message translates to:
+  /// **'Send a DM to your Discord bot and the pairing code will appear here.'**
+  String get discordNoPendingCodes;
+
+  /// Discord pairing screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Discord Pairing'**
+  String get discordPairing;
+
+  /// Discord pairing description
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the auth code displayed when you DM the bot.'**
+  String get discordPairingDesc;
+
+  /// Web access section title on dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Web Access'**
+  String get webAccess;
+
+  /// Web access preparing status
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing web access...'**
+  String get webAccessPreparing;
+
+  /// Ingress status label
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get gatewayNetwork;
+
+  /// Certificate status label
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate'**
+  String get gatewayCertificate;
 }
 
 class _AppLocalizationsDelegate

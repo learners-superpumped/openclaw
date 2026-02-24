@@ -630,4 +630,141 @@ class AppLocalizationsKo extends AppLocalizations {
   String channelsSummary(int connected) {
     return '$connected개 연결됨';
   }
+
+  @override
+  String get discord => 'Discord';
+
+  @override
+  String get connectDiscord => 'Discord 연결';
+
+  @override
+  String get discordBotToken => 'Discord 봇 토큰';
+
+  @override
+  String get connect => '연결';
+
+  @override
+  String get copiedToClipboard => '클립보드에 복사됨';
+
+  @override
+  String get pasteImage => '이미지 붙여넣기';
+
+  @override
+  String get messageQueued => '대기 중인 메시지 없음';
+
+  @override
+  String get messagesInQueue => '대기 중인 메시지';
+
+  @override
+  String get removeFromQueue => '큐에서 제거';
+
+  @override
+  String get sessionSettings => '세션 설정';
+
+  @override
+  String get reasoningLevel => '추론 수준';
+
+  @override
+  String get thinkingMode => '사고 모드';
+
+  @override
+  String get verboseLevel => '상세 수준';
+
+  @override
+  String get deleteSession => '세션 삭제';
+
+  @override
+  String get deleteSessionConfirm => '이 세션과 기록이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.';
+
+  @override
+  String get newMessagesBelow => '새 메시지';
+
+  @override
+  String get focusMode => '집중 모드';
+
+  @override
+  String get exitFocusMode => '집중 모드 종료';
+
+  @override
+  String get compactingContext => '컨텍스트 압축 중...';
+
+  @override
+  String get contextCompacted => '컨텍스트 압축 완료';
+
+  @override
+  String get showingLastMessages => '최근';
+
+  @override
+  String get messagesHidden => '숨김:';
+
+  @override
+  String get largeMessageWarning => '긴 메시지';
+
+  @override
+  String get largeMessagePlaintext => '긴 메시지는 일반 텍스트로 표시됩니다';
+
+  @override
+  String get reasoningLow => '낮음';
+
+  @override
+  String get reasoningMedium => '보통';
+
+  @override
+  String get reasoningHigh => '높음';
+
+  @override
+  String get editSessionLabel => '세션 라벨';
+
+  @override
+  String get discordBotSetup => 'Discord 봇 설정';
+
+  @override
+  String get discordBotSetupDesc => 'Discord Developer Portal에서 봇을 생성하세요.';
+
+  @override
+  String get stepCreateApp => 'Discord Developer Portal에서 애플리케이션 생성';
+
+  @override
+  String get stepAddBot => 'Bot 탭에서 봇 추가';
+
+  @override
+  String get stepEnableIntents =>
+      'Privileged Intents에서 Message Content Intent 활성화';
+
+  @override
+  String get stepCopyToken => '봇 토큰을 복사하여 아래에 입력';
+
+  @override
+  String get connectingDiscordBot => 'Discord 봇 연결 중...';
+
+  @override
+  String get connectingDiscordBotDesc => '봇에 연결하는 중입니다.\n보통 몇 초 정도 소요됩니다.';
+
+  @override
+  String get discordBotRestarting => '봇 재시작 중...';
+
+  @override
+  String get discordBotRestartingDesc =>
+      '새 설정으로 봇을 재시작하고 있습니다.\n보통 몇 초 정도 소요됩니다.';
+
+  @override
+  String get discordNoPendingCodes => 'Discord 봇에 DM을 보내면 페어링 코드가 여기에 나타납니다.';
+
+  @override
+  String get discordPairing => 'Discord 페어링';
+
+  @override
+  String get discordPairingDesc => '봇에 DM을 보내면 표시되는 인증 코드를 입력하세요.';
+
+  @override
+  String get webAccess => '웹 접속';
+
+  @override
+  String get webAccessPreparing => '웹 접속 준비 중...';
+
+  @override
+  String get gatewayNetwork => '네트워크';
+
+  @override
+  String get gatewayCertificate => '인증서';
 }

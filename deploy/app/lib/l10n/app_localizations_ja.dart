@@ -630,4 +630,140 @@ class AppLocalizationsJa extends AppLocalizations {
   String channelsSummary(int connected) {
     return '$connected件接続済み';
   }
+
+  @override
+  String get discord => 'Discord';
+
+  @override
+  String get connectDiscord => 'Discordを接続';
+
+  @override
+  String get discordBotToken => 'Discord ボットトークン';
+
+  @override
+  String get connect => '接続';
+
+  @override
+  String get copiedToClipboard => 'クリップボードにコピーしました';
+
+  @override
+  String get pasteImage => '画像を貼り付け';
+
+  @override
+  String get messageQueued => '待機中のメッセージはありません';
+
+  @override
+  String get messagesInQueue => '待機中のメッセージ';
+
+  @override
+  String get removeFromQueue => 'キューから削除';
+
+  @override
+  String get sessionSettings => 'セッション設定';
+
+  @override
+  String get reasoningLevel => '推論レベル';
+
+  @override
+  String get thinkingMode => '思考モード';
+
+  @override
+  String get verboseLevel => '詳細レベル';
+
+  @override
+  String get deleteSession => 'セッション削除';
+
+  @override
+  String get deleteSessionConfirm => 'このセッションと履歴が完全に削除されます。この操作は元に戻せません。';
+
+  @override
+  String get newMessagesBelow => '新しいメッセージ';
+
+  @override
+  String get focusMode => 'フォーカスモード';
+
+  @override
+  String get exitFocusMode => 'フォーカスモードを終了';
+
+  @override
+  String get compactingContext => 'コンテキストを圧縮中...';
+
+  @override
+  String get contextCompacted => 'コンテキストが圧縮されました';
+
+  @override
+  String get showingLastMessages => '最新';
+
+  @override
+  String get messagesHidden => '非表示:';
+
+  @override
+  String get largeMessageWarning => '長いメッセージ';
+
+  @override
+  String get largeMessagePlaintext => '長いメッセージはプレーンテキストで表示されます';
+
+  @override
+  String get reasoningLow => '低';
+
+  @override
+  String get reasoningMedium => '中';
+
+  @override
+  String get reasoningHigh => '高';
+
+  @override
+  String get editSessionLabel => 'セッションラベル';
+
+  @override
+  String get discordBotSetup => 'Discordボット設定';
+
+  @override
+  String get discordBotSetupDesc => 'Discord Developer Portalでボットを作成してください。';
+
+  @override
+  String get stepCreateApp => 'Discord Developer Portalでアプリケーションを作成';
+
+  @override
+  String get stepAddBot => 'Botタブでボットを追加';
+
+  @override
+  String get stepEnableIntents =>
+      'Privileged IntentsでMessage Content Intentを有効化';
+
+  @override
+  String get stepCopyToken => 'ボットトークンをコピーして下に入力';
+
+  @override
+  String get connectingDiscordBot => 'Discordボットに接続中...';
+
+  @override
+  String get connectingDiscordBotDesc => 'ボットに接続しています。\n通常数秒で完了します。';
+
+  @override
+  String get discordBotRestarting => 'ボットを再起動中...';
+
+  @override
+  String get discordBotRestartingDesc => '新しい設定でボットを再起動しています。\n通常数秒で完了します。';
+
+  @override
+  String get discordNoPendingCodes => 'DiscordボットにDMを送ると、ペアリングコードがここに表示されます。';
+
+  @override
+  String get discordPairing => 'Discordペアリング';
+
+  @override
+  String get discordPairingDesc => 'ボットにDMを送ると表示される認証コードを入力してください。';
+
+  @override
+  String get webAccess => 'Webアクセス';
+
+  @override
+  String get webAccessPreparing => 'Webアクセスを準備中...';
+
+  @override
+  String get gatewayNetwork => 'ネットワーク';
+
+  @override
+  String get gatewayCertificate => '証明書';
 }

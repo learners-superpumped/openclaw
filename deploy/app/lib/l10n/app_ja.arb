@@ -231,5 +231,24 @@
   "reasoningLow": "低",
   "reasoningMedium": "中",
   "reasoningHigh": "高",
-  "editSessionLabel": "セッションラベル"
+  "editSessionLabel": "セッションラベル",
+
+  "discordBotSetup": "Discordボット設定",
+  "discordBotSetupDesc": "Discord Developer Portalでボットを作成してください。",
+  "stepCreateApp": "Discord Developer Portalでアプリケーションを作成",
+  "stepAddBot": "Botタブでボットを追加",
+  "stepEnableIntents": "Privileged IntentsでMessage Content Intentを有効化",
+  "stepCopyToken": "ボットトークンをコピーして下に入力",
+  "connectingDiscordBot": "Discordボットに接続中...",
+  "connectingDiscordBotDesc": "ボットに接続しています。\n通常数秒で完了します。",
+  "discordBotRestarting": "ボットを再起動中...",
+  "discordBotRestartingDesc": "新しい設定でボットを再起動しています。\n通常数秒で完了します。",
+  "discordNoPendingCodes": "DiscordボットにDMを送ると、ペアリングコードがここに表示されます。",
+  "discordPairing": "Discordペアリング",
+  "discordPairingDesc": "ボットにDMを送ると表示される認証コードを入力してください。",
+
+  "webAccess": "Webアクセス",
+  "webAccessPreparing": "Webアクセスを準備中...",
+  "gatewayNetwork": "ネットワーク",
+  "gatewayCertificate": "証明書"
 }

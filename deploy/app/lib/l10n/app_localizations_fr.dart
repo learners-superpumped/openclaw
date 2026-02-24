@@ -656,4 +656,147 @@ class AppLocalizationsFr extends AppLocalizations {
   String channelsSummary(int connected) {
     return '$connected connectés';
   }
+
+  @override
+  String get discord => 'Discord';
+
+  @override
+  String get connectDiscord => 'Connecter Discord';
+
+  @override
+  String get discordBotToken => 'Jeton du bot Discord';
+
+  @override
+  String get connect => 'Connecter';
+
+  @override
+  String get copiedToClipboard => 'Copié dans le presse-papiers';
+
+  @override
+  String get pasteImage => 'Coller l\'image';
+
+  @override
+  String get messageQueued => 'Aucun message en attente';
+
+  @override
+  String get messagesInQueue => 'Messages en attente';
+
+  @override
+  String get removeFromQueue => 'Retirer de la file';
+
+  @override
+  String get sessionSettings => 'Paramètres de session';
+
+  @override
+  String get reasoningLevel => 'Niveau de raisonnement';
+
+  @override
+  String get thinkingMode => 'Mode de réflexion';
+
+  @override
+  String get verboseLevel => 'Niveau de détail';
+
+  @override
+  String get deleteSession => 'Supprimer la session';
+
+  @override
+  String get deleteSessionConfirm =>
+      'Cette session et son historique seront définitivement supprimés. Cette action est irréversible.';
+
+  @override
+  String get newMessagesBelow => 'Nouveaux messages';
+
+  @override
+  String get focusMode => 'Mode focus';
+
+  @override
+  String get exitFocusMode => 'Quitter le mode focus';
+
+  @override
+  String get compactingContext => 'Compactage du contexte...';
+
+  @override
+  String get contextCompacted => 'Contexte compacté';
+
+  @override
+  String get showingLastMessages => 'Affichage des derniers';
+
+  @override
+  String get messagesHidden => 'masqués :';
+
+  @override
+  String get largeMessageWarning => 'Long message';
+
+  @override
+  String get largeMessagePlaintext => 'Long message affiché en texte brut';
+
+  @override
+  String get reasoningLow => 'Bas';
+
+  @override
+  String get reasoningMedium => 'Moyen';
+
+  @override
+  String get reasoningHigh => 'Élevé';
+
+  @override
+  String get editSessionLabel => 'Étiquette de session';
+
+  @override
+  String get discordBotSetup => 'Configuration du bot Discord';
+
+  @override
+  String get discordBotSetupDesc =>
+      'Créez un bot dans le portail développeur Discord.';
+
+  @override
+  String get stepCreateApp =>
+      'Allez sur le portail développeur Discord et créez une application';
+
+  @override
+  String get stepAddBot => 'Allez dans l\'onglet Bot et ajoutez un bot';
+
+  @override
+  String get stepEnableIntents =>
+      'Activez Message Content Intent dans les Privileged Intents';
+
+  @override
+  String get stepCopyToken => 'Copiez le token du bot et entrez-le ci-dessous';
+
+  @override
+  String get connectingDiscordBot => 'Connexion à votre bot Discord...';
+
+  @override
+  String get connectingDiscordBotDesc =>
+      'Veuillez patienter pendant la connexion à votre bot.\nCela ne prend généralement que quelques secondes.';
+
+  @override
+  String get discordBotRestarting => 'Redémarrage de votre bot...';
+
+  @override
+  String get discordBotRestartingDesc =>
+      'Votre bot redémarre avec la nouvelle configuration.\nCela ne prend généralement que quelques secondes.';
+
+  @override
+  String get discordNoPendingCodes =>
+      'Envoyez un DM à votre bot Discord et le code d\'appairage apparaîtra ici.';
+
+  @override
+  String get discordPairing => 'Appairage Discord';
+
+  @override
+  String get discordPairingDesc =>
+      'Entrez le code d\'authentification affiché lorsque vous envoyez un DM au bot.';
+
+  @override
+  String get webAccess => 'Accès Web';
+
+  @override
+  String get webAccessPreparing => 'Préparation de l\'accès web...';
+
+  @override
+  String get gatewayNetwork => 'Réseau';
+
+  @override
+  String get gatewayCertificate => 'Certificat';
 }

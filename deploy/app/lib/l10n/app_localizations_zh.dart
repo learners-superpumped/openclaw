@@ -625,4 +625,140 @@ class AppLocalizationsZh extends AppLocalizations {
   String channelsSummary(int connected) {
     return '$connected个已连接';
   }
+
+  @override
+  String get discord => 'Discord';
+
+  @override
+  String get connectDiscord => '连接 Discord';
+
+  @override
+  String get discordBotToken => 'Discord 机器人令牌';
+
+  @override
+  String get connect => '连接';
+
+  @override
+  String get copiedToClipboard => '已复制到剪贴板';
+
+  @override
+  String get pasteImage => '粘贴图片';
+
+  @override
+  String get messageQueued => '没有排队消息';
+
+  @override
+  String get messagesInQueue => '排队中的消息';
+
+  @override
+  String get removeFromQueue => '从队列中移除';
+
+  @override
+  String get sessionSettings => '会话设置';
+
+  @override
+  String get reasoningLevel => '推理级别';
+
+  @override
+  String get thinkingMode => '思考模式';
+
+  @override
+  String get verboseLevel => '详细级别';
+
+  @override
+  String get deleteSession => '删除会话';
+
+  @override
+  String get deleteSessionConfirm => '此会话及其历史记录将被永久删除。此操作无法撤消。';
+
+  @override
+  String get newMessagesBelow => '新消息';
+
+  @override
+  String get focusMode => '专注模式';
+
+  @override
+  String get exitFocusMode => '退出专注模式';
+
+  @override
+  String get compactingContext => '正在压缩上下文...';
+
+  @override
+  String get contextCompacted => '上下文已压缩';
+
+  @override
+  String get showingLastMessages => '显示最近';
+
+  @override
+  String get messagesHidden => '已隐藏:';
+
+  @override
+  String get largeMessageWarning => '长消息';
+
+  @override
+  String get largeMessagePlaintext => '长消息以纯文本显示';
+
+  @override
+  String get reasoningLow => '低';
+
+  @override
+  String get reasoningMedium => '中';
+
+  @override
+  String get reasoningHigh => '高';
+
+  @override
+  String get editSessionLabel => '会话标签';
+
+  @override
+  String get discordBotSetup => 'Discord机器人设置';
+
+  @override
+  String get discordBotSetupDesc => '在Discord Developer Portal中创建机器人。';
+
+  @override
+  String get stepCreateApp => '前往Discord Developer Portal创建应用';
+
+  @override
+  String get stepAddBot => '在Bot标签页中添加机器人';
+
+  @override
+  String get stepEnableIntents =>
+      '在Privileged Intents中启用Message Content Intent';
+
+  @override
+  String get stepCopyToken => '复制机器人令牌并在下方输入';
+
+  @override
+  String get connectingDiscordBot => '正在连接Discord机器人...';
+
+  @override
+  String get connectingDiscordBotDesc => '正在连接您的机器人。\n通常只需几秒钟。';
+
+  @override
+  String get discordBotRestarting => '正在重启机器人...';
+
+  @override
+  String get discordBotRestartingDesc => '正在使用新配置重启机器人。\n通常只需几秒钟。';
+
+  @override
+  String get discordNoPendingCodes => '向Discord机器人发送私信后，配对码将显示在此处。';
+
+  @override
+  String get discordPairing => 'Discord配对';
+
+  @override
+  String get discordPairingDesc => '输入向机器人发送私信后显示的验证码。';
+
+  @override
+  String get webAccess => 'Web 访问';
+
+  @override
+  String get webAccessPreparing => '正在准备 Web 访问...';
+
+  @override
+  String get gatewayNetwork => '网络';
+
+  @override
+  String get gatewayCertificate => '证书';
 }

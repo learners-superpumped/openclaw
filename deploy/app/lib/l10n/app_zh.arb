@@ -231,5 +231,24 @@
   "reasoningLow": "低",
   "reasoningMedium": "中",
   "reasoningHigh": "高",
-  "editSessionLabel": "会话标签"
+  "editSessionLabel": "会话标签",
+
+  "discordBotSetup": "Discord机器人设置",
+  "discordBotSetupDesc": "在Discord Developer Portal中创建机器人。",
+  "stepCreateApp": "前往Discord Developer Portal创建应用",
+  "stepAddBot": "在Bot标签页中添加机器人",
+  "stepEnableIntents": "在Privileged Intents中启用Message Content Intent",
+  "stepCopyToken": "复制机器人令牌并在下方输入",
+  "connectingDiscordBot": "正在连接Discord机器人...",
+  "connectingDiscordBotDesc": "正在连接您的机器人。\n通常只需几秒钟。",
+  "discordBotRestarting": "正在重启机器人...",
+  "discordBotRestartingDesc": "正在使用新配置重启机器人。\n通常只需几秒钟。",
+  "discordNoPendingCodes": "向Discord机器人发送私信后，配对码将显示在此处。",
+  "discordPairing": "Discord配对",
+  "discordPairingDesc": "输入向机器人发送私信后显示的验证码。",
+
+  "webAccess": "Web 访问",
+  "webAccessPreparing": "正在准备 Web 访问...",
+  "gatewayNetwork": "网络",
+  "gatewayCertificate": "证书"
 }

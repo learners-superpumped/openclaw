@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/channel.dart';
+import '../models/instance.dart';
 import '../providers/channel_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
@@ -68,6 +70,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
     final telegramInfo = channelState.channels[ChannelType.telegram];
     final whatsappInfo = channelState.channels[ChannelType.whatsapp];
+    final discordInfo = channelState.channels[ChannelType.discord];
 
     return Scaffold(
       appBar: AppBar(
@@ -235,12 +238,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                               color: const Color(0xFF25D366),
                               isConnected: whatsappInfo?.isConnected ?? false,
                             ),
+                            const SizedBox(width: 6),
+                            _ChannelDot(
+                              iconData: FontAwesomeIcons.discord,
+                              color: const Color(0xFF5865F2),
+                              isConnected: discordInfo?.isConnected ?? false,
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ],
                 ),
+              ),
+            // Web Access Section
+            if (instance != null && instance.manager?.gatewayUrl != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: _WebAccessCard(manager: instance.manager!),
               ),
           ],
         ),
@@ -440,3 +455,167 @@ class _ChannelDot extends StatelessWidget {
     );
   }
 }
+
+class _WebAccessCard extends StatelessWidget {
+  final ManagerStatus manager;
+  const _WebAccessCard({required this.manager});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final gatewayReady = manager.gatewayReady ?? false;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: gatewayReady
+            ? () {
+                final url = manager.gatewayUrl;
+                final token = manager.gatewayToken;
+                if (url != null) {
+                  final webUrl = token != null ? '$url#token=$token' : url;
+                  launchUrl(Uri.parse(webUrl),
+                      mode: LaunchMode.externalApplication);
+                }
+              }
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Icon(Icons.language, color: AppColors.textSecondary, size: 18),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.webAccess,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  if (gatewayReady)
+                    Icon(Icons.chevron_right,
+                        color: AppColors.textTertiary, size: 18),
+                ],
+              ),
+              const SizedBox(height: 10),
+              if (!gatewayReady) ...[
+                // Preparing state — show sub-statuses
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.webAccessPreparing,
+                        style: TextStyle(
+                          color: AppColors.textTertiary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Ingress status
+                _GatewaySubStatus(
+                  label: l10n.gatewayNetwork,
+                  ready: manager.ingress?.ready ?? false,
+                  detail: manager.ingress?.ip,
+                ),
+                const SizedBox(height: 4),
+                // Certificate status
+                _GatewaySubStatus(
+                  label: l10n.gatewayCertificate,
+                  ready: manager.certificate?.ready ?? false,
+                  detail: manager.certificate?.status,
+                ),
+              ] else ...[
+                // Ready state — show URL
+                Row(
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: AppColors.accent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        manager.gatewayUrl ?? '',
+                        style: TextStyle(
+                          color: AppColors.accent,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GatewaySubStatus extends StatelessWidget {
+  final String label;
+  final bool ready;
+  final String? detail;
+  const _GatewaySubStatus({
+    required this.label,
+    required this.ready,
+    this.detail,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          ready ? Icons.check_circle : Icons.circle_outlined,
+          size: 14,
+          color: ready ? AppColors.accent : AppColors.textTertiary,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 12,
+          ),
+        ),
+        if (detail != null) ...[
+          const SizedBox(width: 4),
+          Text(
+            detail!,
+            style: TextStyle(
+              color: AppColors.textTertiary,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+

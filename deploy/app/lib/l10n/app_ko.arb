@@ -231,5 +231,24 @@
   "reasoningLow": "낮음",
   "reasoningMedium": "보통",
   "reasoningHigh": "높음",
-  "editSessionLabel": "세션 라벨"
+  "editSessionLabel": "세션 라벨",
+
+  "discordBotSetup": "Discord 봇 설정",
+  "discordBotSetupDesc": "Discord Developer Portal에서 봇을 생성하세요.",
+  "stepCreateApp": "Discord Developer Portal에서 애플리케이션 생성",
+  "stepAddBot": "Bot 탭에서 봇 추가",
+  "stepEnableIntents": "Privileged Intents에서 Message Content Intent 활성화",
+  "stepCopyToken": "봇 토큰을 복사하여 아래에 입력",
+  "connectingDiscordBot": "Discord 봇 연결 중...",
+  "connectingDiscordBotDesc": "봇에 연결하는 중입니다.\n보통 몇 초 정도 소요됩니다.",
+  "discordBotRestarting": "봇 재시작 중...",
+  "discordBotRestartingDesc": "새 설정으로 봇을 재시작하고 있습니다.\n보통 몇 초 정도 소요됩니다.",
+  "discordNoPendingCodes": "Discord 봇에 DM을 보내면 페어링 코드가 여기에 나타납니다.",
+  "discordPairing": "Discord 페어링",
+  "discordPairingDesc": "봇에 DM을 보내면 표시되는 인증 코드를 입력하세요.",
+
+  "webAccess": "웹 접속",
+  "webAccessPreparing": "웹 접속 준비 중...",
+  "gatewayNetwork": "네트워크",
+  "gatewayCertificate": "인증서"
 }
