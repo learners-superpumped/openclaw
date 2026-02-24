@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -119,29 +118,27 @@ class _NarrowPaywall extends ConsumerWidget {
                 style: TextStyle(color: AppColors.textTertiary),
               ),
             ),
-            if (kIsWeb) ...[
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => PaywallScreen.loginAndRestore(context, ref),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.alreadyHaveAccount,
-                      style: TextStyle(color: AppColors.textSecondary),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => PaywallScreen.loginAndRestore(context, ref),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.alreadyHaveAccount,
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n.logIn,
+                    style: TextStyle(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      l10n.logIn,
-                      style: TextStyle(
-                        color: AppColors.accent,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
             const SizedBox(height: 32),
           ],
         ),
@@ -502,15 +499,13 @@ class _RightPanel extends ConsumerWidget {
                     label: l10n.haveReferralCode,
                     onTap: () => PaywallScreen.showReferralCodeDialog(context, ref),
                   ),
-                  if (kIsWeb) ...[
-                    const SizedBox(height: 12),
-                    _SecondaryAction(
-                      icon: Icons.login_rounded,
-                      label: '${l10n.alreadyHaveAccount} ${l10n.logIn}',
-                      accentLabel: true,
-                      onTap: () => PaywallScreen.loginAndRestore(context, ref),
-                    ),
-                  ],
+                  const SizedBox(height: 12),
+                  _SecondaryAction(
+                    icon: Icons.login_rounded,
+                    label: '${l10n.alreadyHaveAccount} ${l10n.logIn}',
+                    accentLabel: true,
+                    onTap: () => PaywallScreen.loginAndRestore(context, ref),
+                  ),
                 ],
               ),
             ),
