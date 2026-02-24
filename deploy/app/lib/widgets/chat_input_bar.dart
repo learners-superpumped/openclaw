@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -236,12 +238,31 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
     );
   }
 
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (!kIsWeb) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (event.logicalKey != LogicalKeyboardKey.enter) {
+      return KeyEventResult.ignored;
+    }
+    final isShift = HardwareKeyboard.instance.isShiftPressed;
+    if (isShift) {
+      // Shift+Enter: insert newline — let the TextField handle it
+      return KeyEventResult.ignored;
+    }
+    // Enter without Shift: send message
+    _sendMessage();
+    return KeyEventResult.handled;
+  }
+
   Widget _buildTextField() {
-    return TextField(
+    final textField = TextField(
       controller: _textController,
       focusNode: _focusNode,
       maxLines: 4,
       minLines: 1,
+      textInputAction: kIsWeb ? TextInputAction.none : TextInputAction.send,
       textCapitalization: TextCapitalization.sentences,
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
@@ -266,8 +287,13 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
           borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
         ),
       ),
-      onSubmitted: (_) => _sendMessage(),
+      onSubmitted: kIsWeb ? null : (_) => _sendMessage(),
     );
+
+    if (!kIsWeb) return textField;
+
+    _focusNode.onKeyEvent = _handleKeyEvent;
+    return textField;
   }
 
   Widget _buildActionButton(bool isAgentRunning) {
