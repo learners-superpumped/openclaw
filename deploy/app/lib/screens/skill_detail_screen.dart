@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../models/skill.dart';
@@ -257,6 +258,49 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
               ? Icon(detail.installed ? Icons.delete_outline : Icons.download_rounded)
               : null,
         ),
+
+        // ── View on ClawHub ──
+        if (detail.clawHubUrl != null) ...[
+          const SizedBox(height: 12),
+          Material(
+            color: GlassColors.glassSurface,
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
+              onTap: () => launchUrl(
+                Uri.parse(detail.clawHubUrl!),
+                mode: LaunchMode.externalApplication,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: GlassColors.glassBorder),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.open_in_new_rounded,
+                      size: 15,
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.viewOnWeb,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 24),
 
         // ── Summary ──

@@ -65,6 +65,7 @@ class BrowseSkillDetail {
   final String? summary;
   final String? changelog;
   final String? author;
+  final String? ownerHandle;
   final String? latestVersion;
   final bool installed;
   final String? installedVersion;
@@ -76,11 +77,17 @@ class BrowseSkillDetail {
     this.summary,
     this.changelog,
     this.author,
+    this.ownerHandle,
     this.latestVersion,
     required this.installed,
     this.installedVersion,
     required this.raw,
   });
+
+  String? get clawHubUrl =>
+      ownerHandle != null && slug.isNotEmpty
+          ? 'https://clawhub.ai/$ownerHandle/$slug'
+          : null;
 
   factory BrowseSkillDetail.fromJson(Map<String, dynamic> json) {
     final skill = json['skill'] as Map<String, dynamic>?;
@@ -92,6 +99,7 @@ class BrowseSkillDetail {
       summary: skill?['summary'] as String?,
       changelog: latestVer?['changelog'] as String?,
       author: owner?['displayName'] as String? ?? owner?['handle'] as String?,
+      ownerHandle: owner?['handle'] as String?,
       latestVersion: latestVer?['version'] as String?,
       installed: json['installed'] as bool? ?? false,
       installedVersion: json['installedVersion'] as String?,
