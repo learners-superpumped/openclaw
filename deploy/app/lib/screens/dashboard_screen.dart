@@ -108,11 +108,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   final cols = isWide ? (width >= 900 ? 4 : 3) : 2;
                   final maxWidth = isWide ? 900.0 : double.infinity;
 
-                  // Build tile list
+                  // Build tile list with stable keys for animation
                   final tiles = <_BentoTile>[];
 
                   if (instance != null) {
                     tiles.add(_BentoTile(
+                      key: 'hero',
                       span: cols,
                       stagger: _staggerAnimation(0.0, 0.3),
                       child: _ChatHeroTile(
@@ -122,11 +123,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     ));
 
                     tiles.add(_BentoTile(
+                      key: 'instance',
                       stagger: _staggerAnimation(0.06, 0.36),
                       child: _InstanceTile(instance: instance),
                     ));
 
                     tiles.add(_BentoTile(
+                      key: 'channels',
                       stagger: _staggerAnimation(0.12, 0.42),
                       child: _ChannelsTile(
                         channelState: channelState,
@@ -139,6 +142,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
                     if (usageState.usage != null && usageState.usage!.hasLimit) {
                       tiles.add(_BentoTile(
+                        key: 'usage',
                         stagger: _staggerAnimation(0.18, 0.48),
                         child: _UsageTile(usage: usageState.usage!),
                       ));
@@ -146,6 +150,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
                     if (instance.isReady) {
                       tiles.add(_BentoTile(
+                        key: 'remote',
                         stagger: _staggerAnimation(0.24, 0.54),
                         child: _RemoteViewTile(
                           onTap: () => context.push('/dashboard/remote-view'),
@@ -155,6 +160,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
                     if (instance.manager?.gatewayUrl != null) {
                       tiles.add(_BentoTile(
+                        key: 'web',
                         stagger: _staggerAnimation(0.30, 0.60),
                         child: _WebAccessTile(manager: instance.manager!),
                       ));
@@ -198,11 +204,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 // ─── Bento Grid Layout ─────────────────────────────────────────────────────
 
 class _BentoTile {
+  final String key;
   final int span;
   final Animation<double> stagger;
   final Widget child;
 
   const _BentoTile({
+    required this.key,
     this.span = 1,
     required this.stagger,
     required this.child,
@@ -224,52 +232,55 @@ class _BentoGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = <Widget>[];
     int col = 0;
-    List<Widget> currentRow = [];
-    List<int> currentSpans = [];
+    List<_BentoTile> currentRow = [];
 
     for (final tile in tiles) {
       final span = tile.span.clamp(1, cols);
 
-      // If this tile won't fit on the current row, flush it
       if (col + span > cols && currentRow.isNotEmpty) {
-        rows.add(_buildRow(currentRow, currentSpans));
+        rows.add(_buildRow(currentRow));
         rows.add(SizedBox(height: gap));
         currentRow = [];
-        currentSpans = [];
         col = 0;
       }
 
-      currentRow.add(
-        _StaggeredEntry(
-          animation: tile.stagger,
-          child: tile.child,
-        ),
-      );
-      currentSpans.add(span);
+      currentRow.add(tile);
       col += span;
 
-      // Row is full
       if (col >= cols) {
-        rows.add(_buildRow(currentRow, currentSpans));
+        rows.add(_buildRow(currentRow));
         rows.add(SizedBox(height: gap));
         currentRow = [];
-        currentSpans = [];
         col = 0;
       }
     }
 
-    // Flush remaining tiles
     if (currentRow.isNotEmpty) {
-      rows.add(_buildRow(currentRow, currentSpans));
+      rows.add(_buildRow(currentRow));
     }
 
-    return Column(children: rows);
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: Column(children: rows),
+    );
   }
 
-  Widget _buildRow(List<Widget> children, List<int> spans) {
+  Widget _buildRow(List<_BentoTile> tiles) {
+    final children = tiles.map((tile) {
+      return _AnimatedTileEntry(
+        key: ValueKey(tile.key),
+        stagger: tile.stagger,
+        child: tile.child,
+      );
+    }).toList();
+
     if (children.length == 1) {
       return children.first;
     }
+
+    final spans = tiles.map((t) => t.span.clamp(1, cols)).toList();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -282,28 +293,67 @@ class _BentoGrid extends StatelessWidget {
   }
 }
 
-// ─── Staggered Entry Animation ─────────────────────────────────────────────
+// ─── Animated Tile Entry ───────────────────────────────────────────────────
 
-class _StaggeredEntry extends StatelessWidget {
-  final Animation<double> animation;
+class _AnimatedTileEntry extends StatefulWidget {
+  final Animation<double> stagger;
   final Widget child;
 
-  const _StaggeredEntry({required this.animation, required this.child});
+  const _AnimatedTileEntry({
+    super.key,
+    required this.stagger,
+    required this.child,
+  });
+
+  @override
+  State<_AnimatedTileEntry> createState() => _AnimatedTileEntryState();
+}
+
+class _AnimatedTileEntryState extends State<_AnimatedTileEntry>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _selfController;
+  late Animation<double> _activeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    // If stagger is already completed (tile added after initial load),
+    // run our own entrance animation
+    if (widget.stagger.isCompleted) {
+      _selfController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 400),
+      );
+      _activeAnimation = CurvedAnimation(
+        parent: _selfController!,
+        curve: Curves.easeOutCubic,
+      );
+      _selfController!.forward();
+    } else {
+      _activeAnimation = widget.stagger;
+    }
+  }
+
+  @override
+  void dispose() {
+    _selfController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animation,
+      animation: _activeAnimation,
       builder: (context, child) {
         return Opacity(
-          opacity: animation.value,
+          opacity: _activeAnimation.value,
           child: Transform.translate(
-            offset: Offset(0, 20 * (1 - animation.value)),
+            offset: Offset(0, 20 * (1 - _activeAnimation.value)),
             child: child,
           ),
         );
       },
-      child: child,
+      child: widget.child,
     );
   }
 }
