@@ -73,11 +73,14 @@ kubectl apply -f deploy/manager/k8s/rbac.yaml
 ```bash
 cd deploy/manager
 
+# 태그 생성
+TAG=$(date -u '+v%Y%m%d-%H%M%S')
+
 # 이미지 빌드
-docker build -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:latest .
+docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:$TAG .
 
 # Artifact Registry에 푸시
-docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:latest
+docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:$TAG
 ```
 
 ---
@@ -208,7 +211,49 @@ curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/telegram/logout \
 # { "channel": "telegram", "cleared": true, "loggedOut": true }
 ```
 
-### 6-7. WhatsApp QR 요청 (참고)
+### 6-7. Discord 봇 토큰 설정
+
+```bash
+# 봇 토큰 등록 — 게이트웨이 config.patch RPC를 통해 설정
+curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/discord/setup \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"token":"DISCORD_BOT_TOKEN"}' | jq
+
+# 기대 응답
+# { "ok": true, "config": { ... } }
+```
+
+### 6-8. Discord 연결 상태 확인
+
+```bash
+# 기본 상태
+curl -s http://localhost:3000/api/instances/<USER_ID>/discord/status \
+  -H "Authorization: Bearer $API_KEY" | jq
+
+# probe=true 로 실시간 프로빙 (봇 username 포함)
+curl -s "http://localhost:3000/api/instances/<USER_ID>/discord/status?probe=true" \
+  -H "Authorization: Bearer $API_KEY" | jq
+
+# 기대 응답
+# { "userId": "...", "connected": true, "discord": { "configured": true, "running": true, "probe": { "bot": { "username": "MyBot#1234" } } }, "accounts": ... }
+```
+
+> setup 직후에는 게이트웨이가 hot reload되므로 (~500ms), 바로 status를 호출해도 된다. 단, 전체 재시작 시에는 `restarting: true`가 반환된다.
+
+### 6-9. Discord 연결 해제
+
+```bash
+curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/discord/logout \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}' | jq
+
+# 기대 응답
+# { "channel": "discord", "cleared": true, "loggedOut": true }
+```
+
+### 6-10. WhatsApp QR 요청 (참고)
 
 ```bash
 curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/whatsapp/qr \
@@ -216,8 +261,24 @@ curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/whatsapp/qr \
   -H "Content-Type: application/json" \
   -d '{}' | jq
 
-curl -s http://localhost:3000/api/instances/<USER_ID>/whatsapp/status \
+curl -s "http://localhost:3000/api/instances/<USER_ID>/whatsapp/status?probe=true" \
   -H "Authorization: Bearer $API_KEY" | jq
+```
+
+### 6-11. DM 페어링 (Telegram / Discord 공통)
+
+페어링 API는 `channel` 파라미터로 Telegram과 Discord를 구분한다.
+
+```bash
+# 페어링 요청 조회 (channel: telegram | discord)
+curl -s "http://localhost:3000/api/instances/<USER_ID>/pairing/list?channel=discord" \
+  -H "Authorization: Bearer $API_KEY" | jq
+
+# 페어링 승인
+curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/pairing/approve \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"channel":"discord","code":"ABC3KLM9","notify":true}' | jq
 ```
 
 ---
@@ -236,6 +297,18 @@ curl -s http://localhost:3000/api/instances/<USER_ID>/whatsapp/status \
 7. logout     → POST /api/instances/<USER_ID>/telegram/logout
 ```
 
+### Discord 채널 연동 전체 플로우
+
+```
+1. setup      → POST /api/instances/<USER_ID>/discord/setup
+2. status     → GET  /api/instances/<USER_ID>/discord/status?probe=true
+3. (Discord에서 봇에 DM 전송)
+4. list       → GET  /api/instances/<USER_ID>/pairing/list?channel=discord
+5. approve    → POST /api/instances/<USER_ID>/pairing/approve
+6. (봇이 정상 응답하는지 확인)
+7. logout     → POST /api/instances/<USER_ID>/discord/logout
+```
+
 ---
 
 ## 업데이트 배포
@@ -243,12 +316,15 @@ curl -s http://localhost:3000/api/instances/<USER_ID>/whatsapp/status \
 ```bash
 cd deploy/manager
 
-# 1. 이미지 빌드 & 푸시
-docker build -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:latest .
-docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:latest
+# 0. 태그 생성 (날짜-시간 기반)
+TAG=$(date -u '+v%Y%m%d-%H%M%S')
 
-# 2. Pod 재시작
-kubectl rollout restart deployment/openclaw-manager -n openclaw
+# 1. 이미지 빌드 & 푸시
+docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:$TAG .
+docker push us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:$TAG
+
+# 2. Deployment 이미지 업데이트
+kubectl set image deployment/openclaw-manager -n openclaw manager=us-central1-docker.pkg.dev/learneroid/openclaw/openclaw-manager:$TAG
 
 # 3. 롤아웃 확인
 kubectl rollout status deployment/openclaw-manager -n openclaw
@@ -318,28 +394,38 @@ kubectl exec -n openclaw deploy/openclaw-manager -- \
 
 ## 트러블슈팅
 
-### Telegram setup 실패 (502)
+### Telegram/Discord setup 실패 (502)
 
 - 게이트웨이 Pod가 Running 상태인지 확인: `kubectl get pods -n openclaw -l openclaw.ai/user=<USER_ID>`
 - 게이트웨이 로그 확인: `kubectl logs -n openclaw -l openclaw.ai/user=<USER_ID> -c gateway`
 - Gateway token이 Secret에 있는지 확인: `kubectl get secret <USER_ID>-openclaw -n openclaw -o jsonpath='{.data.OPENCLAW_GATEWAY_TOKEN}'`
 
-### status에서 telegram이 null
+### status에서 telegram/discord가 null
 
 - config.patch가 정상 적용되었는지 RPC로 확인:
+
   ```bash
+  # Telegram
   curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/rpc \
     -H "Authorization: Bearer $API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"method":"config.get","params":{}}' | jq '.payload.config.channels.telegram'
+
+  # Discord
+  curl -s -X POST http://localhost:3000/api/instances/<USER_ID>/rpc \
+    -H "Authorization: Bearer $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"method":"config.get","params":{}}' | jq '.payload.config.channels.discord'
   ```
 
 ### pairing list 빈 배열
 
-- Telegram 앱에서 봇에 `/start` 또는 아무 메시지를 보낸 후 재시도
+- Telegram: 봇에 `/start` 또는 아무 메시지를 보낸 후 재시도
+- Discord: 봇에 DM을 보낸 후 재시도
 - Pod 내부에서 직접 확인:
   ```bash
   kubectl exec -n openclaw <POD_NAME> -c gateway -- node dist/index.js pairing list telegram --json
+  kubectl exec -n openclaw <POD_NAME> -c gateway -- node dist/index.js pairing list discord --json
   ```
 
 ### pairing approve 실패
