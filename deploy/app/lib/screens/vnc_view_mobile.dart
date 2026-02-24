@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../theme/app_theme.dart';
@@ -45,8 +46,15 @@ class _VncViewState extends State<VncView> {
         NavigationDelegate(
           onPageFinished: (_) => _connect(),
         ),
-      )
-      ..loadFlutterAsset('assets/vnc/vnc.html');
+      );
+    _loadPage();
+  }
+
+  Future<void> _loadPage() async {
+    final htmlTemplate = await rootBundle.loadString('assets/vnc/vnc.html');
+    final bundle = await rootBundle.loadString('assets/vnc/novnc-bundle.js');
+    final html = htmlTemplate.replaceFirst('/* NOVNC_BUNDLE */', bundle);
+    await _controller.loadHtmlString(html);
   }
 
   void _connect() {

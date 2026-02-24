@@ -83,15 +83,6 @@ flutter:
   assets:
     - assets/images/
     - assets/vnc/
-    - assets/vnc/core/
-    - assets/vnc/core/crypto/
-    - assets/vnc/core/decoders/
-    - assets/vnc/core/input/
-    - assets/vnc/core/util/
-    - assets/vnc/vendor/pako/
-    - assets/vnc/vendor/pako/lib/
-    - assets/vnc/vendor/pako/lib/utils/
-    - assets/vnc/vendor/pako/lib/zlib/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
