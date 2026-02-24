@@ -249,6 +249,7 @@
 
   "webAccess": "Acesso Web",
   "webAccessPreparing": "Preparando acesso web...",
+  "webAccessPreparingHint": "A configuração SSL pode levar 15 minutos ou mais",
   "gatewayNetwork": "Rede",
   "gatewayCertificate": "Certificado",
 

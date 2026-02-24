@@ -1560,6 +1560,12 @@ abstract class AppLocalizations {
   /// **'Preparing web access...'**
   String get webAccessPreparing;
 
+  /// Hint about SSL setup time during web access preparation
+  ///
+  /// In en, this message translates to:
+  /// **'SSL setup can take 15 minutes or more'**
+  String get webAccessPreparingHint;
+
   /// Ingress status label
   ///
   /// In en, this message translates to:

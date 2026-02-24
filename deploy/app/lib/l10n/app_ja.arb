@@ -249,6 +249,7 @@
 
   "webAccess": "Webアクセス",
   "webAccessPreparing": "Webアクセスを準備中...",
+  "webAccessPreparingHint": "SSLの設定に15分以上かかる場合があります",
   "gatewayNetwork": "ネットワーク",
   "gatewayCertificate": "証明書",
 

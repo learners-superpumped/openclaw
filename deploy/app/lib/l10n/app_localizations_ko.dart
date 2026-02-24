@@ -763,6 +763,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get webAccessPreparing => '웹 접속 준비 중...';
 
   @override
+  String get webAccessPreparingHint => 'SSL 설정에 15분 이상 소요될 수 있습니다';
+
+  @override
   String get gatewayNetwork => '네트워크';
 
   @override

@@ -1248,7 +1248,7 @@ class _WebAccessTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          if (!gatewayReady)
+          if (!gatewayReady) ...[
             Row(
               children: [
                 SizedBox(
@@ -1271,7 +1271,16 @@ class _WebAccessTile extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.webAccessPreparingHint,
+              style: TextStyle(
+                color: AppColors.textTertiary,
+                fontSize: 10,
+              ),
+            ),
+          ]
           else
             Row(
               children: [

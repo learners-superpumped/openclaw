@@ -249,6 +249,7 @@
 
   "webAccess": "Web 访问",
   "webAccessPreparing": "正在准备 Web 访问...",
+  "webAccessPreparingHint": "SSL 设置可能需要 15 分钟或更长时间",
   "gatewayNetwork": "网络",
   "gatewayCertificate": "证书",
 

@@ -757,6 +757,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get webAccessPreparing => '正在准备 Web 访问...';
 
   @override
+  String get webAccessPreparingHint => 'SSL 设置可能需要 15 分钟或更长时间';
+
+  @override
   String get gatewayNetwork => '网络';
 
   @override

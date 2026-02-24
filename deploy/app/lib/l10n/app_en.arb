@@ -535,6 +535,8 @@
   "@webAccess": { "description": "Web access section title on dashboard" },
   "webAccessPreparing": "Preparing web access...",
   "@webAccessPreparing": { "description": "Web access preparing status" },
+  "webAccessPreparingHint": "SSL setup can take 15 minutes or more",
+  "@webAccessPreparingHint": { "description": "Hint about SSL setup time during web access preparation" },
   "gatewayNetwork": "Network",
   "@gatewayNetwork": { "description": "Ingress status label" },
   "gatewayCertificate": "Certificate",

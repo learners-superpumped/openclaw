@@ -793,6 +793,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get webAccessPreparing => 'Preparando acesso web...';
 
   @override
+  String get webAccessPreparingHint =>
+      'A configuração SSL pode levar 15 minutos ou mais';
+
+  @override
   String get gatewayNetwork => 'Rede';
 
   @override
