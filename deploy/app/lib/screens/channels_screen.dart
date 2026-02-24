@@ -172,10 +172,13 @@ class _ChannelTile extends StatelessWidget {
                         ),
                         if (info != null && info!.subtitle != null) ...[
                           const SizedBox(width: 6),
-                          Text(
-                            info!.subtitle!,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 11,
+                          Flexible(
+                            child: Text(
+                              info!.subtitle!,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontSize: 11,
+                              ),
                             ),
                           ),
                         ],
