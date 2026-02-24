@@ -53,7 +53,7 @@ spec:
         - name: gateway
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: { { .Values.image.pullPolicy } }
-          command: { { - toYaml .Values.gateway.command | nindent 12 } }
+          args: { { - toYaml .Values.gateway.args | nindent 12 } }
           ports:
             - name: http
               containerPort: { { .Values.gateway.port } }

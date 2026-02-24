@@ -8,7 +8,7 @@ image:
 
 gateway:
   port: 18789
-  command:
+  args:
     - node
     - dist/index.js
     - gateway

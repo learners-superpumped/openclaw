@@ -168,7 +168,7 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
               name: "gateway",
               image: `${config.image.repository}:${tag}`,
               imagePullPolicy: "IfNotPresent",
-              command: [
+              args: [
                 "node",
                 "dist/index.js",
                 "gateway",
@@ -182,6 +182,11 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
                 {
                   name: "http",
                   containerPort: config.gateway.port,
+                  protocol: "TCP",
+                },
+                {
+                  name: "novnc",
+                  containerPort: config.browser.novncPort,
                   protocol: "TCP",
                 },
               ],
