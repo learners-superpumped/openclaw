@@ -16,6 +16,9 @@ NOVNC_PORT="${OPENCLAW_BROWSER_NOVNC_PORT:-6080}"
 Xvfb :99 -screen 0 1280x800x24 -ac -nolisten tcp &
 sleep 0.5
 
+# Set desktop wallpaper
+feh --bg-scale /usr/local/share/wallpaper.png &
+
 # Start VNC server
 x11vnc -display :99 -rfbport "$VNC_PORT" -shared -forever -nopw -localhost &
 

@@ -14,6 +14,7 @@ RUN apt-get update && \
       novnc \
       socat \
       websockify \
+      feh \
       x11vnc \
       xvfb && \
     apt-get clean && \
@@ -34,6 +35,7 @@ RUN ln -s /app/openclaw.mjs /usr/local/bin/openclaw
 
 ENV NODE_ENV=production
 
+COPY deploy/scripts/wallpaper.png /usr/local/share/wallpaper.png
 COPY deploy/scripts/gke-entrypoint.sh /usr/local/bin/gke-entrypoint.sh
 RUN chmod +x /usr/local/bin/gke-entrypoint.sh
 
