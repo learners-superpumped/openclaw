@@ -49,6 +49,21 @@ export function handleVncUpgrade(req: IncomingMessage, socket: Duplex, head: Buf
         const targetUrl = novncWsUrl(userId);
         const upstream = new WebSocket(targetUrl);
 
+        const PING_INTERVAL_MS = 20_000;
+        let clientPing: ReturnType<typeof setInterval> | undefined;
+        let upstreamPing: ReturnType<typeof setInterval> | undefined;
+
+        function cleanup() {
+          clearInterval(clientPing);
+          clearInterval(upstreamPing);
+          if (upstream.readyState === WebSocket.OPEN) {
+            upstream.close();
+          }
+          if (clientWs.readyState === WebSocket.OPEN) {
+            clientWs.close();
+          }
+        }
+
         upstream.on("open", () => {
           clientWs.on("message", (data, isBinary) => {
             if (upstream.readyState === WebSocket.OPEN) {
@@ -61,12 +76,24 @@ export function handleVncUpgrade(req: IncomingMessage, socket: Duplex, head: Buf
               clientWs.send(data, { binary: isBinary });
             }
           });
+
+          clientPing = setInterval(() => {
+            if (clientWs.readyState === WebSocket.OPEN) {
+              clientWs.ping();
+            }
+          }, PING_INTERVAL_MS);
+
+          upstreamPing = setInterval(() => {
+            if (upstream.readyState === WebSocket.OPEN) {
+              upstream.ping();
+            }
+          }, PING_INTERVAL_MS);
         });
 
-        upstream.on("close", () => clientWs.close());
-        upstream.on("error", () => clientWs.close());
-        clientWs.on("close", () => upstream.close());
-        clientWs.on("error", () => upstream.close());
+        upstream.on("close", cleanup);
+        upstream.on("error", cleanup);
+        clientWs.on("close", cleanup);
+        clientWs.on("error", cleanup);
       });
     })
     .catch(() => {

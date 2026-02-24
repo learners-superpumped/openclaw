@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module.js";
 import { initChatProxy, handleChatUpgrade } from "./chat/chat-proxy.js";
 import { PrismaService } from "./prisma/prisma.service.js";
+import { initVncProxy, handleVncUpgrade } from "./vnc/vnc-proxy.js";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -36,18 +37,22 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`openclaw-api listening on :${port}`);
 
-  initChatProxy({
+  const proxyDeps = {
     jwt: app.get(JwtService),
     managerUrl: app.get(ConfigService).getOrThrow("MANAGER_URL"),
     managerApiKey: app.get(ConfigService).getOrThrow("MANAGER_API_KEY"),
     prisma: app.get(PrismaService),
-  });
+  };
+  initChatProxy(proxyDeps);
+  initVncProxy(proxyDeps);
 
   const server = app.getHttpServer();
   server.on("upgrade", (req: any, socket: any, head: any) => {
     const url = new URL(req.url || "", `http://${req.headers.host}`);
     if (url.pathname.match(/^\/instances\/[^/]+\/chat$/)) {
       handleChatUpgrade(req, socket, head);
+    } else if (url.pathname.match(/^\/instances\/[^/]+\/vnc$/)) {
+      handleVncUpgrade(req, socket, head);
     }
   });
 }
