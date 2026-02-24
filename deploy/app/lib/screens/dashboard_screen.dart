@@ -91,9 +91,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     return Scaffold(
       body: Stack(
         children: [
-          // Atmospheric background
           _AtmosphericBackground(animation: _orbController),
-          // Main content
           SafeArea(
             child: RefreshIndicator(
               onRefresh: () async {
@@ -102,73 +100,183 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ref.read(usageProvider.notifier).refresh(),
                 ]);
               },
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: [
-                  // Minimal header
-                  SizedBox(
-                    height: kToolbarHeight,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'ClawBox',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Chat Hero Tile
-                  if (instance != null)
-                    _StaggeredEntry(
-                      animation: _staggerAnimation(0.0, 0.3),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth;
+                  final isWide = width >= 600;
+                  final cols = isWide ? (width >= 900 ? 4 : 3) : 2;
+                  final maxWidth = isWide ? 900.0 : double.infinity;
+
+                  // Build tile list
+                  final tiles = <_BentoTile>[];
+
+                  if (instance != null) {
+                    tiles.add(_BentoTile(
+                      span: cols,
+                      stagger: _staggerAnimation(0.0, 0.3),
                       child: _ChatHeroTile(
                         isReady: instance.isReady,
                         onTap: () => context.push('/dashboard/chat'),
                       ),
-                    ),
-                  const SizedBox(height: 16),
-                  // Bento Status Row
-                  if (instance != null)
-                    _StaggeredEntry(
-                      animation: _staggerAnimation(0.08, 0.38),
-                      child: _BentoStatusRow(
-                        instance: instance,
+                    ));
+
+                    tiles.add(_BentoTile(
+                      stagger: _staggerAnimation(0.06, 0.36),
+                      child: _InstanceTile(instance: instance),
+                    ));
+
+                    tiles.add(_BentoTile(
+                      stagger: _staggerAnimation(0.12, 0.42),
+                      child: _ChannelsTile(
                         channelState: channelState,
                         telegramInfo: telegramInfo,
                         whatsappInfo: whatsappInfo,
                         discordInfo: discordInfo,
-                        onChannelsTap: () => context.push('/dashboard/channels'),
+                        onTap: () => context.push('/dashboard/channels'),
+                      ),
+                    ));
+
+                    if (usageState.usage != null && usageState.usage!.hasLimit) {
+                      tiles.add(_BentoTile(
+                        stagger: _staggerAnimation(0.18, 0.48),
+                        child: _UsageTile(usage: usageState.usage!),
+                      ));
+                    }
+
+                    if (instance.isReady) {
+                      tiles.add(_BentoTile(
+                        stagger: _staggerAnimation(0.24, 0.54),
+                        child: _RemoteViewTile(
+                          onTap: () => context.push('/dashboard/remote-view'),
+                        ),
+                      ));
+                    }
+
+                    if (instance.manager?.gatewayUrl != null) {
+                      tiles.add(_BentoTile(
+                        stagger: _staggerAnimation(0.30, 0.60),
+                        child: _WebAccessTile(manager: instance.manager!),
+                      ));
+                    }
+                  }
+
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: maxWidth),
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        children: [
+                          SizedBox(
+                            height: kToolbarHeight,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'ClawBox',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  letterSpacing: -0.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                          _BentoGrid(cols: cols, gap: 12, tiles: tiles),
+                          const SizedBox(height: 100),
+                        ],
                       ),
                     ),
-                  // AI Usage
-                  if (instance != null && usageState.usage != null && usageState.usage!.hasLimit) ...[
-                    const SizedBox(height: 16),
-                    _StaggeredEntry(
-                      animation: _staggerAnimation(0.16, 0.46),
-                      child: _UsageTile(usage: usageState.usage!),
-                    ),
-                  ],
-                  // Quick Access Row
-                  if (instance != null) ...[
-                    const SizedBox(height: 16),
-                    _StaggeredEntry(
-                      animation: _staggerAnimation(0.24, 0.54),
-                      child: _QuickAccessRow(
-                        instance: instance,
-                        onRemoteViewTap: instance.isReady
-                            ? () => context.push('/dashboard/remote-view')
-                            : null,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 100),
-                ],
+                  );
+                },
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Bento Grid Layout ─────────────────────────────────────────────────────
+
+class _BentoTile {
+  final int span;
+  final Animation<double> stagger;
+  final Widget child;
+
+  const _BentoTile({
+    this.span = 1,
+    required this.stagger,
+    required this.child,
+  });
+}
+
+class _BentoGrid extends StatelessWidget {
+  final int cols;
+  final double gap;
+  final List<_BentoTile> tiles;
+
+  const _BentoGrid({
+    required this.cols,
+    required this.gap,
+    required this.tiles,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[];
+    int col = 0;
+    List<Widget> currentRow = [];
+    List<int> currentSpans = [];
+
+    for (final tile in tiles) {
+      final span = tile.span.clamp(1, cols);
+
+      // If this tile won't fit on the current row, flush it
+      if (col + span > cols && currentRow.isNotEmpty) {
+        rows.add(_buildRow(currentRow, currentSpans));
+        rows.add(SizedBox(height: gap));
+        currentRow = [];
+        currentSpans = [];
+        col = 0;
+      }
+
+      currentRow.add(
+        _StaggeredEntry(
+          animation: tile.stagger,
+          child: tile.child,
+        ),
+      );
+      currentSpans.add(span);
+      col += span;
+
+      // Row is full
+      if (col >= cols) {
+        rows.add(_buildRow(currentRow, currentSpans));
+        rows.add(SizedBox(height: gap));
+        currentRow = [];
+        currentSpans = [];
+        col = 0;
+      }
+    }
+
+    // Flush remaining tiles
+    if (currentRow.isNotEmpty) {
+      rows.add(_buildRow(currentRow, currentSpans));
+    }
+
+    return Column(children: rows);
+  }
+
+  Widget _buildRow(List<Widget> children, List<int> spans) {
+    if (children.length == 1) {
+      return children.first;
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (int i = 0; i < children.length; i++) ...[
+          if (i > 0) SizedBox(width: gap),
+          Expanded(flex: spans[i], child: children[i]),
+        ],
+      ],
     );
   }
 }
@@ -455,144 +563,137 @@ class _StatusPill extends StatelessWidget {
   }
 }
 
-// ─── Bento Status Row ──────────────────────────────────────────────────────
+// ─── Instance Tile ─────────────────────────────────────────────────────────
 
-class _BentoStatusRow extends StatelessWidget {
+class _InstanceTile extends StatelessWidget {
   final Instance instance;
+
+  const _InstanceTile({required this.instance});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return GlassCard.solid(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.instance.toUpperCase(),
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(
+                Icons.dns_outlined,
+                color: AppColors.textSecondary,
+                size: 28,
+              ),
+              const SizedBox(width: 8),
+              _PulsingDot(
+                color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
+                isActive: instance.isReady,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            instance.isReady
+                ? l10n.statusRunning
+                : (instance.manager?.phase ?? l10n.statusWaiting),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          if (instance.displayName != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              instance.displayName!,
+              style: Theme.of(context).textTheme.bodySmall,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Channels Tile ─────────────────────────────────────────────────────────
+
+class _ChannelsTile extends StatelessWidget {
   final dynamic channelState;
   final dynamic telegramInfo;
   final dynamic whatsappInfo;
   final dynamic discordInfo;
-  final VoidCallback onChannelsTap;
+  final VoidCallback onTap;
 
-  const _BentoStatusRow({
-    required this.instance,
+  const _ChannelsTile({
     required this.channelState,
     this.telegramInfo,
     this.whatsappInfo,
     this.discordInfo,
-    required this.onChannelsTap,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tileWidth = (constraints.maxWidth - 12) / 2;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Instance tile
-            SizedBox(
-              width: tileWidth,
-              child: GlassCard.solid(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.instance.toUpperCase(),
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.dns_outlined,
-                          color: AppColors.textSecondary,
-                          size: 28,
-                        ),
-                        const SizedBox(width: 8),
-                        _PulsingDot(
-                          color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
-                          isActive: instance.isReady,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      instance.isReady
-                          ? l10n.statusRunning
-                          : (instance.manager?.phase ?? l10n.statusWaiting),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    if (instance.displayName != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        instance.displayName!,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ],
+    return GlassCard.solid(
+      padding: const EdgeInsets.all(16),
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.channels.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            // Channels tile
-            SizedBox(
-              width: tileWidth,
-              child: GlassCard.solid(
-                padding: const EdgeInsets.all(16),
-                onTap: onChannelsTap,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l10n.channels.toUpperCase(),
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ),
-                        if (channelState.totalPending > 0)
-                          _PendingBadge(count: channelState.totalPending),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _ChannelIcon(
-                          icon: Icons.telegram,
-                          color: const Color(0xFF26A5E4),
-                          isConnected: telegramInfo?.isConnected ?? false,
-                        ),
-                        const SizedBox(width: 8),
-                        _ChannelIcon(
-                          iconData: FontAwesomeIcons.whatsapp,
-                          color: const Color(0xFF25D366),
-                          isConnected: whatsappInfo?.isConnected ?? false,
-                        ),
-                        const SizedBox(width: 8),
-                        _ChannelIcon(
-                          iconData: FontAwesomeIcons.discord,
-                          color: const Color(0xFF5865F2),
-                          isConnected: discordInfo?.isConnected ?? false,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.channelsSummary(_connectedCount()),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
+              if (channelState.totalPending > 0)
+                _PendingBadge(count: channelState.totalPending),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              _ChannelIcon(
+                icon: Icons.telegram,
+                color: const Color(0xFF26A5E4),
+                isConnected: telegramInfo?.isConnected ?? false,
               ),
+              const SizedBox(width: 8),
+              _ChannelIcon(
+                iconData: FontAwesomeIcons.whatsapp,
+                color: const Color(0xFF25D366),
+                isConnected: whatsappInfo?.isConnected ?? false,
+              ),
+              const SizedBox(width: 8),
+              _ChannelIcon(
+                iconData: FontAwesomeIcons.discord,
+                color: const Color(0xFF5865F2),
+                isConnected: discordInfo?.isConnected ?? false,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.channelsSummary(_connectedCount()),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 
@@ -915,182 +1016,135 @@ class _GlassProgressPainter extends CustomPainter {
   }
 }
 
-// ─── Quick Access Row ──────────────────────────────────────────────────────
+// ─── Remote View Tile ──────────────────────────────────────────────────────
 
-class _QuickAccessRow extends StatelessWidget {
-  final Instance instance;
-  final VoidCallback? onRemoteViewTap;
+class _RemoteViewTile extends StatelessWidget {
+  final VoidCallback onTap;
 
-  const _QuickAccessRow({
-    required this.instance,
-    this.onRemoteViewTap,
-  });
+  const _RemoteViewTile({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final manager = instance.manager;
-    final gatewayReady = manager?.gatewayReady ?? false;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tileWidth = (constraints.maxWidth - 12) / 2;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Remote View
-            SizedBox(
-              width: tileWidth,
-              child: GlassCard.solid(
-                padding: const EdgeInsets.all(16),
-                onTap: onRemoteViewTap,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.desktop_windows,
-                      color: AppColors.textSecondary,
-                      size: 24,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      l10n.remoteView,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.remoteViewDescription,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // Web Access
-            SizedBox(
-              width: tileWidth,
-              child: _buildWebAccessTile(context, l10n, manager, gatewayReady),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildWebAccessTile(
-    BuildContext context,
-    AppLocalizations l10n,
-    ManagerStatus? manager,
-    bool gatewayReady,
-  ) {
-    if (manager?.gatewayUrl != null) {
-      return GlassCard.solid(
-        padding: const EdgeInsets.all(16),
-        onTap: gatewayReady
-            ? () {
-                final url = manager!.gatewayUrl;
-                final token = manager.gatewayToken;
-                if (url != null) {
-                  final webUrl = token != null ? '$url#token=$token' : url;
-                  launchUrl(Uri.parse(webUrl),
-                      mode: LaunchMode.externalApplication);
-                }
-              }
-            : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.language,
-              color: AppColors.textSecondary,
-              size: 24,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              l10n.webAccess,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 4),
-            if (!gatewayReady)
-              Row(
-                children: [
-                  SizedBox(
-                    width: 12,
-                    height: 12,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.5,
-                      color: AppColors.textTertiary,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l10n.webAccessPreparing,
-                      style: TextStyle(
-                        color: AppColors.textTertiary,
-                        fontSize: 11,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              )
-            else
-              Row(
-                children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                      color: AppColors.accentGreen,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: Text(
-                      manager?.gatewayUrl ?? '',
-                      style: TextStyle(
-                        color: AppColors.accent,
-                        fontSize: 11,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-      );
-    }
 
     return GlassCard.solid(
       padding: const EdgeInsets.all(16),
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.desktop_windows,
+            color: AppColors.textSecondary,
+            size: 24,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            l10n.remoteView,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.remoteViewDescription,
+            style: Theme.of(context).textTheme.bodySmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Web Access Tile ───────────────────────────────────────────────────────
+
+class _WebAccessTile extends StatelessWidget {
+  final ManagerStatus manager;
+
+  const _WebAccessTile({required this.manager});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final gatewayReady = manager.gatewayReady ?? false;
+
+    return GlassCard.solid(
+      padding: const EdgeInsets.all(16),
+      onTap: gatewayReady
+          ? () {
+              final url = manager.gatewayUrl;
+              final token = manager.gatewayToken;
+              if (url != null) {
+                final webUrl = token != null ? '$url#token=$token' : url;
+                launchUrl(Uri.parse(webUrl),
+                    mode: LaunchMode.externalApplication);
+              }
+            }
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.language,
-            color: AppColors.textTertiary,
+            color: gatewayReady ? AppColors.textSecondary : AppColors.textTertiary,
             size: 24,
           ),
           const SizedBox(height: 10),
           Text(
             l10n.webAccess,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.textTertiary,
+              color: gatewayReady ? null : AppColors.textTertiary,
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            l10n.webAccessPreparing,
-            style: Theme.of(context).textTheme.bodySmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          if (!gatewayReady)
+            Row(
+              children: [
+                SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.5,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.webAccessPreparing,
+                    style: TextStyle(
+                      color: AppColors.textTertiary,
+                      fontSize: 11,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            )
+          else
+            Row(
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: AppColors.accentGreen,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    manager.gatewayUrl ?? '',
+                    style: TextStyle(
+                      color: AppColors.accent,
+                      fontSize: 11,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
