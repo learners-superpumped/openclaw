@@ -15,6 +15,18 @@ class AppColors {
   static const warning = Color(0xFFFFAB40);
 }
 
+class GlassColors {
+  static const glassSurface = Color(0x1AFFFFFF);
+  static const glassSurfaceHover = Color(0x26FFFFFF);
+  static const glassBorder = Color(0x1AFFFFFF);
+  static const glassBorderAccent = Color(0x4D00E5FF);
+  static const accentGlow = Color(0x3300E5FF);
+  static const innerShine = Color(0x33FFFFFF);
+  static const orbCyan = Color(0xFF00E5FF);
+  static const orbPurple = Color(0xFF7C4DFF);
+  static const orbTeal = Color(0xFF00BFA5);
+}
+
 class AppTheme {
   static ThemeData get dark {
     return ThemeData(
@@ -33,10 +45,11 @@ class AppTheme {
       textTheme: GoogleFonts.interTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w700,
+            fontSize: 34,
+            fontWeight: FontWeight.w300,
             color: AppColors.textPrimary,
-            letterSpacing: -1.0,
+            letterSpacing: -1.5,
+            height: 1.1,
           ),
           displayMedium: TextStyle(
             fontSize: 24,
@@ -45,12 +58,12 @@ class AppTheme {
             letterSpacing: -0.5,
           ),
           titleLarge: TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
           titleMedium: TextStyle(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w500,
             color: AppColors.textPrimary,
           ),
@@ -70,25 +83,25 @@ class AppTheme {
             color: AppColors.textTertiary,
           ),
           labelLarge: TextStyle(
-            fontSize: 14,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-            letterSpacing: 0.5,
+            color: AppColors.textSecondary,
+            letterSpacing: 1.2,
           ),
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
       ),
       cardTheme: CardThemeData(
-        color: AppColors.surface,
+        color: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.border, width: 1),
+          borderRadius: BorderRadius.circular(24),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
