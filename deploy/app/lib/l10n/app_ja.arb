@@ -257,5 +257,10 @@
   "vncConnecting": "接続中...",
   "vncConnected": "接続済み",
   "vncDisconnected": "切断",
-  "vncError": "接続エラー"
+  "vncError": "接続エラー",
+
+  "aiUsage": "AI使用量",
+  "resetsWeekly": "毎週リセット",
+  "resetsMonthly": "毎月リセット",
+  "resetsDaily": "毎日リセット"
 }

@@ -815,4 +815,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get vncError => 'Erro de conexão';
+
+  @override
+  String get aiUsage => 'Uso de IA';
+
+  @override
+  String get resetsWeekly => 'Reinicia semanalmente';
+
+  @override
+  String get resetsMonthly => 'Reinicia mensalmente';
+
+  @override
+  String get resetsDaily => 'Reinicia diariamente';
 }

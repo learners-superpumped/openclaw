@@ -257,5 +257,10 @@
   "vncConnecting": "연결 중...",
   "vncConnected": "연결됨",
   "vncDisconnected": "연결 끊김",
-  "vncError": "연결 오류"
+  "vncError": "연결 오류",
+
+  "aiUsage": "AI 사용량",
+  "resetsWeekly": "매주 초기화",
+  "resetsMonthly": "매월 초기화",
+  "resetsDaily": "매일 초기화"
 }

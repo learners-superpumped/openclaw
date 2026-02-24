@@ -784,4 +784,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get vncError => '接続エラー';
+
+  @override
+  String get aiUsage => 'AI使用量';
+
+  @override
+  String get resetsWeekly => '毎週リセット';
+
+  @override
+  String get resetsMonthly => '毎月リセット';
+
+  @override
+  String get resetsDaily => '毎日リセット';
 }

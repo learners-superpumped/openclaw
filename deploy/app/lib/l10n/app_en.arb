@@ -551,5 +551,14 @@
   "vncDisconnected": "Disconnected",
   "@vncDisconnected": { "description": "VNC disconnected status" },
   "vncError": "Connection Error",
-  "@vncError": { "description": "VNC connection error" }
+  "@vncError": { "description": "VNC connection error" },
+
+  "aiUsage": "AI Usage",
+  "@aiUsage": { "description": "AI usage card title" },
+  "resetsWeekly": "Resets weekly",
+  "@resetsWeekly": { "description": "Weekly reset label" },
+  "resetsMonthly": "Resets monthly",
+  "@resetsMonthly": { "description": "Monthly reset label" },
+  "resetsDaily": "Resets daily",
+  "@resetsDaily": { "description": "Daily reset label" }
 }

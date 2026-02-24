@@ -9,9 +9,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/channel.dart';
 import '../models/instance.dart';
+import '../models/usage.dart';
 import '../providers/channel_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/instance_provider.dart';
+import '../providers/usage_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
@@ -30,9 +32,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Future.microtask(() => ref.read(instanceProvider.notifier).refresh(includeChannels: true));
+    Future.microtask(() {
+      ref.read(instanceProvider.notifier).refresh(includeChannels: true);
+      ref.read(usageProvider.notifier).refresh();
+    });
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
+      ref.read(usageProvider.notifier).refresh();
     });
   }
 
@@ -47,6 +53,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
+      ref.read(usageProvider.notifier).refresh();
     }
   }
 
@@ -63,6 +70,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final authState = ref.watch(authProvider);
     final instanceState = ref.watch(instanceProvider);
     final channelState = ref.watch(channelProvider);
+    final usageState = ref.watch(usageProvider);
     final instance = instanceState.instance;
     final user = authState.user;
 
@@ -108,7 +116,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await ref.read(instanceProvider.notifier).refresh(includeChannels: true);
+          await Future.wait([
+            ref.read(instanceProvider.notifier).refresh(includeChannels: true),
+            ref.read(usageProvider.notifier).refresh(),
+          ]);
         },
         child: ListView(
           padding: const EdgeInsets.all(24),
@@ -247,6 +258,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     ),
                   ],
                 ),
+              ),
+            // AI Usage
+            if (instance != null && usageState.usage != null && usageState.usage!.hasLimit)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: _UsageCard(usage: usageState.usage!),
               ),
             // Remote View
             if (instance != null && instance.isReady)
@@ -620,6 +637,89 @@ class _WebAccessCard extends StatelessWidget {
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UsageCard extends StatelessWidget {
+  final Usage usage;
+  const _UsageCard({required this.usage});
+
+  String _resetLabel(AppLocalizations l10n) {
+    switch (usage.limitReset) {
+      case 'monthly':
+        return l10n.resetsMonthly;
+      case 'daily':
+        return l10n.resetsDaily;
+      default:
+        return l10n.resetsWeekly;
+    }
+  }
+
+  Color _barColor(double fraction) {
+    if (fraction >= 0.9) return AppColors.error;
+    if (fraction >= 0.7) return AppColors.warning;
+    return AppColors.accent;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final fraction = usage.fraction;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                Icon(Icons.bar_chart, color: AppColors.textSecondary, size: 18),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.aiUsage,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+                Text(
+                  _resetLabel(l10n),
+                  style: TextStyle(
+                    color: AppColors.textTertiary,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Progress bar
+            ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: fraction,
+                minHeight: 6,
+                backgroundColor: AppColors.surfaceLight,
+                valueColor: AlwaysStoppedAnimation<Color>(_barColor(fraction)),
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Percentage label
+            Text(
+              '${usage.usage} / 100',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );

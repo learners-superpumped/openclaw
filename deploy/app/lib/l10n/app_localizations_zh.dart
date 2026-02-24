@@ -779,4 +779,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get vncError => '连接错误';
+
+  @override
+  String get aiUsage => 'AI 用量';
+
+  @override
+  String get resetsWeekly => '每周重置';
+
+  @override
+  String get resetsMonthly => '每月重置';
+
+  @override
+  String get resetsDaily => '每天重置';
 }

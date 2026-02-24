@@ -806,4 +806,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vncError => 'Connection Error';
+
+  @override
+  String get aiUsage => 'AI Usage';
+
+  @override
+  String get resetsWeekly => 'Resets weekly';
+
+  @override
+  String get resetsMonthly => 'Resets monthly';
+
+  @override
+  String get resetsDaily => 'Resets daily';
 }

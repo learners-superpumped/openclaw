@@ -54,12 +54,13 @@ export class UsersService {
   async getUsage(userId: string) {
     const key = await this.prisma.openRouterKey.findUnique({ where: { userId } });
     if (!key) {
-      return { limit: 0, used: 0, remaining: 0, limitReset: null };
+      return { usage: 0, limitReset: null };
     }
     const { limit, limitRemaining, limitReset } = await this.openRouterService.getKeyUsage(
       key.keyHash,
     );
-    return { limit, used: limit - limitRemaining, remaining: limitRemaining, limitReset };
+    const usage = limit > 0 ? Math.round(((limit - limitRemaining) / limit) * 100) : 0;
+    return { usage, limitReset };
   }
 
   async activatePromo(userId: string, code: string) {

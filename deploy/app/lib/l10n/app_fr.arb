@@ -257,5 +257,10 @@
   "vncConnecting": "Connexion...",
   "vncConnected": "Connecté",
   "vncDisconnected": "Déconnecté",
-  "vncError": "Erreur de connexion"
+  "vncError": "Erreur de connexion",
+
+  "aiUsage": "Utilisation IA",
+  "resetsWeekly": "Réinitialisation hebdomadaire",
+  "resetsMonthly": "Réinitialisation mensuelle",
+  "resetsDaily": "Réinitialisation quotidienne"
 }

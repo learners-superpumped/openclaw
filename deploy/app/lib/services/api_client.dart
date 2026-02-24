@@ -5,6 +5,7 @@ import '../constants.dart';
 import '../models/auth_tokens.dart';
 import '../models/instance.dart';
 import '../models/skill.dart';
+import '../models/usage.dart';
 import '../models/user.dart';
 import 'auth_interceptor.dart';
 
@@ -62,6 +63,11 @@ class ApiClient {
 
   Future<void> deleteAccount() async {
     await _dio.delete('/users/me');
+  }
+
+  Future<Usage> getUsage() async {
+    final response = await _dio.get('/users/me/usage');
+    return Usage.fromJson(response.data);
   }
 
   // Instances

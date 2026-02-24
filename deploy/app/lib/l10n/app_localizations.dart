@@ -1607,6 +1607,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection Error'**
   String get vncError;
+
+  /// AI usage card title
+  ///
+  /// In en, this message translates to:
+  /// **'AI Usage'**
+  String get aiUsage;
+
+  /// Weekly reset label
+  ///
+  /// In en, this message translates to:
+  /// **'Resets weekly'**
+  String get resetsWeekly;
+
+  /// Monthly reset label
+  ///
+  /// In en, this message translates to:
+  /// **'Resets monthly'**
+  String get resetsMonthly;
+
+  /// Daily reset label
+  ///
+  /// In en, this message translates to:
+  /// **'Resets daily'**
+  String get resetsDaily;
 }
 
 class _AppLocalizationsDelegate

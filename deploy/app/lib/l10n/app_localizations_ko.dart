@@ -785,4 +785,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get vncError => '연결 오류';
+
+  @override
+  String get aiUsage => 'AI 사용량';
+
+  @override
+  String get resetsWeekly => '매주 초기화';
+
+  @override
+  String get resetsMonthly => '매월 초기화';
+
+  @override
+  String get resetsDaily => '매일 초기화';
 }

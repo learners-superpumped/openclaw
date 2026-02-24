@@ -257,5 +257,10 @@
   "vncConnecting": "连接中...",
   "vncConnected": "已连接",
   "vncDisconnected": "已断开",
-  "vncError": "连接错误"
+  "vncError": "连接错误",
+
+  "aiUsage": "AI 用量",
+  "resetsWeekly": "每周重置",
+  "resetsMonthly": "每月重置",
+  "resetsDaily": "每天重置"
 }

@@ -817,4 +817,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get vncError => 'Error de conexión';
+
+  @override
+  String get aiUsage => 'Uso de IA';
+
+  @override
+  String get resetsWeekly => 'Se reinicia semanalmente';
+
+  @override
+  String get resetsMonthly => 'Se reinicia mensualmente';
+
+  @override
+  String get resetsDaily => 'Se reinicia diariamente';
 }
