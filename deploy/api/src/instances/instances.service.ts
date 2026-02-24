@@ -122,6 +122,21 @@ export class InstancesService {
     return this.managerService.logoutTelegram(instanceId, accountId);
   }
 
+  async setupDiscord(userId: string, instanceId: string, botToken: string, accountId?: string) {
+    await this.verifyOwnership(userId, instanceId);
+    return this.managerService.setupDiscord(instanceId, botToken, accountId);
+  }
+
+  async getDiscordStatus(userId: string, instanceId: string, probe?: boolean) {
+    await this.verifyOwnership(userId, instanceId);
+    return this.managerService.getDiscordStatus(instanceId, probe);
+  }
+
+  async logoutDiscord(userId: string, instanceId: string, accountId?: string) {
+    await this.verifyOwnership(userId, instanceId);
+    return this.managerService.logoutDiscord(instanceId, accountId);
+  }
+
   async listPairing(userId: string, instanceId: string, channel: string) {
     await this.verifyOwnership(userId, instanceId);
     return this.managerService.listPairing(instanceId, channel);

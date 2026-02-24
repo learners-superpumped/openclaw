@@ -2,6 +2,7 @@ import type { V1ContainerStatus, V1Pod, V1PodCondition } from "@kubernetes/clien
 import { Router } from "express";
 import { randomBytes } from "node:crypto";
 import { config } from "../config.js";
+import { readGatewayToken } from "../services/instance-auth.js";
 import * as k8s from "../services/k8s-client.js";
 import {
   buildConfigMap,
@@ -72,7 +73,9 @@ const ERROR_REASONS = new Set([
 ]);
 
 function instancePhase(pods: V1Pod[]): string {
-  if (pods.length === 0) return "unknown";
+  if (pods.length === 0) {
+    return "unknown";
+  }
   const pod = pods[0];
   const cs = pod.status?.containerStatuses?.[0];
   if (cs?.state?.waiting?.reason && ERROR_REASONS.has(cs.state.waiting.reason)) {
@@ -234,8 +237,32 @@ instancesRouter.get("/:userId", async (req, res) => {
 
     if (config.ingress.enabled) {
       response.gatewayUrl = `https://${host(userId)}`;
-      const ingress = await k8s.getIngress(resourceName(userId));
-      response.ingressIp = ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
+
+      const [ingress, cert] = await Promise.all([
+        k8s.getIngress(resourceName(userId)),
+        k8s.getManagedCertificate(resourceName(userId)),
+      ]);
+
+      const ingressIp = ingress?.status?.loadBalancer?.ingress?.[0]?.ip || null;
+      const certStatus = (cert as any)?.status;
+
+      response.ingress = { ip: ingressIp, ready: !!ingressIp };
+      response.certificate = {
+        status: certStatus?.certificateStatus || null,
+        ready: certStatus?.certificateStatus === "Active",
+      };
+      response.ingressIp = ingressIp; // backward compat
+      response.gatewayReady =
+        (deployment.status?.readyReplicas ?? 0) > 0 &&
+        !!ingressIp &&
+        certStatus?.certificateStatus === "Active";
+
+      if (response.gatewayReady) {
+        const token = await readGatewayToken(userId);
+        if (token) {
+          response.gatewayToken = token;
+        }
+      }
     }
 
     res.json(response);

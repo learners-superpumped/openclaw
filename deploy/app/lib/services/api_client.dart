@@ -126,6 +126,30 @@ class ApiClient {
     return response.data;
   }
 
+  // Discord
+  Future<Map<String, dynamic>> getDiscordStatus(String instanceId, {bool probe = false}) async {
+    final response = await _dio.get(
+      '/instances/$instanceId/discord/status',
+      queryParameters: probe ? {'probe': 'true'} : null,
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> setupDiscord(String instanceId, String botToken, {String? accountId}) async {
+    final response = await _dio.post('/instances/$instanceId/discord/setup', data: {
+      'botToken': botToken,
+      if (accountId != null) 'accountId': accountId,
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> logoutDiscord(String instanceId, {String? accountId}) async {
+    final response = await _dio.post('/instances/$instanceId/discord/logout', data: {
+      if (accountId != null) 'accountId': accountId,
+    });
+    return response.data as Map<String, dynamic>;
+  }
+
   // Referral
   Future<bool> validateReferral(String code) async {
     final response = await _dio.post('/promo/validate', data: {'code': code});

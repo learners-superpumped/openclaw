@@ -156,6 +156,23 @@ export async function createManagedCertificate(body: object): Promise<object> {
   });
 }
 
+export async function getManagedCertificate(name: string): Promise<object | null> {
+  try {
+    return await customApi.getNamespacedCustomObject({
+      group: CERT_GROUP,
+      version: CERT_VERSION,
+      namespace: ns,
+      plural: CERT_PLURAL,
+      name,
+    });
+  } catch (e: unknown) {
+    if (isNotFound(e)) {
+      return null;
+    }
+    throw e;
+  }
+}
+
 export async function deleteManagedCertificate(name: string): Promise<void> {
   await customApi.deleteNamespacedCustomObject({
     group: CERT_GROUP,

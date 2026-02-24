@@ -9,6 +9,8 @@ import '../models/chat_session.dart';
 
 const _uuid = Uuid();
 
+typedef ConnectionStateCallback = void Function(bool isConnected);
+
 class ChatService {
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
@@ -21,6 +23,9 @@ class ChatService {
   String? _accessToken;
   int _reconnectAttempts = 0;
   static const int _maxReconnectAttempts = 5;
+
+  /// Called when connection state changes (reconnect/disconnect).
+  ConnectionStateCallback? onConnectionStateChanged;
 
   /// Raw event stream for providers to subscribe to.
   Stream<Map<String, dynamic>> get events => _eventController.stream;
@@ -71,6 +76,9 @@ class ChatService {
           _reconnectAttempts = 0;
           if (!authCompleter.isCompleted) {
             authCompleter.complete();
+          } else {
+            // Reconnection succeeded — notify ChatNotifier
+            onConnectionStateChanged?.call(true);
           }
           return;
         }
@@ -121,6 +129,8 @@ class ChatService {
 
   void _handleDisconnect() {
     _isConnected = false;
+    onConnectionStateChanged?.call(false);
+
     // Fail all pending requests
     for (final completer in _pendingRequests.values) {
       if (!completer.isCompleted) {

@@ -33,6 +33,7 @@ class ChatState {
   final List<QueuedMessage> messageQueue;
   final bool isCompacting;
   final int? totalMessageCount;
+  final Set<String> refreshSessionsAfterRunIds;
   final String? error;
 
   const ChatState({
@@ -48,6 +49,7 @@ class ChatState {
     this.messageQueue = const [],
     this.isCompacting = false,
     this.totalMessageCount,
+    this.refreshSessionsAfterRunIds = const {},
     this.error,
   });
 
@@ -101,6 +103,7 @@ class ChatState {
     List<QueuedMessage>? messageQueue,
     bool? isCompacting,
     int? totalMessageCount,
+    Set<String>? refreshSessionsAfterRunIds,
     String? error,
   }) {
     return ChatState(
@@ -116,6 +119,7 @@ class ChatState {
       messageQueue: messageQueue ?? this.messageQueue,
       isCompacting: isCompacting ?? this.isCompacting,
       totalMessageCount: totalMessageCount ?? this.totalMessageCount,
+      refreshSessionsAfterRunIds: refreshSessionsAfterRunIds ?? this.refreshSessionsAfterRunIds,
       error: error,
     );
   }
@@ -159,6 +163,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       _chatService?.dispose();
       _chatService = ChatService();
+      _chatService!.onConnectionStateChanged = _onConnectionStateChanged;
       _listenToEvents();
 
       await _chatService!.connect(instanceId, accessToken);
@@ -188,7 +193,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   /// Send a user message with optional image attachments.
   /// If agent is running, queue the message instead.
-  /// Special commands (/stop, /abort, /new, /reset) are always handled immediately.
+  /// /stop and /abort are handled immediately.
+  /// /new and /reset are sent to the server; sessions refresh on completion.
   Future<void> sendMessage(
     String text, {
     List<ChatAttachment>? images,
@@ -198,16 +204,15 @@ class ChatNotifier extends StateNotifier<ChatState> {
     final sessionKey = state.currentSessionKey;
     if (sessionKey == null) return;
 
-    // Special commands — always execute immediately, never queue
+    // Special commands — /stop and /abort always execute immediately
     final trimmed = text.trim();
     if (trimmed == '/stop' || trimmed == '/abort') {
       await abortChat();
       return;
     }
-    if (trimmed == '/new' || trimmed == '/reset') {
-      await switchSession(null);
-      return;
-    }
+
+    // /new and /reset are sent to the server as regular messages
+    final refreshSessions = trimmed == '/new' || trimmed == '/reset';
 
     // Queue if agent is running
     if (state.isAgentRunning) {
@@ -216,6 +221,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
         text: text,
         attachments: images,
         queuedAt: DateTime.now(),
+        refreshSessions: refreshSessions,
       );
       state = state.copyWith(
         messageQueue: [...state.messageQueue, queued],
@@ -223,12 +229,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
       return;
     }
 
-    await _sendMessageDirect(text, images: images);
+    await _sendMessageDirect(text, images: images, refreshSessions: refreshSessions);
   }
 
   Future<void> _sendMessageDirect(
     String text, {
     List<ChatAttachment>? images,
+    bool refreshSessions = false,
   }) async {
     final sessionKey = state.currentSessionKey;
     if (sessionKey == null) return;
@@ -243,7 +250,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
     );
 
     state = state.copyWith(
-      messages: [...state.messages, userMessage],
+      // /new, /reset: clear old messages to start fresh
+      messages: refreshSessions ? const [] : [...state.messages, userMessage],
       isAgentRunning: true,
       streamingContent: '',
       streamingThinking: null,
@@ -267,6 +275,17 @@ class ChatNotifier extends StateNotifier<ChatState> {
           isAgentRunning: false,
           error: errorMsg,
         );
+      } else if (refreshSessions) {
+        // Track runId so we refresh sessions when this run completes
+        final runId = res['payload']?['runId'] as String?;
+        if (runId != null) {
+          state = state.copyWith(
+            refreshSessionsAfterRunIds: {
+              ...state.refreshSessionsAfterRunIds,
+              runId,
+            },
+          );
+        }
       }
     } catch (e) {
       state = state.copyWith(
@@ -427,6 +446,51 @@ class ChatNotifier extends StateNotifier<ChatState> {
         totalMessageCount: total,
       );
     } catch (_) {}
+  }
+
+  void _onConnectionStateChanged(bool isConnected) {
+    if (!isConnected) {
+      // WebSocket disconnected — save partial streaming content and reset state
+      if (state.streamingContent.isNotEmpty ||
+          state.streamingThinking != null) {
+        final toolCards = _collectToolStreamCards();
+        final partialMessage = ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          role: 'assistant',
+          content: state.streamingContent,
+          timestamp: DateTime.now(),
+          stopReason: 'disconnected',
+          thinkingContent: state.streamingThinking,
+          toolCards: toolCards != null && toolCards.isNotEmpty ? toolCards : null,
+        );
+        state = state.copyWith(
+          connectionState: ChatConnectionState.disconnected,
+          messages: [...state.messages, partialMessage],
+          isAgentRunning: false,
+          streamingContent: '',
+          streamingThinking: null,
+          toolStreamById: const {},
+          toolStreamOrder: const [],
+          messageQueue: const [],
+        );
+      } else {
+        state = state.copyWith(
+          connectionState: ChatConnectionState.disconnected,
+          isAgentRunning: false,
+          streamingContent: '',
+          streamingThinking: null,
+          toolStreamById: const {},
+          toolStreamOrder: const [],
+          messageQueue: const [],
+        );
+      }
+    } else {
+      // WebSocket reconnected — reload history to get server-side completed messages
+      state = state.copyWith(
+        connectionState: ChatConnectionState.connected,
+      );
+      _loadInitialData();
+    }
   }
 
   void _listenToEvents() {
@@ -619,8 +683,30 @@ class ChatNotifier extends StateNotifier<ChatState> {
       toolStreamOrder: const [],
     );
 
+    // Check if this run requires session refresh (/new, /reset)
+    final runId = payload['runId'] as String?;
+    if (runId != null && state.refreshSessionsAfterRunIds.contains(runId)) {
+      _refreshAfterNewSession(runId);
+    }
+
     // Flush message queue
     _flushQueue();
+  }
+
+  /// After /new or /reset completes, reset session key, reload sessions,
+  /// and load the new session's history.
+  Future<void> _refreshAfterNewSession(String runId) async {
+    final newIds = Set<String>.from(state.refreshSessionsAfterRunIds)..remove(runId);
+    // Clear current session so loadSessions auto-selects the new one
+    state = ChatState(
+      connectionState: state.connectionState,
+      messages: const [],
+      sessions: state.sessions,
+      currentSessionKey: null,
+      refreshSessionsAfterRunIds: newIds,
+    );
+    await loadSessions();
+    await _loadHistory();
   }
 
   List<ToolCardData>? _collectToolStreamCards() {
@@ -644,12 +730,21 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   void _handleError(Map<String, dynamic> payload) {
     final error = payload['errorMessage'] as String? ?? 'Unknown error';
+
+    // Remove runId from refresh tracking on error (no session refresh)
+    final runId = payload['runId'] as String?;
+    Set<String>? updatedRunIds;
+    if (runId != null && state.refreshSessionsAfterRunIds.contains(runId)) {
+      updatedRunIds = Set<String>.from(state.refreshSessionsAfterRunIds)..remove(runId);
+    }
+
     state = state.copyWith(
       isAgentRunning: false,
       streamingContent: '',
       streamingThinking: null,
       toolStreamById: const {},
       toolStreamOrder: const [],
+      refreshSessionsAfterRunIds: updatedRunIds,
       error: error,
     );
     _flushQueue();
@@ -676,6 +771,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
         streamingThinking: null,
         toolStreamById: const {},
         toolStreamOrder: const [],
+        // Clear all pending session refresh tracking on abort
+        refreshSessionsAfterRunIds: state.refreshSessionsAfterRunIds.isNotEmpty
+            ? const {}
+            : null,
       );
     } else {
       state = state.copyWith(
@@ -684,6 +783,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
         streamingThinking: null,
         toolStreamById: const {},
         toolStreamOrder: const [],
+        refreshSessionsAfterRunIds: state.refreshSessionsAfterRunIds.isNotEmpty
+            ? const {}
+            : null,
       );
     }
     _flushQueue();
@@ -696,7 +798,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
     state = state.copyWith(
       messageQueue: state.messageQueue.sublist(1),
     );
-    _sendMessageDirect(next.text, images: next.attachments);
+    _sendMessageDirect(
+      next.text,
+      images: next.attachments,
+      refreshSessions: next.refreshSessions,
+    );
   }
 
   // ── Heartbeat filtering ──────────────────────────────────────────

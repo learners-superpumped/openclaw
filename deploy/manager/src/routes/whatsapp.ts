@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
-import { ensureInstanceReady } from "../services/instance-auth.js";
 import { gatewayRpc } from "../services/gateway-rpc.js";
+import { ensureInstanceReady } from "../services/instance-auth.js";
 
 export const whatsappRouter = Router({ mergeParams: true });
 
@@ -44,9 +44,7 @@ whatsappRouter.post("/qr", async (req: Request<{ userId: string }>, res: Respons
     res.json(result.payload);
   } catch (err) {
     console.error("WhatsApp QR error:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to get QR code", details: String(err) });
+    res.status(500).json({ error: "Failed to get QR code", details: String(err) });
   }
 });
 
@@ -87,9 +85,7 @@ whatsappRouter.post("/wait", async (req: Request<{ userId: string }>, res: Respo
     res.json(result.payload);
   } catch (err) {
     console.error("WhatsApp wait error:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to wait for connection", details: String(err) });
+    res.status(500).json({ error: "Failed to wait for connection", details: String(err) });
   }
 });
 
@@ -103,26 +99,37 @@ whatsappRouter.get("/status", async (req: Request<{ userId: string }>, res: Resp
       return;
     }
 
-    // Use channel.status RPC to check WhatsApp connection state
+    const probe = req.query.probe === "true";
+
     const result = await gatewayRpc(
       userId,
       check.token,
-      "channel.status",
-      { channelId: "whatsapp" },
+      "channels.status",
+      { probe, timeoutMs: 10_000 },
       15_000,
     );
 
     if (!result.ok) {
-      // If channel.status is not available, return basic info
-      res.json({ userId, whatsapp: { connected: false, available: false } });
+      res.json({ userId, connected: false, whatsapp: null });
       return;
     }
 
-    res.json({ userId, whatsapp: result.payload });
+    const payload = result.payload as {
+      channels?: { whatsapp?: { configured?: boolean; running?: boolean; [key: string]: unknown } };
+      channelAccounts?: { whatsapp?: unknown };
+    };
+
+    const whatsapp = payload?.channels?.whatsapp;
+
+    res.json({
+      userId,
+      connected: !!(whatsapp?.configured && whatsapp?.running),
+      whatsapp: whatsapp ?? null,
+      accounts: payload?.channelAccounts?.whatsapp ?? null,
+    });
   } catch (err) {
-    console.error("WhatsApp status error:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to get status", details: String(err) });
+    // Gateway may be restarting — return offline status instead of 500
+    const { userId } = req.params;
+    res.json({ userId, connected: false, restarting: true, whatsapp: null });
   }
 });

@@ -124,11 +124,13 @@ class QueuedMessage {
   final String text;
   final List<ChatAttachment>? attachments;
   final DateTime queuedAt;
+  final bool refreshSessions;
 
   const QueuedMessage({
     required this.id,
     required this.text,
     this.attachments,
     required this.queuedAt,
+    this.refreshSessions = false,
   });
 }

@@ -114,6 +114,39 @@ export class ManagerService {
     return data;
   }
 
+  async setupDiscord(instanceId: string, botToken: string, accountId?: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.post(
+        `${this.baseUrl}/api/instances/${instanceId}/discord/setup`,
+        { token: botToken, ...(accountId ? { accountId } : {}) },
+        { headers: this.headers },
+      ),
+    );
+    return data;
+  }
+
+  async getDiscordStatus(instanceId: string, probe?: boolean) {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/discord/status`, {
+        headers: this.headers,
+        params: probe ? { probe: "true" } : {},
+        timeout: 20_000,
+      }),
+    );
+    return data;
+  }
+
+  async logoutDiscord(instanceId: string, accountId?: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.post(
+        `${this.baseUrl}/api/instances/${instanceId}/discord/logout`,
+        accountId ? { accountId } : {},
+        { headers: this.headers },
+      ),
+    );
+    return data;
+  }
+
   async listPairing(instanceId: string, channel: string) {
     const { data } = await firstValueFrom(
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/pairing/list`, {

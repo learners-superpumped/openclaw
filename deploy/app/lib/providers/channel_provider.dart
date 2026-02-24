@@ -109,6 +109,36 @@ class ChannelNotifier extends StateNotifier<ChannelState> {
       );
     }
 
+    // Load Discord status
+    try {
+      final status = await apiClient.getDiscordStatus(instance.instanceId);
+      final isConnected = status['connected'] == true;
+      String? botUsername;
+      if (isConnected) {
+        final discord = status['discord'] as Map<String, dynamic>?;
+        botUsername = discord?['name'] as String?;
+      }
+      int pendingCount = 0;
+      if (isConnected) {
+        try {
+          final codes = await apiClient.listPairing(instance.instanceId, 'discord');
+          pendingCount = codes.length;
+        } catch (_) {}
+      }
+      results[ChannelType.discord] = ChannelInfo(
+        type: ChannelType.discord,
+        displayName: 'Discord',
+        isConnected: isConnected,
+        subtitle: botUsername,
+        pendingPairings: pendingCount,
+      );
+    } catch (_) {
+      results[ChannelType.discord] = const ChannelInfo(
+        type: ChannelType.discord,
+        displayName: 'Discord',
+      );
+    }
+
     state = ChannelState(channels: results, isLoading: false);
   }
 }

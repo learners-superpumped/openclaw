@@ -1,4 +1,4 @@
-enum ChannelType { telegram, whatsapp }
+enum ChannelType { telegram, whatsapp, discord }
 
 class ChannelInfo {
   final ChannelType type;

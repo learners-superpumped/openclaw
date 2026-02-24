@@ -18,6 +18,9 @@ import 'screens/splash_screen.dart';
 import 'screens/telegram_detail_screen.dart';
 import 'screens/telegram_pairing_screen.dart';
 import 'screens/telegram_setup_screen.dart';
+import 'screens/discord_detail_screen.dart';
+import 'screens/discord_setup_screen.dart';
+import 'screens/discord_pairing_screen.dart';
 import 'screens/whatsapp_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -137,6 +140,36 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'whatsapp',
                 builder: (context, state) => const WhatsAppDetailScreen(),
+              ),
+              GoRoute(
+                path: 'discord',
+                builder: (context, state) => const DiscordDetailScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'setup',
+                    builder: (context, state) {
+                      final router = GoRouter.of(context);
+                      return Scaffold(
+                        appBar: AppBar(),
+                        body: DiscordSetupScreen(
+                          onTokenSubmitted: () async {
+                            await router.push('/dashboard/channels/discord/pairing');
+                            if (context.mounted) router.pop();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'pairing',
+                    builder: (context, state) => Scaffold(
+                      appBar: AppBar(),
+                      body: DiscordPairingScreen(
+                        onPairingComplete: () => GoRouter.of(context).pop(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

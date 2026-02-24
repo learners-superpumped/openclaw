@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Query, Request } fr
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ApprovePairingDto } from "./dto/approve-pairing.dto.js";
 import { CreateInstanceDto } from "./dto/create-instance.dto.js";
+import { SetupDiscordDto } from "./dto/setup-discord.dto.js";
 import { SetupTelegramDto } from "./dto/setup-telegram.dto.js";
 import { InstancesService } from "./instances.service.js";
 
@@ -86,6 +87,41 @@ export class InstancesController {
     @Body() body: { accountId?: string },
   ) {
     return this.instancesService.logoutTelegram(req.user.sub, instanceId, body.accountId);
+  }
+
+  @Post(":instanceId/discord/setup")
+  @ApiOperation({ summary: "Discord 봇 토큰 설정" })
+  setupDiscord(
+    @Request() req: any,
+    @Param("instanceId") instanceId: string,
+    @Body() dto: SetupDiscordDto,
+  ) {
+    return this.instancesService.setupDiscord(
+      req.user.sub,
+      instanceId,
+      dto.botToken,
+      dto.accountId,
+    );
+  }
+
+  @Get(":instanceId/discord/status")
+  @ApiOperation({ summary: "Discord 연결 상태" })
+  getDiscordStatus(
+    @Request() req: any,
+    @Param("instanceId") instanceId: string,
+    @Query("probe") probe?: string,
+  ) {
+    return this.instancesService.getDiscordStatus(req.user.sub, instanceId, probe === "true");
+  }
+
+  @Post(":instanceId/discord/logout")
+  @ApiOperation({ summary: "Discord 연결 해제" })
+  logoutDiscord(
+    @Request() req: any,
+    @Param("instanceId") instanceId: string,
+    @Body() body: { accountId?: string },
+  ) {
+    return this.instancesService.logoutDiscord(req.user.sub, instanceId, body.accountId);
   }
 
   @Get(":instanceId/pairing/list")
