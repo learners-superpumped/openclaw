@@ -143,6 +143,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     if (usageState.usage != null && usageState.usage!.hasLimit) {
                       tiles.add(_BentoTile(
                         key: 'usage',
+                        span: cols,
                         stagger: _staggerAnimation(0.18, 0.48),
                         child: _UsageTile(usage: usageState.usage!),
                       ));
