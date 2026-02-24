@@ -761,4 +761,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get gatewayCertificate => '证书';
+
+  @override
+  String get remoteView => '远程画面';
+
+  @override
+  String get remoteViewDescription => '实时查看代理屏幕';
+
+  @override
+  String get vncConnecting => '连接中...';
+
+  @override
+  String get vncConnected => '已连接';
+
+  @override
+  String get vncDisconnected => '已断开';
+
+  @override
+  String get vncError => '连接错误';
 }

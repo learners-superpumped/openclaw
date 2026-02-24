@@ -1571,6 +1571,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Certificate'**
   String get gatewayCertificate;
+
+  /// Remote view card title
+  ///
+  /// In en, this message translates to:
+  /// **'Remote View'**
+  String get remoteView;
+
+  /// Remote view card description
+  ///
+  /// In en, this message translates to:
+  /// **'Watch agent screen in real-time'**
+  String get remoteViewDescription;
+
+  /// VNC connecting status
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get vncConnecting;
+
+  /// VNC connected status
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get vncConnected;
+
+  /// VNC disconnected status
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get vncDisconnected;
+
+  /// VNC connection error
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get vncError;
 }
 
 class _AppLocalizationsDelegate

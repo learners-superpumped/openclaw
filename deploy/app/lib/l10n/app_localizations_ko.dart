@@ -767,4 +767,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get gatewayCertificate => '인증서';
+
+  @override
+  String get remoteView => '원격 화면';
+
+  @override
+  String get remoteViewDescription => '에이전트의 화면을 실시간으로 봅니다';
+
+  @override
+  String get vncConnecting => '연결 중...';
+
+  @override
+  String get vncConnected => '연결됨';
+
+  @override
+  String get vncDisconnected => '연결 끊김';
+
+  @override
+  String get vncError => '연결 오류';
 }

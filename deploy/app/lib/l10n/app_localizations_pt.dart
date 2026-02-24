@@ -797,4 +797,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get gatewayCertificate => 'Certificado';
+
+  @override
+  String get remoteView => 'Visualização Remota';
+
+  @override
+  String get remoteViewDescription => 'Assistir tela do agente em tempo real';
+
+  @override
+  String get vncConnecting => 'Conectando...';
+
+  @override
+  String get vncConnected => 'Conectado';
+
+  @override
+  String get vncDisconnected => 'Desconectado';
+
+  @override
+  String get vncError => 'Erro de conexão';
 }

@@ -766,4 +766,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get gatewayCertificate => '証明書';
+
+  @override
+  String get remoteView => 'リモート画面';
+
+  @override
+  String get remoteViewDescription => 'エージェントの画面をリアルタイムで表示';
+
+  @override
+  String get vncConnecting => '接続中...';
+
+  @override
+  String get vncConnected => '接続済み';
+
+  @override
+  String get vncDisconnected => '切断';
+
+  @override
+  String get vncError => '接続エラー';
 }

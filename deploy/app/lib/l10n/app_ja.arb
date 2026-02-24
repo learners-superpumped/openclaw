@@ -250,5 +250,12 @@
   "webAccess": "Webアクセス",
   "webAccessPreparing": "Webアクセスを準備中...",
   "gatewayNetwork": "ネットワーク",
-  "gatewayCertificate": "証明書"
+  "gatewayCertificate": "証明書",
+
+  "remoteView": "リモート画面",
+  "remoteViewDescription": "エージェントの画面をリアルタイムで表示",
+  "vncConnecting": "接続中...",
+  "vncConnected": "接続済み",
+  "vncDisconnected": "切断",
+  "vncError": "接続エラー"
 }

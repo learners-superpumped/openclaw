@@ -250,5 +250,12 @@
   "webAccess": "Web 访问",
   "webAccessPreparing": "正在准备 Web 访问...",
   "gatewayNetwork": "网络",
-  "gatewayCertificate": "证书"
+  "gatewayCertificate": "证书",
+
+  "remoteView": "远程画面",
+  "remoteViewDescription": "实时查看代理屏幕",
+  "vncConnecting": "连接中...",
+  "vncConnected": "已连接",
+  "vncDisconnected": "已断开",
+  "vncError": "连接错误"
 }

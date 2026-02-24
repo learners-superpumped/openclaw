@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VNC Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0A0A0A; }
+    #screen { width: 100%; height: 100%; }
+    #status {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; color: #9E9E9E; font-family: -apple-system, sans-serif;
+      font-size: 14px;
+    }
+    #status.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div id="status">Connecting...</div>
+  <div id="screen"></div>
+
+  <script type="module">
+    import RFB from './core/rfb.js';
+
+    let rfb = null;
+
+    // Report status to Flutter (mobile: JavaScriptChannel, web: postMessage)
+    function reportStatus(data) {
+      const json = JSON.stringify(data);
+      if (window.VncStatus) {
+        window.VncStatus.postMessage(json);
+      }
+      if (window.parent !== window) {
+        window.parent.postMessage(json, '*');
+      }
+    }
+
+    // Connect function called from Flutter or auto-invoked via URL hash
+    window.connectVnc = function(wsUrl, jwtToken) {
+      const statusEl = document.getElementById('status');
+      const screenEl = document.getElementById('screen');
+
+      // Clean up previous connection
+      if (rfb) {
+        try { rfb.disconnect(); } catch(_) {}
+        rfb = null;
+        while (screenEl.firstChild) screenEl.removeChild(screenEl.firstChild);
+      }
+
+      try {
+        statusEl.textContent = 'Authenticating...';
+        statusEl.classList.remove('hidden');
+
+        // Override WebSocket constructor for noVNC
+        const OrigWebSocket = window.WebSocket;
+
+        window.WebSocket = function(url, protocols) {
+          const ws = new OrigWebSocket(url, protocols);
+
+          // Intercept: hold open event until auth is done
+          let authCompleted = false;
+          const capturedOpenListeners = [];
+          const origAdd = ws.addEventListener.bind(ws);
+          const origRemove = ws.removeEventListener.bind(ws);
+
+          ws.addEventListener = function(type, fn, opts) {
+            if (!authCompleted && type === 'open') {
+              capturedOpenListeners.push({ fn, opts });
+              return;
+            }
+            origAdd(type, fn, opts);
+          };
+
+          ws.removeEventListener = function(type, fn, opts) {
+            if (!authCompleted && type === 'open') {
+              const idx = capturedOpenListeners.findIndex(e => e.fn === fn);
+              if (idx !== -1) capturedOpenListeners.splice(idx, 1);
+              return;
+            }
+            origRemove(type, fn, opts);
+          };
+
+          // Auth message handler
+          function authMessageHandler(event) {
+            if (authCompleted) return;
+            try {
+              const data = JSON.parse(event.data);
+              if (data.type === 'auth_required') {
+                ws.send(JSON.stringify({ type: 'auth', token: jwtToken }));
+                event.stopImmediatePropagation();
+                return;
+              }
+              if (data.type === 'auth_ok') {
+                authCompleted = true;
+                event.stopImmediatePropagation();
+                origRemove('message', authMessageHandler);
+
+                // Restore original addEventListener
+                ws.addEventListener = origAdd;
+                ws.removeEventListener = origRemove;
+
+                // Fire delayed open events
+                for (const entry of capturedOpenListeners) {
+                  try { entry.fn(new Event('open')); } catch(e) { console.error(e); }
+                }
+                return;
+              }
+              if (data.type === 'auth_error') {
+                event.stopImmediatePropagation();
+                ws.close();
+                reportStatus({ type: 'error', message: data.message || 'Auth failed' });
+                return;
+              }
+            } catch(e) {
+              // Not JSON — if auth is done this is VNC data, let it through
+            }
+          }
+
+          origAdd('message', authMessageHandler);
+
+          return ws;
+        };
+        window.WebSocket.CONNECTING = OrigWebSocket.CONNECTING;
+        window.WebSocket.OPEN = OrigWebSocket.OPEN;
+        window.WebSocket.CLOSING = OrigWebSocket.CLOSING;
+        window.WebSocket.CLOSED = OrigWebSocket.CLOSED;
+        window.WebSocket.prototype = OrigWebSocket.prototype;
+
+        // Create RFB connection
+        rfb = new RFB(screenEl, wsUrl, {
+          wsProtocols: [],
+        });
+
+        // Restore original WebSocket
+        window.WebSocket = OrigWebSocket;
+
+        rfb.scaleViewport = true;
+        rfb.resizeSession = false;
+        rfb.showDotCursor = true;
+        rfb.qualityLevel = 6;
+        rfb.compressionLevel = 2;
+
+        rfb.addEventListener('connect', () => {
+          statusEl.classList.add('hidden');
+          reportStatus({ type: 'connected' });
+        });
+
+        rfb.addEventListener('disconnect', (e) => {
+          statusEl.textContent = 'Disconnected';
+          statusEl.classList.remove('hidden');
+          reportStatus({ type: 'disconnected', clean: e.detail.clean });
+        });
+
+        rfb.addEventListener('credentialsrequired', () => {
+          reportStatus({ type: 'error', message: 'VNC credentials required' });
+        });
+
+      } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.classList.remove('hidden');
+        reportStatus({ type: 'error', message: e.message });
+      }
+    };
+
+    // Disconnect function
+    window.disconnectVnc = function() {
+      if (rfb) {
+        rfb.disconnect();
+        rfb = null;
+      }
+    };
+
+    // Auto-connect from URL hash (for web iframe)
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const wsUrl = params.get('wsUrl');
+      const token = params.get('token');
+      if (wsUrl && token) {
+        window.connectVnc(wsUrl, token);
+      }
+    }
+  </script>
+</body>
+</html>

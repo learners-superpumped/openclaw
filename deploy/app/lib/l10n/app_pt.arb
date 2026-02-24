@@ -250,5 +250,12 @@
   "webAccess": "Acesso Web",
   "webAccessPreparing": "Preparando acesso web...",
   "gatewayNetwork": "Rede",
-  "gatewayCertificate": "Certificado"
+  "gatewayCertificate": "Certificado",
+
+  "remoteView": "Visualização Remota",
+  "remoteViewDescription": "Assistir tela do agente em tempo real",
+  "vncConnecting": "Conectando...",
+  "vncConnected": "Conectado",
+  "vncDisconnected": "Desconectado",
+  "vncError": "Erro de conexão"
 }

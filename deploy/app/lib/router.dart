@@ -21,6 +21,7 @@ import 'screens/telegram_setup_screen.dart';
 import 'screens/discord_detail_screen.dart';
 import 'screens/discord_setup_screen.dart';
 import 'screens/discord_pairing_screen.dart';
+import 'screens/vnc_screen.dart';
 import 'screens/whatsapp_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -172,6 +173,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ],
               ),
             ],
+          ),
+          GoRoute(
+            path: 'remote-view',
+            builder: (context, state) => const VncScreen(),
           ),
           // Legacy route redirect
           GoRoute(

@@ -538,5 +538,18 @@
   "gatewayNetwork": "Network",
   "@gatewayNetwork": { "description": "Ingress status label" },
   "gatewayCertificate": "Certificate",
-  "@gatewayCertificate": { "description": "Certificate status label" }
+  "@gatewayCertificate": { "description": "Certificate status label" },
+
+  "remoteView": "Remote View",
+  "@remoteView": { "description": "Remote view card title" },
+  "remoteViewDescription": "Watch agent screen in real-time",
+  "@remoteViewDescription": { "description": "Remote view card description" },
+  "vncConnecting": "Connecting...",
+  "@vncConnecting": { "description": "VNC connecting status" },
+  "vncConnected": "Connected",
+  "@vncConnected": { "description": "VNC connected status" },
+  "vncDisconnected": "Disconnected",
+  "@vncDisconnected": { "description": "VNC disconnected status" },
+  "vncError": "Connection Error",
+  "@vncError": { "description": "VNC connection error" }
 }

@@ -30,10 +30,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Future.microtask(() => ref.read(channelProvider.notifier).loadAll());
+    Future.microtask(() => ref.read(instanceProvider.notifier).refresh(includeChannels: true));
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      ref.read(instanceProvider.notifier).refresh();
-      ref.read(channelProvider.notifier).loadAll();
+      ref.read(instanceProvider.notifier).refresh(includeChannels: true);
     });
   }
 
@@ -47,8 +46,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(instanceProvider.notifier).refresh();
-      ref.read(channelProvider.notifier).loadAll();
+      ref.read(instanceProvider.notifier).refresh(includeChannels: true);
     }
   }
 
@@ -110,8 +108,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.read(instanceProvider.notifier).refresh();
-          await ref.read(channelProvider.notifier).loadAll();
+          await ref.read(instanceProvider.notifier).refresh(includeChannels: true);
         },
         child: ListView(
           padding: const EdgeInsets.all(24),
@@ -250,6 +247,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     ),
                   ],
                 ),
+              ),
+            // Remote View
+            if (instance != null && instance.isReady)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: _RemoteViewCard(),
               ),
             // Web Access Section
             if (instance != null && instance.manager?.gatewayUrl != null)
@@ -452,6 +455,52 @@ class _ChannelDot extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RemoteViewCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.push('/dashboard/remote-view'),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.desktop_windows, color: AppColors.textSecondary, size: 18),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.remoteView,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.chevron_right,
+                      color: AppColors.textTertiary, size: 18),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                l10n.remoteViewDescription,
+                style: TextStyle(
+                  color: AppColors.textTertiary,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
