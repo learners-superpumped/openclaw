@@ -62,11 +62,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: l10n.manageSubscription,
                 onTap: () => RevenueCatService.showCustomerCenter(),
               ),
-              _SettingsItem(
-                icon: Icons.forum_outlined,
-                title: l10n.channels,
-                onTap: () => context.push('/dashboard/channels'),
-              ),
             ],
           ),
           const SizedBox(height: 24),
