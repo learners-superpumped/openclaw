@@ -49,9 +49,9 @@ spec:
                 secretKeyRef:
                   name: openclaw-manager
                   key: API_KEY
-            # Ingress 비활성화 (기본값). 공개 노출이 필요하면 "true"로 변경.
+            # Ingress 활성화: 각 인스턴스에 {userId}.openclaw.zazz.buzz 도메인 + ManagedCertificate 생성
             - name: OPENCLAW_INGRESS_ENABLED
-              value: "false"
+              value: "true"
           resources:
             requests:
               cpu: 250m
