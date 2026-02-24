@@ -818,4 +818,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetsDaily => 'Resets daily';
+
+  @override
+  String get orDivider => 'OR';
+
+  @override
+  String get viewOnWeb => 'View on ClawHub';
 }

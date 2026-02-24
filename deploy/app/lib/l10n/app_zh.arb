@@ -262,5 +262,7 @@
   "aiUsage": "AI 用量",
   "resetsWeekly": "每周重置",
   "resetsMonthly": "每月重置",
-  "resetsDaily": "每天重置"
+  "resetsDaily": "每天重置",
+  "orDivider": "或",
+  "viewOnWeb": "在ClawHub上查看"
 }

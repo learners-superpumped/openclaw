@@ -262,5 +262,7 @@
   "aiUsage": "AI使用量",
   "resetsWeekly": "毎週リセット",
   "resetsMonthly": "毎月リセット",
-  "resetsDaily": "毎日リセット"
+  "resetsDaily": "毎日リセット",
+  "orDivider": "または",
+  "viewOnWeb": "ClawHubで見る"
 }

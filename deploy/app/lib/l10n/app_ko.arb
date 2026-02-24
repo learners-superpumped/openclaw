@@ -262,5 +262,7 @@
   "aiUsage": "AI 사용량",
   "resetsWeekly": "매주 초기화",
   "resetsMonthly": "매월 초기화",
-  "resetsDaily": "매일 초기화"
+  "resetsDaily": "매일 초기화",
+  "orDivider": "또는",
+  "viewOnWeb": "ClawHub에서 보기"
 }

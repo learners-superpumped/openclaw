@@ -262,5 +262,7 @@
   "aiUsage": "Uso de IA",
   "resetsWeekly": "Se reinicia semanalmente",
   "resetsMonthly": "Se reinicia mensualmente",
-  "resetsDaily": "Se reinicia diariamente"
+  "resetsDaily": "Se reinicia diariamente",
+  "orDivider": "O",
+  "viewOnWeb": "Ver en ClawHub"
 }

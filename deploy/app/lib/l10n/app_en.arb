@@ -560,5 +560,10 @@
   "resetsMonthly": "Resets monthly",
   "@resetsMonthly": { "description": "Monthly reset label" },
   "resetsDaily": "Resets daily",
-  "@resetsDaily": { "description": "Daily reset label" }
+  "@resetsDaily": { "description": "Daily reset label" },
+  "orDivider": "OR",
+  "@orDivider": { "description": "Divider text between primary and secondary actions" },
+
+  "viewOnWeb": "View on ClawHub",
+  "@viewOnWeb": { "description": "View on ClawHub button on skill detail" }
 }

@@ -796,4 +796,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get resetsDaily => '毎日リセット';
+
+  @override
+  String get orDivider => 'または';
+
+  @override
+  String get viewOnWeb => 'ClawHubで見る';
 }

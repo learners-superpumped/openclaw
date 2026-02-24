@@ -1631,6 +1631,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resets daily'**
   String get resetsDaily;
+
+  /// Divider text between primary and secondary actions
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get orDivider;
+
+  /// View on ClawHub button on skill detail
+  ///
+  /// In en, this message translates to:
+  /// **'View on ClawHub'**
+  String get viewOnWeb;
 }
 
 class _AppLocalizationsDelegate

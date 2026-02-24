@@ -791,4 +791,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get resetsDaily => '每天重置';
+
+  @override
+  String get orDivider => '或';
+
+  @override
+  String get viewOnWeb => '在ClawHub上查看';
 }

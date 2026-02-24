@@ -827,4 +827,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get resetsDaily => 'Reinicia diariamente';
+
+  @override
+  String get orDivider => 'OU';
+
+  @override
+  String get viewOnWeb => 'Ver no ClawHub';
 }

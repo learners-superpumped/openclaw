@@ -797,4 +797,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get resetsDaily => '매일 초기화';
+
+  @override
+  String get orDivider => '또는';
+
+  @override
+  String get viewOnWeb => 'ClawHub에서 보기';
 }

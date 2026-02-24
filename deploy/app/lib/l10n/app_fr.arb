@@ -262,5 +262,7 @@
   "aiUsage": "Utilisation IA",
   "resetsWeekly": "Réinitialisation hebdomadaire",
   "resetsMonthly": "Réinitialisation mensuelle",
-  "resetsDaily": "Réinitialisation quotidienne"
+  "resetsDaily": "Réinitialisation quotidienne",
+  "orDivider": "OU",
+  "viewOnWeb": "Voir sur ClawHub"
 }
