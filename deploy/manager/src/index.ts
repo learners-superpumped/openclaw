@@ -1,6 +1,7 @@
 import express from "express";
 import { config } from "./config.js";
 import { authMiddleware } from "./middleware/auth.js";
+import { channelsRouter } from "./routes/channels.js";
 import { handleChatUpgrade } from "./routes/chat-proxy.js";
 import { discordRouter } from "./routes/discord.js";
 import { gatewayProxyRouter } from "./routes/gateway-proxy.js";
@@ -28,6 +29,7 @@ app.use("/api/instances", instancesRouter);
 app.use("/api/instances/:userId/whatsapp", whatsappRouter);
 app.use("/api/instances/:userId/telegram", telegramRouter);
 app.use("/api/instances/:userId/discord", discordRouter);
+app.use("/api/instances/:userId/channels", channelsRouter);
 app.use("/api/instances/:userId/pairing", pairingRouter);
 app.use("/api/instances/:userId/skills", skillsRouter);
 app.use("/api/instances/:userId/rpc", gatewayProxyRouter);

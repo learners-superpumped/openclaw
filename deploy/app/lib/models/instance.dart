@@ -3,6 +3,7 @@ class Instance {
   final String instanceId;
   final String? displayName;
   final ManagerStatus? manager;
+  final EmbeddedChannels? channels;
   final DateTime createdAt;
 
   const Instance({
@@ -10,6 +11,7 @@ class Instance {
     required this.instanceId,
     this.displayName,
     this.manager,
+    this.channels,
     required this.createdAt,
   });
 
@@ -21,11 +23,48 @@ class Instance {
       manager: json['manager'] != null
           ? ManagerStatus.fromJson(json['manager'] as Map<String, dynamic>)
           : null,
+      channels: json['channels'] != null
+          ? EmbeddedChannels.fromJson(json['channels'] as Map<String, dynamic>)
+          : null,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
 
   bool get isReady => manager?.ready ?? false;
+}
+
+class EmbeddedChannels {
+  final Map<String, bool> connected;
+  final Map<String, dynamic> channelDetails;
+  final Map<String, int> pairingCounts;
+
+  const EmbeddedChannels({
+    required this.connected,
+    required this.channelDetails,
+    required this.pairingCounts,
+  });
+
+  factory EmbeddedChannels.fromJson(Map<String, dynamic> json) {
+    final connected = <String, bool>{};
+    final rawConnected = json['connected'] as Map<String, dynamic>? ?? {};
+    for (final entry in rawConnected.entries) {
+      connected[entry.key] = entry.value == true;
+    }
+
+    final channelDetails = json['channels'] as Map<String, dynamic>? ?? {};
+
+    final pairingCounts = <String, int>{};
+    final rawPairing = json['pairingCounts'] as Map<String, dynamic>? ?? {};
+    for (final entry in rawPairing.entries) {
+      pairingCounts[entry.key] = (entry.value as num?)?.toInt() ?? 0;
+    }
+
+    return EmbeddedChannels(
+      connected: connected,
+      channelDetails: channelDetails,
+      pairingCounts: pairingCounts,
+    );
+  }
 }
 
 class ManagerStatus {

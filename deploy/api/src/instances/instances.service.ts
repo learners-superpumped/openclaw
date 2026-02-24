@@ -79,10 +79,40 @@ export class InstancesService {
     return enriched;
   }
 
-  async findOne(userId: string, instanceId: string) {
+  async findOne(
+    userId: string,
+    instanceId: string,
+    options?: { include?: string[]; probe?: boolean },
+  ) {
     const instance = await this.verifyOwnership(userId, instanceId);
     const managerStatus = await this.managerService.getInstance(instanceId);
-    return { ...instance, manager: managerStatus };
+    const result: Record<string, unknown> = { ...instance, manager: managerStatus };
+
+    if (options?.include?.includes("channels")) {
+      let channelsData: Record<string, unknown> | null = null;
+      try {
+        channelsData = await this.managerService.getAllChannelsStatus(instanceId, options.probe);
+      } catch {}
+
+      if (channelsData) {
+        const connected = (channelsData.connected as Record<string, boolean>) ?? {};
+        const pairingCounts: Record<string, number> = {};
+        const pairingPromises = Object.entries(connected)
+          .filter(([, v]) => v)
+          .map(async ([ch]) => {
+            try {
+              const res = await this.managerService.listPairing(instanceId, ch);
+              pairingCounts[ch] = res?.requests?.length ?? 0;
+            } catch {
+              pairingCounts[ch] = 0;
+            }
+          });
+        await Promise.all(pairingPromises);
+        result.channels = { ...channelsData, pairingCounts };
+      }
+    }
+
+    return result;
   }
 
   async remove(userId: string, instanceId: string) {
@@ -135,6 +165,11 @@ export class InstancesService {
   async logoutDiscord(userId: string, instanceId: string, accountId?: string) {
     await this.verifyOwnership(userId, instanceId);
     return this.managerService.logoutDiscord(instanceId, accountId);
+  }
+
+  async getAllChannelsStatus(userId: string, instanceId: string, probe?: boolean) {
+    await this.verifyOwnership(userId, instanceId);
+    return this.managerService.getAllChannelsStatus(instanceId, probe);
   }
 
   async listPairing(userId: string, instanceId: string, channel: string) {

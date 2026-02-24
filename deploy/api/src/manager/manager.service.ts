@@ -147,6 +147,17 @@ export class ManagerService {
     return data;
   }
 
+  async getAllChannelsStatus(instanceId: string, probe?: boolean) {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/channels/status`, {
+        headers: this.headers,
+        params: probe ? { probe: "true" } : {},
+        timeout: 20_000,
+      }),
+    );
+    return data;
+  }
+
   async listPairing(instanceId: string, channel: string) {
     const { data } = await firstValueFrom(
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/pairing/list`, {

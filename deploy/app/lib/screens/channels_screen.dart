@@ -47,7 +47,7 @@ class _ChannelsScreenState extends ConsumerState<ChannelsScreen> {
         title: Text(l10n.channels),
       ),
       body: RefreshIndicator(
-        onRefresh: () => ref.read(channelProvider.notifier).loadAll(),
+        onRefresh: () => ref.read(channelProvider.notifier).loadAll(force: true),
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [

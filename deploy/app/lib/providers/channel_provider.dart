@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/channel.dart';
+import '../models/instance.dart';
 import 'api_provider.dart';
 import 'instance_provider.dart';
 
@@ -29,10 +30,17 @@ class ChannelState {
 
 class ChannelNotifier extends StateNotifier<ChannelState> {
   final Ref _ref;
+  DateTime? _lastLoadAt;
 
   ChannelNotifier(this._ref) : super(const ChannelState());
 
-  Future<void> loadAll() async {
+  Future<void> loadAll({bool force = false}) async {
+    // Debounce: skip if loaded within 25 seconds (unless forced)
+    if (!force && _lastLoadAt != null) {
+      final elapsed = DateTime.now().difference(_lastLoadAt!);
+      if (elapsed < const Duration(seconds: 25)) return;
+    }
+
     // Only show loading on initial load (no existing data)
     if (state.channels.isEmpty) {
       state = state.copyWith(isLoading: true);
@@ -45,101 +53,154 @@ class ChannelNotifier extends StateNotifier<ChannelState> {
     }
 
     final apiClient = _ref.read(apiClientProvider);
-    final results = <ChannelType, ChannelInfo>{};
+    final instanceId = instance.instanceId;
 
-    // Load Telegram status
+    // Single unified status call
+    Map<String, dynamic> allStatus;
     try {
-      final status = await apiClient.getTelegramStatus(instance.instanceId, probe: true);
-      final isConnected = status['connected'] == true;
-      String? botUsername;
-      if (isConnected) {
-        final telegram = status['telegram'] as Map<String, dynamic>?;
-        final probe = telegram?['probe'] as Map<String, dynamic>?;
-        final bot = probe?['bot'] as Map<String, dynamic>?;
-        botUsername = bot?['username'] as String?;
-      }
+      allStatus = await apiClient.getAllChannelsStatus(instanceId, probe: true);
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+      return;
+    }
 
-      int pendingCount = 0;
-      if (isConnected) {
-        try {
-          final codes = await apiClient.listPairing(instance.instanceId, 'telegram');
-          pendingCount = codes.length;
-        } catch (_) {}
-      }
+    _lastLoadAt = DateTime.now();
 
-      results[ChannelType.telegram] = ChannelInfo(
+    final connected = allStatus['connected'] as Map<String, dynamic>? ?? {};
+    final channels = allStatus['channels'] as Map<String, dynamic>? ?? {};
+
+    final waConnected = connected['whatsapp'] == true;
+    final tgConnected = connected['telegram'] == true;
+    final dcConnected = connected['discord'] == true;
+
+    // Extract subtitles from channel data
+    String? tgBotUsername;
+    if (tgConnected) {
+      final tg = channels['telegram'] as Map<String, dynamic>?;
+      final probe = tg?['probe'] as Map<String, dynamic>?;
+      final bot = probe?['bot'] as Map<String, dynamic>?;
+      tgBotUsername = bot?['username'] as String?;
+    }
+
+    String? waPhone;
+    if (waConnected) {
+      final wa = channels['whatsapp'] as Map<String, dynamic>?;
+      waPhone = wa?['phone'] as String?;
+    }
+
+    String? dcBotName;
+    if (dcConnected) {
+      final dc = channels['discord'] as Map<String, dynamic>?;
+      dcBotName = dc?['name'] as String?;
+    }
+
+    // Fetch pairing counts in parallel for connected channels
+    final pairingFutures = <ChannelType, Future<int>>{};
+    if (waConnected) {
+      pairingFutures[ChannelType.whatsapp] = _fetchPairingCount(apiClient, instanceId, 'whatsapp');
+    }
+    if (tgConnected) {
+      pairingFutures[ChannelType.telegram] = _fetchPairingCount(apiClient, instanceId, 'telegram');
+    }
+    if (dcConnected) {
+      pairingFutures[ChannelType.discord] = _fetchPairingCount(apiClient, instanceId, 'discord');
+    }
+
+    final pairingCounts = <ChannelType, int>{};
+    if (pairingFutures.isNotEmpty) {
+      final entries = pairingFutures.entries.toList();
+      final counts = await Future.wait(entries.map((e) => e.value));
+      for (var i = 0; i < entries.length; i++) {
+        pairingCounts[entries[i].key] = counts[i];
+      }
+    }
+
+    final results = <ChannelType, ChannelInfo>{
+      ChannelType.telegram: ChannelInfo(
         type: ChannelType.telegram,
         displayName: 'Telegram',
-        isConnected: isConnected,
-        subtitle: botUsername != null ? '@$botUsername' : null,
-        pendingPairings: pendingCount,
-      );
-    } catch (_) {
-      results[ChannelType.telegram] = const ChannelInfo(
-        type: ChannelType.telegram,
-        displayName: 'Telegram',
-      );
-    }
-
-    // Load WhatsApp status
-    try {
-      final status = await apiClient.getWhatsappStatus(instance.instanceId);
-      final isConnected = status['connected'] == true;
-      final phone = status['phone'] as String?;
-
-      int pendingCount = 0;
-      if (isConnected) {
-        try {
-          final codes = await apiClient.listPairing(instance.instanceId, 'whatsapp');
-          pendingCount = codes.length;
-        } catch (_) {}
-      }
-
-      results[ChannelType.whatsapp] = ChannelInfo(
+        isConnected: tgConnected,
+        subtitle: tgBotUsername != null ? '@$tgBotUsername' : null,
+        pendingPairings: pairingCounts[ChannelType.telegram] ?? 0,
+      ),
+      ChannelType.whatsapp: ChannelInfo(
         type: ChannelType.whatsapp,
         displayName: 'WhatsApp',
-        isConnected: isConnected,
-        subtitle: phone,
-        pendingPairings: pendingCount,
-      );
-    } catch (_) {
-      results[ChannelType.whatsapp] = const ChannelInfo(
-        type: ChannelType.whatsapp,
-        displayName: 'WhatsApp',
-      );
-    }
-
-    // Load Discord status
-    try {
-      final status = await apiClient.getDiscordStatus(instance.instanceId);
-      final isConnected = status['connected'] == true;
-      String? botUsername;
-      if (isConnected) {
-        final discord = status['discord'] as Map<String, dynamic>?;
-        botUsername = discord?['name'] as String?;
-      }
-      int pendingCount = 0;
-      if (isConnected) {
-        try {
-          final codes = await apiClient.listPairing(instance.instanceId, 'discord');
-          pendingCount = codes.length;
-        } catch (_) {}
-      }
-      results[ChannelType.discord] = ChannelInfo(
+        isConnected: waConnected,
+        subtitle: waPhone,
+        pendingPairings: pairingCounts[ChannelType.whatsapp] ?? 0,
+      ),
+      ChannelType.discord: ChannelInfo(
         type: ChannelType.discord,
         displayName: 'Discord',
-        isConnected: isConnected,
-        subtitle: botUsername,
-        pendingPairings: pendingCount,
-      );
-    } catch (_) {
-      results[ChannelType.discord] = const ChannelInfo(
-        type: ChannelType.discord,
-        displayName: 'Discord',
-      );
-    }
+        isConnected: dcConnected,
+        subtitle: dcBotName,
+        pendingPairings: pairingCounts[ChannelType.discord] ?? 0,
+      ),
+    };
 
     state = ChannelState(channels: results, isLoading: false);
+  }
+
+  void updateFromEmbedded(EmbeddedChannels embedded) {
+    _lastLoadAt = DateTime.now();
+
+    final channels = embedded.channelDetails;
+
+    String? tgBotUsername;
+    if (embedded.connected['telegram'] == true) {
+      final tg = channels['telegram'] as Map<String, dynamic>?;
+      final probe = tg?['probe'] as Map<String, dynamic>?;
+      final bot = probe?['bot'] as Map<String, dynamic>?;
+      tgBotUsername = bot?['username'] as String?;
+    }
+
+    String? waPhone;
+    if (embedded.connected['whatsapp'] == true) {
+      final wa = channels['whatsapp'] as Map<String, dynamic>?;
+      waPhone = wa?['phone'] as String?;
+    }
+
+    String? dcBotName;
+    if (embedded.connected['discord'] == true) {
+      final dc = channels['discord'] as Map<String, dynamic>?;
+      dcBotName = dc?['name'] as String?;
+    }
+
+    final results = <ChannelType, ChannelInfo>{
+      ChannelType.telegram: ChannelInfo(
+        type: ChannelType.telegram,
+        displayName: 'Telegram',
+        isConnected: embedded.connected['telegram'] ?? false,
+        subtitle: tgBotUsername != null ? '@$tgBotUsername' : null,
+        pendingPairings: embedded.pairingCounts['telegram'] ?? 0,
+      ),
+      ChannelType.whatsapp: ChannelInfo(
+        type: ChannelType.whatsapp,
+        displayName: 'WhatsApp',
+        isConnected: embedded.connected['whatsapp'] ?? false,
+        subtitle: waPhone,
+        pendingPairings: embedded.pairingCounts['whatsapp'] ?? 0,
+      ),
+      ChannelType.discord: ChannelInfo(
+        type: ChannelType.discord,
+        displayName: 'Discord',
+        isConnected: embedded.connected['discord'] ?? false,
+        subtitle: dcBotName,
+        pendingPairings: embedded.pairingCounts['discord'] ?? 0,
+      ),
+    };
+
+    state = ChannelState(channels: results, isLoading: false);
+  }
+
+  Future<int> _fetchPairingCount(dynamic apiClient, String instanceId, String channel) async {
+    try {
+      final codes = await apiClient.listPairing(instanceId, channel);
+      return codes.length;
+    } catch (_) {
+      return 0;
+    }
   }
 }
 

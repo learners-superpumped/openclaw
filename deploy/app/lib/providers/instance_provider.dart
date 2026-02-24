@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/instance.dart';
 import 'api_provider.dart';
+import 'channel_provider.dart';
 import 'onboarding_provider.dart';
 
 const _kTelegramSetupSkipped = 'telegram_setup_skipped';
@@ -131,12 +132,20 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
     resetState();
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({bool includeChannels = false}) async {
     if (state.instance != null) {
       try {
         final apiClient = _ref.read(apiClientProvider);
-        final instance = await apiClient.getInstance(state.instance!.instanceId);
+        final instance = await apiClient.getInstance(
+          state.instance!.instanceId,
+          include: includeChannels ? ['channels'] : null,
+          probe: includeChannels,
+        );
         state = state.copyWith(instance: instance);
+
+        if (instance.channels != null) {
+          _ref.read(channelProvider.notifier).updateFromEmbedded(instance.channels!);
+        }
       } catch (_) {}
     }
   }

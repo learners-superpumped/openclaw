@@ -26,8 +26,17 @@ export class InstancesController {
 
   @Get(":instanceId")
   @ApiOperation({ summary: "인스턴스 상세 조회" })
-  findOne(@Request() req: any, @Param("instanceId") instanceId: string) {
-    return this.instancesService.findOne(req.user.sub, instanceId);
+  findOne(
+    @Request() req: any,
+    @Param("instanceId") instanceId: string,
+    @Query("include") include?: string,
+    @Query("probe") probe?: string,
+  ) {
+    const includeList = include ? include.split(",").map((s) => s.trim()) : [];
+    return this.instancesService.findOne(req.user.sub, instanceId, {
+      include: includeList,
+      probe: probe === "true",
+    });
   }
 
   @Delete(":instanceId")
@@ -46,6 +55,16 @@ export class InstancesController {
   @ApiOperation({ summary: "WhatsApp QR 대기" })
   waitForQr(@Request() req: any, @Param("instanceId") instanceId: string) {
     return this.instancesService.waitForQr(req.user.sub, instanceId);
+  }
+
+  @Get(":instanceId/channels/status")
+  @ApiOperation({ summary: "전체 채널 통합 상태" })
+  getAllChannelsStatus(
+    @Request() req: any,
+    @Param("instanceId") instanceId: string,
+    @Query("probe") probe?: string,
+  ) {
+    return this.instancesService.getAllChannelsStatus(req.user.sub, instanceId, probe === "true");
   }
 
   @Get(":instanceId/whatsapp/status")

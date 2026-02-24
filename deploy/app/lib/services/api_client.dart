@@ -77,13 +77,30 @@ class ApiClient {
     return (response.data as List).map((e) => Instance.fromJson(e)).toList();
   }
 
-  Future<Instance> getInstance(String instanceId) async {
-    final response = await _dio.get('/instances/$instanceId');
+  Future<Instance> getInstance(String instanceId, {List<String>? include, bool probe = false}) async {
+    final response = await _dio.get(
+      '/instances/$instanceId',
+      queryParameters: {
+        if (include != null && include.isNotEmpty) 'include': include.join(','),
+        if (probe) 'probe': 'true',
+      },
+      options: Options(receiveTimeout: const Duration(seconds: 25)),
+    );
     return Instance.fromJson(response.data);
   }
 
   Future<void> deleteInstance(String instanceId) async {
     await _dio.delete('/instances/$instanceId');
+  }
+
+  // Channels (unified)
+  Future<Map<String, dynamic>> getAllChannelsStatus(String instanceId, {bool probe = false}) async {
+    final response = await _dio.get(
+      '/instances/$instanceId/channels/status',
+      queryParameters: probe ? {'probe': 'true'} : null,
+      options: Options(receiveTimeout: const Duration(seconds: 25)),
+    );
+    return response.data;
   }
 
   // Telegram
