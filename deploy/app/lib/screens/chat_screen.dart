@@ -303,12 +303,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     final messages = chatState.messages;
     final streamingMessage = chatState.streamingMessage;
 
-    return Column(
-      children: [
-        // Compaction indicator
-        if (chatState.isCompacting) const CompactionIndicator(),
-        Expanded(
-          child: Stack(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Column(
+        children: [
+          // Compaction indicator
+          if (chatState.isCompacting) const CompactionIndicator(),
+          Expanded(
+            child: Stack(
             children: [
               messages.isEmpty && streamingMessage == null
                   ? _buildEmptyState()
@@ -369,6 +371,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
         ),
         const ChatInputBar(),
       ],
+      ),
     );
   }
 
