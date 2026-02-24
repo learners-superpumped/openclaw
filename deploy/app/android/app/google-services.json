@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "406140376321",
+    "project_id": "clawbox-487506",
+    "storage_bucket": "clawbox-487506.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406140376321:android:fe56c3fdf6a8dc32f9f700",
+        "android_client_info": {
+          "package_name": "com.teamlearners.clawbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406140376321-bqn4li2de006cb6ftuv7vcre364gqsrn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzG1D978-oT5fnKgtabZLeM27e0-JfB6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406140376321-bqn4li2de006cb6ftuv7vcre364gqsrn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "406140376321-bb5gpgfie93bo8gg744c2d7tq77nhfjd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.teamlearners.clawbox",
+                "app_store_id": "6759247952"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

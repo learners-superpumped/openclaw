@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "clawbox-487506",
+          "appId": "1:406140376321:android:fe56c3fdf6a8dc32f9f700",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "clawbox-487506",
+          "appId": "1:406140376321:ios:18f3d748395e5371f9f700",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "clawbox-487506",
+          "configurations": {
+            "android": "1:406140376321:android:fe56c3fdf6a8dc32f9f700",
+            "ios": "1:406140376321:ios:18f3d748395e5371f9f700",
+            "web": "1:406140376321:web:a9554b25b7961d19f9f700"
+          }
+        }
+      }
+    }
+  }
+}
