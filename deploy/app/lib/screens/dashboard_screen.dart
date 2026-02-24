@@ -819,17 +819,19 @@ class _ChannelsTile extends StatelessWidget {
                 isConnected: telegramInfo?.isConnected ?? false,
               ),
               const SizedBox(width: 8),
-              _ChannelIcon(
-                iconData: FontAwesomeIcons.whatsapp,
-                color: const Color(0xFF25D366),
-                isConnected: whatsappInfo?.isConnected ?? false,
-              ),
-              const SizedBox(width: 8),
-              _ChannelIcon(
-                iconData: FontAwesomeIcons.discord,
-                color: const Color(0xFF5865F2),
-                isConnected: discordInfo?.isConnected ?? false,
-              ),
+              // TODO: temporarily hidden – WhatsApp
+              // _ChannelIcon(
+              //   iconData: FontAwesomeIcons.whatsapp,
+              //   color: const Color(0xFF25D366),
+              //   isConnected: whatsappInfo?.isConnected ?? false,
+              // ),
+              // const SizedBox(width: 8),
+              // TODO: temporarily hidden – Discord
+              // _ChannelIcon(
+              //   iconData: FontAwesomeIcons.discord,
+              //   color: const Color(0xFF5865F2),
+              //   isConnected: discordInfo?.isConnected ?? false,
+              // ),
             ],
           ),
           const SizedBox(height: 8),
@@ -847,8 +849,10 @@ class _ChannelsTile extends StatelessWidget {
   int _connectedCount() {
     int count = 0;
     if (telegramInfo?.isConnected ?? false) count++;
-    if (whatsappInfo?.isConnected ?? false) count++;
-    if (discordInfo?.isConnected ?? false) count++;
+    // TODO: temporarily hidden – WhatsApp
+    // if (whatsappInfo?.isConnected ?? false) count++;
+    // TODO: temporarily hidden – Discord
+    // if (discordInfo?.isConnected ?? false) count++;
     return count;
   }
 }
