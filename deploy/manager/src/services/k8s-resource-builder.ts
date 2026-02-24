@@ -66,7 +66,11 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
       OPENCLAW_HOME: "/data",
       OPENCLAW_PREFER_PNPM: "1",
       "openclaw.json": JSON.stringify({
-        gateway: { mode: "local" },
+        gateway: {
+          mode: "local",
+          trustedProxies: ["35.191.0.0/16", "130.211.0.0/22"],
+          controlUi: { allowInsecureAuth: true },
+        },
         browser: { enabled: true, noSandbox: true },
         cron: { enabled: true },
         commands: { native: "auto", nativeSkills: "auto" },
