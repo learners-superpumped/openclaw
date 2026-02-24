@@ -91,6 +91,21 @@ async function handleConnection(clientWs: WebSocket, req: IncomingMessage): Prom
   // 7. Connect to Manager and start bidirectional proxy
   const managerWs = new WebSocket(managerWsUrl);
 
+  const PING_INTERVAL_MS = 20_000;
+  let clientPing: ReturnType<typeof setInterval> | undefined;
+  let managerPing: ReturnType<typeof setInterval> | undefined;
+
+  function cleanup() {
+    clearInterval(clientPing);
+    clearInterval(managerPing);
+    if (managerWs.readyState === WebSocket.OPEN) {
+      managerWs.close();
+    }
+    if (clientWs.readyState === WebSocket.OPEN) {
+      clientWs.close();
+    }
+  }
+
   managerWs.on("open", () => {
     // Notify client that authentication + proxy is ready
     if (clientWs.readyState === WebSocket.OPEN) {
@@ -110,33 +125,25 @@ async function handleConnection(clientWs: WebSocket, req: IncomingMessage): Prom
         clientWs.send(data, { binary: isBinary });
       }
     });
+
+    // Ping both sides to keep connections alive (LB idle timeout is 30s)
+    clientPing = setInterval(() => {
+      if (clientWs.readyState === WebSocket.OPEN) {
+        clientWs.ping();
+      }
+    }, PING_INTERVAL_MS);
+
+    managerPing = setInterval(() => {
+      if (managerWs.readyState === WebSocket.OPEN) {
+        managerWs.ping();
+      }
+    }, PING_INTERVAL_MS);
   });
 
-  // Close propagation
-  clientWs.on("close", () => {
-    if (managerWs.readyState === WebSocket.OPEN) {
-      managerWs.close();
-    }
-  });
-
-  managerWs.on("close", () => {
-    if (clientWs.readyState === WebSocket.OPEN) {
-      clientWs.close();
-    }
-  });
-
-  // Error handling
-  clientWs.on("error", () => {
-    if (managerWs.readyState === WebSocket.OPEN) {
-      managerWs.close();
-    }
-  });
-
-  managerWs.on("error", () => {
-    if (clientWs.readyState === WebSocket.OPEN) {
-      clientWs.close(4502, "Manager connection error");
-    }
-  });
+  clientWs.on("close", cleanup);
+  clientWs.on("error", cleanup);
+  managerWs.on("close", cleanup);
+  managerWs.on("error", cleanup);
 }
 
 function waitForAuth(ws: WebSocket): Promise<{ token: string } | null> {

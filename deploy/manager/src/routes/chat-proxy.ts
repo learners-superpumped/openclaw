@@ -146,6 +146,21 @@ export function handleChatUpgrade(req: IncomingMessage, socket: Duplex, head: Bu
         const targetUrl = gatewayWsUrl(userId);
         const upstream = new WebSocket(targetUrl);
 
+        const PING_INTERVAL_MS = 20_000;
+        let clientPing: ReturnType<typeof setInterval> | undefined;
+        let upstreamPing: ReturnType<typeof setInterval> | undefined;
+
+        function cleanup() {
+          clearInterval(clientPing);
+          clearInterval(upstreamPing);
+          if (upstream.readyState === WebSocket.OPEN) {
+            upstream.close();
+          }
+          if (clientWs.readyState === WebSocket.OPEN) {
+            clientWs.close();
+          }
+        }
+
         // Buffer client messages during handshake
         const pendingMessages: { data: WebSocket.RawData; isBinary: boolean }[] = [];
         let handshakeComplete = false;
@@ -179,6 +194,19 @@ export function handleChatUpgrade(req: IncomingMessage, socket: Duplex, head: Bu
                   clientWs.send(data, { binary: isBinary });
                 }
               });
+
+              // Ping both sides to keep connections alive
+              clientPing = setInterval(() => {
+                if (clientWs.readyState === WebSocket.OPEN) {
+                  clientWs.ping();
+                }
+              }, PING_INTERVAL_MS);
+
+              upstreamPing = setInterval(() => {
+                if (upstream.readyState === WebSocket.OPEN) {
+                  upstream.ping();
+                }
+              }, PING_INTERVAL_MS);
             })
             .catch(() => {
               upstream.close();
@@ -186,10 +214,10 @@ export function handleChatUpgrade(req: IncomingMessage, socket: Duplex, head: Bu
             });
         });
 
-        upstream.on("close", () => clientWs.close());
-        upstream.on("error", () => clientWs.close());
-        clientWs.on("close", () => upstream.close());
-        clientWs.on("error", () => upstream.close());
+        upstream.on("close", cleanup);
+        upstream.on("error", cleanup);
+        clientWs.on("close", cleanup);
+        clientWs.on("error", cleanup);
       });
     })
     .catch(() => {

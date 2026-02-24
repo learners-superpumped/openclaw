@@ -95,29 +95,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (kIsWeb) {
-      switch (state) {
-        case AppLifecycleState.hidden:
-          ref.read(chatProvider.notifier).disconnect();
-          break;
-        case AppLifecycleState.resumed:
-          _connectWhenReady();
-          break;
-        default:
-          break;
-      }
-    } else {
-      switch (state) {
-        case AppLifecycleState.paused:
-        case AppLifecycleState.inactive:
-          ref.read(chatProvider.notifier).disconnect();
-          break;
-        case AppLifecycleState.resumed:
-          _connectWhenReady();
-          break;
-        default:
-          break;
-      }
+    // On web, the browser maintains WebSocket connections in background tabs,
+    // so we only disconnect/reconnect on native platforms.
+    if (kIsWeb) return;
+
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        ref.read(chatProvider.notifier).disconnect();
+        break;
+      case AppLifecycleState.resumed:
+        _connectWhenReady();
+        break;
+      default:
+        break;
     }
   }
 

@@ -111,6 +111,8 @@ metadata:
   namespace: openclaw
   labels:
     app.kubernetes.io/name: openclaw-api
+  annotations:
+    cloud.google.com/backend-config: '{"default":"openclaw-api-backend"}'
 spec:
   type: ClusterIP
   ports:
