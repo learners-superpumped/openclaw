@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/chat_message.dart';
 import '../theme/app_theme.dart';
@@ -65,11 +67,15 @@ class ChatMessageBubble extends StatelessWidget {
               if (message.content.isNotEmpty)
                 Directionality(
                   textDirection: textDir,
-                  child: Text(
-                    message.content,
+                  child: Linkify(
+                    onOpen: (link) {
+                      launchUrl(Uri.parse(link.url), mode: LaunchMode.externalApplication);
+                    },
+                    text: message.content,
                     style: Theme.of(
                       context,
                     ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
+                    linkStyle: const TextStyle(color: AppColors.accent, decoration: TextDecoration.underline),
                   ),
                 ),
             ],
@@ -188,6 +194,13 @@ class ChatMessageBubble extends StatelessWidget {
                 data: content,
                 selectable: true,
                 styleSheet: _markdownStyleSheet(context),
+                onTapLink: (text, href, title) {
+                  if (href == null) return;
+                  final uri = Uri.tryParse(href);
+                  if (uri != null) {
+                    launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                },
               ),
             ),
         ],
