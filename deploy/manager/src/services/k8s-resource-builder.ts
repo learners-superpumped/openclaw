@@ -213,7 +213,7 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
                 tcpSocket: { port: config.gateway.port },
                 initialDelaySeconds: 10,
                 periodSeconds: 10,
-                failureThreshold: 30,
+                failureThreshold: 60,
               },
               readinessProbe: {
                 tcpSocket: { port: config.gateway.port },
