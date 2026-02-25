@@ -7,6 +7,14 @@ spec:
   timeoutSec: 3600
   connectionDraining:
     drainingTimeoutSec: 60
+  healthCheck:
+    checkIntervalSec: 5
+    timeoutSec: 3
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    type: HTTP
+    requestPath: /health
+    port: 4000
 ---
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate

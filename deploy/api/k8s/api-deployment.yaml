@@ -7,6 +7,7 @@ metadata:
     app.kubernetes.io/name: openclaw-api
 spec:
   replicas: 1
+  minReadySeconds: 30
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -100,7 +101,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["sh", "-c", "sleep 5"]
+                command: ["sh", "-c", "sleep 15"]
           readinessProbe:
             httpGet:
               path: /health
@@ -123,6 +124,7 @@ metadata:
     app.kubernetes.io/name: openclaw-api
   annotations:
     cloud.google.com/backend-config: '{"default":"openclaw-api-backend"}'
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   ports:
