@@ -1,5 +1,6 @@
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +26,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  String? _activeMethod;
 
   late final AnimationController _orbController;
 
@@ -47,10 +49,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(authProvider.notifier).signInWithEmail(
-      _emailController.text.trim(),
-      _passwordController.text,
-    );
+    setState(() => _activeMethod = 'email');
+    ref
+        .read(authProvider.notifier)
+        .signInWithEmail(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
   }
 
   Widget _buildBySigningInText(BuildContext context, AppLocalizations l10n) {
@@ -58,7 +63,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
     const privacyMarker = '\u0000PRIVACY\u0000';
     final full = l10n.bySigningIn(termsMarker, privacyMarker);
     final parts = full.split(RegExp('\u0000(TERMS|PRIVACY)\u0000'));
-    final markers = RegExp('\u0000(TERMS|PRIVACY)\u0000').allMatches(full).map((m) => m.group(1)).toList();
+    final markers = RegExp(
+      '\u0000(TERMS|PRIVACY)\u0000',
+    ).allMatches(full).map((m) => m.group(1)).toList();
 
     final spans = <InlineSpan>[];
     int markerIdx = 0;
@@ -68,17 +75,24 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
       }
       if (markerIdx < markers.length && i < parts.length - 1) {
         final isTerms = markers[markerIdx] == 'TERMS';
-        spans.add(TextSpan(
-          text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
-          style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrl(
-                Uri.parse('$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}'),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-        ));
+        spans.add(
+          TextSpan(
+            text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
+            style: TextStyle(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w600,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrl(
+                  Uri.parse(
+                    '$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}',
+                  ),
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+          ),
+        );
         markerIdx++;
       }
     }
@@ -86,15 +100,20 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppColors.textSecondary,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
         children: spans,
       ),
     );
   }
 
-  Widget _buildLoginForm(BuildContext context, AppLocalizations l10n, AuthState authState, bool isLoading) {
+  Widget _buildLoginForm(
+    BuildContext context,
+    AppLocalizations l10n,
+    AuthState authState,
+    bool isLoading,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,7 +177,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -179,8 +200,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
         ),
         const SizedBox(height: 20),
         LoadingButton(
-          onPressed: _submit,
-          isLoading: isLoading,
+          onPressed: isLoading ? null : _submit,
+          isLoading: isLoading && _activeMethod == 'email',
           label: Text(l10n.logIn),
         ),
         const SizedBox(height: 24),
@@ -199,17 +220,29 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
         ),
         const SizedBox(height: 24),
         LoadingButton(
-          onPressed: () => ref.read(authProvider.notifier).signInWithGoogle(),
-          isLoading: isLoading,
+          onPressed: isLoading
+              ? null
+              : () {
+                  setState(() => _activeMethod = 'google');
+                  ref.read(authProvider.notifier).signInWithGoogle();
+                },
+          isLoading: isLoading && _activeMethod == 'google',
           outlined: true,
           icon: const Icon(Icons.g_mobiledata, size: 24),
           label: Text(l10n.continueWithGoogle),
         ),
-        if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS)) ...[
+        if (!kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.macOS)) ...[
           const SizedBox(height: 12),
           LoadingButton(
-            onPressed: () => ref.read(authProvider.notifier).signInWithApple(),
-            isLoading: isLoading,
+            onPressed: isLoading
+                ? null
+                : () {
+                    setState(() => _activeMethod = 'apple');
+                    ref.read(authProvider.notifier).signInWithApple();
+                  },
+            isLoading: isLoading && _activeMethod == 'apple',
             outlined: true,
             icon: const Icon(Icons.apple, size: 24),
             label: Text(l10n.continueWithApple),
@@ -249,6 +282,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final isLoading = authState.status == AuthStatus.loading;
+    if (!isLoading) _activeMethod = null;
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.of(context).size.width;
     final isWide = width >= 720;
@@ -276,7 +310,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 420),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 48,
+                        ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -300,7 +337,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                               ),
                             ),
                             const SizedBox(height: 32),
-                            _buildLoginForm(context, l10n, authState, isLoading),
+                            _buildLoginForm(
+                              context,
+                              l10n,
+                              authState,
+                              isLoading,
+                            ),
                           ],
                         ),
                       ),
@@ -321,7 +363,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight:
+                  MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top -
                   MediaQuery.of(context).padding.bottom,
             ),
@@ -331,7 +374,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                 const SizedBox(height: 48),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset('assets/images/logo.png', width: 80, height: 80),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 80,
+                    height: 80,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -373,9 +420,7 @@ class _AuthBrandPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF050508),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFF050508)),
       child: Stack(
         children: [
           // Animated gradient orbs
@@ -498,9 +543,7 @@ class _GlowOrb extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, color.withValues(alpha: 0.0)],
-        ),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0.0)]),
       ),
     );
   }
