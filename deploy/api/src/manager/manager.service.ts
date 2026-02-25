@@ -1,6 +1,7 @@
 import { HttpService } from "@nestjs/axios";
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpException, Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { isAxiosError } from "axios";
 import { firstValueFrom } from "rxjs";
 
 @Injectable()
@@ -20,6 +21,15 @@ export class ManagerService {
     return { Authorization: `Bearer ${this.apiKey}` };
   }
 
+  private rethrow(err: unknown): never {
+    if (isAxiosError(err)) {
+      const status = err.response?.status ?? 502;
+      const body = err.response?.data ?? { error: err.message };
+      throw new HttpException(body, status);
+    }
+    throw err;
+  }
+
   async createInstance(instanceId: string, secrets: Record<string, string>) {
     const { data } = await firstValueFrom(
       this.httpService.post(
@@ -27,7 +37,7 @@ export class ManagerService {
         { userId: instanceId, secrets },
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -36,7 +46,7 @@ export class ManagerService {
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}`, {
         headers: this.headers,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -46,7 +56,7 @@ export class ManagerService {
         headers: this.headers,
         params: { preservePvc: "false" },
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -57,7 +67,7 @@ export class ManagerService {
         {},
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -68,7 +78,7 @@ export class ManagerService {
         {},
         { headers: this.headers, timeout: 60000 },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -77,7 +87,7 @@ export class ManagerService {
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/whatsapp/status`, {
         headers: this.headers,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -88,7 +98,7 @@ export class ManagerService {
         { botToken, ...(accountId ? { accountId } : {}) },
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -99,7 +109,7 @@ export class ManagerService {
         params: probe ? { probe: "true" } : {},
         timeout: 20_000,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -110,7 +120,7 @@ export class ManagerService {
         accountId ? { accountId } : {},
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -121,7 +131,7 @@ export class ManagerService {
         { token: botToken, ...(accountId ? { accountId } : {}) },
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -132,7 +142,7 @@ export class ManagerService {
         params: probe ? { probe: "true" } : {},
         timeout: 20_000,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -143,7 +153,7 @@ export class ManagerService {
         accountId ? { accountId } : {},
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -154,7 +164,7 @@ export class ManagerService {
         params: probe ? { probe: "true" } : {},
         timeout: 20_000,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -164,7 +174,7 @@ export class ManagerService {
         headers: this.headers,
         params: { channel },
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -175,7 +185,7 @@ export class ManagerService {
         { channel, code, ...(notify != null ? { notify } : {}) },
         { headers: this.headers },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -184,7 +194,7 @@ export class ManagerService {
       this.httpService.post(`${this.baseUrl}/api/instances/${instanceId}/rpc`, body, {
         headers: this.headers,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -195,7 +205,7 @@ export class ManagerService {
         { slug, ...(version ? { version } : {}) },
         { headers: this.headers, timeout: 120_000 },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -206,7 +216,7 @@ export class ManagerService {
         { slug },
         { headers: this.headers, timeout: 60_000 },
       ),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 
@@ -215,7 +225,7 @@ export class ManagerService {
       this.httpService.get(`${this.baseUrl}/api/instances/${instanceId}/skills/hub-list`, {
         headers: this.headers,
       }),
-    );
+    ).catch(this.rethrow);
     return data;
   }
 }

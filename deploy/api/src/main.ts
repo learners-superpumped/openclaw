@@ -35,6 +35,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
+  app.enableShutdownHooks();
   console.log(`openclaw-api listening on :${port}`);
 
   const proxyDeps = {
