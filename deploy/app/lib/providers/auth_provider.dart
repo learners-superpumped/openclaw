@@ -77,7 +77,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
-      _ref.read(instanceProvider.notifier).resetState();
+      await _ref.read(instanceProvider.notifier).loadExisting();
       final analytics = _ref.read(analyticsProvider);
       analytics.setUserId(user.id);
       analytics.logLogin(method: 'google');
@@ -103,7 +103,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
-      _ref.read(instanceProvider.notifier).resetState();
+      await _ref.read(instanceProvider.notifier).loadExisting();
       final analytics = _ref.read(analyticsProvider);
       analytics.setUserId(user.id);
       analytics.logLogin(method: 'apple');
@@ -129,7 +129,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
-      _ref.read(instanceProvider.notifier).resetState();
+      await _ref.read(instanceProvider.notifier).loadExisting();
       final analytics = _ref.read(analyticsProvider);
       analytics.setUserId(user.id);
       analytics.logLogin(method: 'email');
@@ -155,7 +155,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           try { await apiClient.activateReferral(referralCode); } catch (_) {}
         }
       }
-      _ref.read(instanceProvider.notifier).resetState();
+      await _ref.read(instanceProvider.notifier).loadExisting();
       final analytics = _ref.read(analyticsProvider);
       analytics.setUserId(user.id);
       analytics.logSignUp(method: 'email');
