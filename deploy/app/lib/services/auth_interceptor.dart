@@ -28,13 +28,19 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401 && !_isRefreshing && !_isAuthPath(err.requestOptions.path)) {
+    final isRetry = err.requestOptions.extra['_retried'] == true;
+
+    if (err.response?.statusCode == 401 &&
+        !_isRefreshing &&
+        !isRetry &&
+        !_isAuthPath(err.requestOptions.path)) {
       try {
         await _performRefresh();
         final newAccessToken = await _storage.read(key: 'access_token');
         if (newAccessToken != null) {
           final retryOptions = err.requestOptions;
           retryOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+          retryOptions.extra['_retried'] = true;
           final retryResponse = await _dio.fetch(retryOptions);
           handler.resolve(retryResponse);
           return;
@@ -66,7 +72,7 @@ class AuthInterceptor extends Interceptor {
       final elapsed = now - iat;
 
       if (elapsed > lifetime * 2 / 3) {
-        _performRefresh();
+        _performRefresh().catchError((_) {});
       }
     } catch (_) {
       // decoding failure — delegate to 401 fallback
