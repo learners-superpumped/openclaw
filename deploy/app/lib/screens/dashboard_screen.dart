@@ -181,6 +181,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                           telegramInfo: telegramInfo,
                           whatsappInfo: whatsappInfo,
                           discordInfo: discordInfo,
+                          isReady: instance.isReady,
                           onTap: () => context.push('/dashboard/channels'),
                         ),
                       ),
@@ -837,6 +838,7 @@ class _ChannelsTile extends StatelessWidget {
   final dynamic telegramInfo;
   final dynamic whatsappInfo;
   final dynamic discordInfo;
+  final bool isReady;
   final VoidCallback onTap;
 
   const _ChannelsTile({
@@ -844,6 +846,7 @@ class _ChannelsTile extends StatelessWidget {
     this.telegramInfo,
     this.whatsappInfo,
     this.discordInfo,
+    required this.isReady,
     required this.onTap,
   });
 
@@ -853,7 +856,7 @@ class _ChannelsTile extends StatelessWidget {
 
     return GlassCard.solid(
       padding: const EdgeInsets.all(16),
-      onTap: onTap,
+      onTap: isReady ? onTap : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
