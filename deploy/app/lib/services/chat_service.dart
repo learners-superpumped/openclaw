@@ -22,7 +22,6 @@ class ChatService {
   String? _instanceId;
   String? _accessToken;
   int _reconnectAttempts = 0;
-  static const int _maxReconnectAttempts = 5;
 
   /// Called when connection state changes (reconnect/disconnect).
   ConnectionStateCallback? onConnectionStateChanged;
@@ -140,7 +139,7 @@ class ChatService {
     _pendingRequests.clear();
 
     // Auto-reconnect with exponential backoff
-    if (!_isDisposed && _reconnectAttempts < _maxReconnectAttempts) {
+    if (!_isDisposed) {
       _reconnectAttempts++;
       final delay = Duration(
         seconds: (2 << (_reconnectAttempts - 1)).clamp(2, 32),
