@@ -1119,7 +1119,7 @@ class _UsageTile extends StatelessWidget {
     final color = _barColor(fraction);
 
     return GlassCard.solid(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1139,7 +1139,7 @@ class _UsageTile extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Skeletonizer(
             enabled: loading,
             child: Row(
@@ -1430,7 +1430,7 @@ class _DefaultModelTile extends ConsumerWidget {
                   l10n.defaultModel.toUpperCase(),
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 Skeletonizer(
                   enabled: isLoading,
                   child: Column(
