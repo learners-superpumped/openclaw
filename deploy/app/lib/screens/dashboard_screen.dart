@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../models/channel.dart';
 import '../models/instance.dart';
@@ -29,6 +30,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   Timer? _refreshTimer;
+  Timer? _fastPollTimer;
   late final AnimationController _staggerController;
   late final AnimationController _orbController;
 
@@ -62,6 +64,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _refreshTimer?.cancel();
+    _fastPollTimer?.cancel();
     _staggerController.dispose();
     _orbController.dispose();
     super.dispose();
@@ -74,6 +77,26 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       ref.read(usageProvider.notifier).refresh();
       _loadModelConfig();
     }
+  }
+
+  void _startFastPolling() {
+    _fastPollTimer?.cancel();
+    int ticks = 0;
+    _fastPollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      ticks++;
+      ref.read(instanceProvider.notifier).refresh(includeChannels: true);
+
+      final instance = ref.read(instanceProvider).instance;
+      if ((instance?.isReady ?? false) && ticks > 2) {
+        _fastPollTimer?.cancel();
+        _fastPollTimer = null;
+        _loadModelConfig();
+      }
+      if (ticks >= 20) {
+        _fastPollTimer?.cancel();
+        _fastPollTimer = null;
+      }
+    });
   }
 
   void _loadModelConfig() {
@@ -153,25 +176,26 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                       ),
                     ));
 
-                    if (instance.isReady) {
-                      tiles.add(_BentoTile(
-                        key: 'model',
-                        span: cols,
-                        stagger: _staggerAnimation(0.18, 0.48),
-                        child: _DefaultModelTile(
-                          instanceId: instance.instanceId,
-                        ),
-                      ));
-                    }
+                    tiles.add(_BentoTile(
+                      key: 'model',
+                      span: cols,
+                      stagger: _staggerAnimation(0.18, 0.48),
+                      child: _DefaultModelTile(
+                        instanceId: instance.instanceId,
+                        isReady: instance.isReady,
+                        onModelChanged: _startFastPolling,
+                      ),
+                    ));
 
-                    if (usageState.usage != null && usageState.usage!.hasLimit) {
-                      tiles.add(_BentoTile(
-                        key: 'usage',
-                        span: cols,
-                        stagger: _staggerAnimation(0.24, 0.54),
-                        child: _UsageTile(usage: usageState.usage!),
-                      ));
-                    }
+                    tiles.add(_BentoTile(
+                      key: 'usage',
+                      span: cols,
+                      stagger: _staggerAnimation(0.24, 0.54),
+                      child: _UsageTile(
+                        usage: usageState.usage,
+                        isLoading: usageState.isLoading && usageState.usage == null,
+                      ),
+                    ));
 
                     if (instance.isReady) {
                       tiles.add(_BentoTile(
@@ -1044,11 +1068,12 @@ class _PendingBadge extends StatelessWidget {
 // ─── Usage Tile ────────────────────────────────────────────────────────────
 
 class _UsageTile extends StatelessWidget {
-  final Usage usage;
-  const _UsageTile({required this.usage});
+  final Usage? usage;
+  final bool isLoading;
+  const _UsageTile({this.usage, this.isLoading = false});
 
   String _resetLabel(AppLocalizations l10n) {
-    switch (usage.limitReset) {
+    switch (usage?.limitReset) {
       case 'monthly':
         return l10n.resetsMonthly;
       case 'daily':
@@ -1067,7 +1092,8 @@ class _UsageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final fraction = usage.fraction;
+    final loading = isLoading || usage == null;
+    final fraction = usage?.fraction ?? 0.0;
     final color = _barColor(fraction);
 
     return GlassCard.solid(
@@ -1082,56 +1108,74 @@ class _UsageTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const Spacer(),
-              Text(
-                _resetLabel(l10n),
-                style: TextStyle(
-                  color: AppColors.textTertiary,
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${usage.usage}',
-                style: TextStyle(
-                  color: color,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  height: 1.0,
-                ),
-              ),
-              const SizedBox(width: 2),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 2),
+              Skeletonizer(
+                enabled: loading,
                 child: Text(
-                  ' / 100',
+                  loading ? l10n.resetsWeekly : _resetLabel(l10n),
                   style: TextStyle(
                     color: AppColors.textTertiary,
-                    fontSize: 14,
+                    fontSize: 11,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.0, end: fraction),
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeOutCubic,
-            builder: (context, value, _) {
-              return CustomPaint(
-                size: const Size(double.infinity, 8),
-                painter: _GlassProgressPainter(
-                  fraction: value,
-                  color: color,
+          const SizedBox(height: 16),
+          Skeletonizer(
+            enabled: loading,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${usage?.usage ?? 0}',
+                  style: TextStyle(
+                    color: loading ? AppColors.textTertiary : color,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    height: 1.0,
+                  ),
                 ),
-              );
-            },
+                const SizedBox(width: 2),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    ' / 100',
+                    style: TextStyle(
+                      color: AppColors.textTertiary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(height: 12),
+          if (loading)
+            Skeletonizer(
+              enabled: true,
+              child: Container(
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppColors.textTertiary,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            )
+          else
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: fraction),
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, _) {
+                return CustomPaint(
+                  size: const Size(double.infinity, 8),
+                  painter: _GlassProgressPainter(
+                    fraction: value,
+                    color: color,
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );
@@ -1339,8 +1383,14 @@ class _WebAccessTile extends StatelessWidget {
 
 class _DefaultModelTile extends ConsumerWidget {
   final String instanceId;
+  final bool isReady;
+  final VoidCallback? onModelChanged;
 
-  const _DefaultModelTile({required this.instanceId});
+  const _DefaultModelTile({
+    required this.instanceId,
+    required this.isReady,
+    this.onModelChanged,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1348,10 +1398,11 @@ class _DefaultModelTile extends ConsumerWidget {
     final configState = ref.watch(modelConfigProvider);
     final currentModel = configState.currentModel;
     final defaultModel = configState.defaultModel;
+    final isLoading = !isReady || (configState.isLoading && defaultModel == null);
 
     return GlassCard.solid(
       padding: const EdgeInsets.all(16),
-      onTap: () => _openModelPicker(context, ref),
+      onTap: isReady ? () => _openModelPicker(context, ref) : null,
       child: Row(
         children: [
           Expanded(
@@ -1363,36 +1414,31 @@ class _DefaultModelTile extends ConsumerWidget {
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: 10),
-                if (configState.isLoading && defaultModel == null)
-                  SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.5,
-                      color: AppColors.textTertiary,
-                    ),
-                  )
-                else ...[
-                  Text(
-                    currentModel?.name ?? defaultModel ?? '—',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: defaultModel != null
-                          ? AppColors.textPrimary
-                          : AppColors.textTertiary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                Skeletonizer(
+                  enabled: isLoading,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        currentModel?.name ?? defaultModel ?? 'Loading model name',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: defaultModel != null && !isLoading
+                              ? AppColors.textPrimary
+                              : AppColors.textTertiary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        currentModel?.id ?? defaultModel ?? 'provider/model-name',
+                        style: Theme.of(context).textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
                   ),
-                  if (currentModel != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      currentModel.id,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ],
+                ),
               ],
             ),
           ),
@@ -1432,6 +1478,7 @@ class _DefaultModelTile extends ConsumerWidget {
           behavior: SnackBarBehavior.floating,
         ),
       );
+      if (success) onModelChanged?.call();
     }
   }
 }
