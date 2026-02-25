@@ -25,11 +25,7 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: const [
-          DashboardScreen(),
-          SkillsScreen(),
-          SettingsScreen(),
-        ],
+        children: const [DashboardScreen(), SkillsScreen(), SettingsScreen()],
       ),
       extendBody: true,
       bottomNavigationBar: ClipRRect(
@@ -44,31 +40,33 @@ class _MainShellState extends State<MainShell> {
             ),
             child: SafeArea(
               top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _GlassNavItem(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _GlassNavItem(
                       icon: Icons.home_rounded,
                       label: l10n.home,
                       isSelected: _currentIndex == 0,
                       onTap: () => setState(() => _currentIndex = 0),
                     ),
-                    _GlassNavItem(
+                  ),
+                  Expanded(
+                    child: _GlassNavItem(
                       icon: Icons.extension_rounded,
                       label: l10n.skills,
                       isSelected: _currentIndex == 1,
                       onTap: () => setState(() => _currentIndex = 1),
                     ),
-                    _GlassNavItem(
+                  ),
+                  Expanded(
+                    child: _GlassNavItem(
                       icon: Icons.settings_rounded,
                       label: l10n.settings,
                       isSelected: _currentIndex == 2,
                       onTap: () => setState(() => _currentIndex = 2),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -96,36 +94,39 @@ class _GlassNavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOutCubic,
-            width: 48,
-            height: 28,
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.accent.withValues(alpha: 0.12)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(14),
+      child: SizedBox(
+        height: kBottomNavigationBarHeight,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              width: 48,
+              height: 28,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.accent.withValues(alpha: 0.12)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? AppColors.accent : AppColors.textTertiary,
+                size: 22,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: isSelected ? AppColors.accent : AppColors.textTertiary,
-              size: 22,
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? AppColors.accent : AppColors.textTertiary,
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
             ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? AppColors.accent : AppColors.textTertiary,
-              fontSize: 10,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
