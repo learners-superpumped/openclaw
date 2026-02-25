@@ -839,4 +839,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get viewOnWeb => 'Voir sur ClawHub';
+
+  @override
+  String get defaultModel => 'Modèle par défaut';
+
+  @override
+  String get searchModels => 'Rechercher des modèles...';
+
+  @override
+  String get noModelsFound => 'Aucun modèle trouvé';
+
+  @override
+  String get gatewayRestartNotice => 'Modèle modifié. Le gateway redémarre...';
+
+  @override
+  String get changeDefaultModelError =>
+      'Échec du changement de modèle par défaut';
 }

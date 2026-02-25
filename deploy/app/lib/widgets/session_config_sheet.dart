@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
+import 'model_picker_sheet.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class SessionConfigSheet extends ConsumerStatefulWidget {
@@ -113,6 +114,59 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               ),
             ),
 
+            // Default model
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Text(
+                l10n.defaultModel,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: InkWell(
+                onTap: () => _openModelPicker(context),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Consumer(
+                          builder: (context, ref, _) {
+                            final defaultModel =
+                                ref.watch(chatProvider).configDefaultModel;
+                            return Text(
+                              defaultModel ?? '—',
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
+                        ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: AppColors.textTertiary,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
             // Reasoning level
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -183,6 +237,31 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
         ),
       ),
     );
+  }
+
+  Future<void> _openModelPicker(BuildContext context) async {
+    final chatState = ref.read(chatProvider);
+    final selected = await ModelPickerSheet.show(
+      context,
+      models: chatState.availableModels,
+      currentModelRef: chatState.configDefaultModel,
+    );
+    if (selected == null || !context.mounted) return;
+
+    final success = await ref
+        .read(chatProvider.notifier)
+        .setDefaultModel(selected.gatewayModelRef);
+    if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success ? l10n.gatewayRestartNotice : l10n.changeDefaultModelError,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   void _confirmDeleteSession(BuildContext context) {

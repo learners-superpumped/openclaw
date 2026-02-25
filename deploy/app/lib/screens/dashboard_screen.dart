@@ -12,9 +12,11 @@ import '../models/instance.dart';
 import '../models/usage.dart';
 import '../providers/channel_provider.dart';
 import '../providers/instance_provider.dart';
+import '../providers/model_config_provider.dart';
 import '../providers/usage_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/glass_card.dart';
+import '../widgets/model_picker_sheet.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -37,10 +39,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     Future.microtask(() {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
       ref.read(usageProvider.notifier).refresh();
+      _loadModelConfig();
     });
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
       ref.read(usageProvider.notifier).refresh();
+      _loadModelConfig();
     });
 
     _staggerController = AnimationController(
@@ -68,6 +72,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     if (state == AppLifecycleState.resumed) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
       ref.read(usageProvider.notifier).refresh();
+      _loadModelConfig();
+    }
+  }
+
+  void _loadModelConfig() {
+    final instance = ref.read(instanceProvider).instance;
+    if (instance != null && instance.isReady) {
+      ref.read(modelConfigProvider.notifier).load(instance.instanceId);
     }
   }
 
@@ -100,6 +112,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   ref.read(instanceProvider.notifier).refresh(includeChannels: true),
                   ref.read(usageProvider.notifier).refresh(),
                 ]);
+                _loadModelConfig();
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -140,11 +153,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                       ),
                     ));
 
+                    if (instance.isReady) {
+                      tiles.add(_BentoTile(
+                        key: 'model',
+                        span: cols,
+                        stagger: _staggerAnimation(0.18, 0.48),
+                        child: _DefaultModelTile(
+                          instanceId: instance.instanceId,
+                        ),
+                      ));
+                    }
+
                     if (usageState.usage != null && usageState.usage!.hasLimit) {
                       tiles.add(_BentoTile(
                         key: 'usage',
                         span: cols,
-                        stagger: _staggerAnimation(0.18, 0.48),
+                        stagger: _staggerAnimation(0.24, 0.54),
                         child: _UsageTile(usage: usageState.usage!),
                       ));
                     }
@@ -152,7 +176,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     if (instance.isReady) {
                       tiles.add(_BentoTile(
                         key: 'remote',
-                        stagger: _staggerAnimation(0.24, 0.54),
+                        stagger: _staggerAnimation(0.30, 0.60),
                         child: _RemoteViewTile(
                           onTap: () => context.push('/dashboard/remote-view'),
                         ),
@@ -162,7 +186,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     if (instance.manager?.gatewayUrl != null) {
                       tiles.add(_BentoTile(
                         key: 'web',
-                        stagger: _staggerAnimation(0.30, 0.60),
+                        stagger: _staggerAnimation(0.36, 0.66),
                         child: _WebAccessTile(manager: instance.manager!),
                       ));
                     }
@@ -1308,5 +1332,106 @@ class _WebAccessTile extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// ─── Default Model Tile ─────────────────────────────────────────────────────
+
+class _DefaultModelTile extends ConsumerWidget {
+  final String instanceId;
+
+  const _DefaultModelTile({required this.instanceId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final configState = ref.watch(modelConfigProvider);
+    final currentModel = configState.currentModel;
+    final defaultModel = configState.defaultModel;
+
+    return GlassCard.solid(
+      padding: const EdgeInsets.all(16),
+      onTap: () => _openModelPicker(context, ref),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.defaultModel.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(height: 10),
+                if (configState.isLoading && defaultModel == null)
+                  SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      color: AppColors.textTertiary,
+                    ),
+                  )
+                else ...[
+                  Text(
+                    currentModel?.name ?? defaultModel ?? '—',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: defaultModel != null
+                          ? AppColors.textPrimary
+                          : AppColors.textTertiary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  if (currentModel != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      currentModel.id,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(
+            Icons.chevron_right,
+            color: AppColors.textTertiary,
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openModelPicker(BuildContext context, WidgetRef ref) async {
+    final configState = ref.read(modelConfigProvider);
+    final selected = await ModelPickerSheet.show(
+      context,
+      models: configState.models,
+      currentModelRef: configState.defaultModel,
+    );
+    if (selected == null || !context.mounted) return;
+
+    final success = await ref
+        .read(modelConfigProvider.notifier)
+        .setDefaultModel(instanceId, selected.gatewayModelRef);
+
+    if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success
+                ? l10n.gatewayRestartNotice
+                : l10n.changeDefaultModelError,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }

@@ -567,5 +567,16 @@
   "@orDivider": { "description": "Divider text between primary and secondary actions" },
 
   "viewOnWeb": "View on ClawHub",
-  "@viewOnWeb": { "description": "View on ClawHub button on skill detail" }
+  "@viewOnWeb": { "description": "View on ClawHub button on skill detail" },
+
+  "defaultModel": "Default Model",
+  "@defaultModel": { "description": "Label for default AI model setting" },
+  "searchModels": "Search models...",
+  "@searchModels": { "description": "Placeholder for model search field" },
+  "noModelsFound": "No models found",
+  "@noModelsFound": { "description": "Empty state when no models match search" },
+  "gatewayRestartNotice": "Model changed. Gateway is restarting...",
+  "@gatewayRestartNotice": { "description": "Snackbar after changing default model" },
+  "changeDefaultModelError": "Failed to change default model",
+  "@changeDefaultModelError": { "description": "Error snackbar when model change fails" }
 }

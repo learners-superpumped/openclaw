@@ -800,4 +800,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get viewOnWeb => '在ClawHub上查看';
+
+  @override
+  String get defaultModel => '默认模型';
+
+  @override
+  String get searchModels => '搜索模型...';
+
+  @override
+  String get noModelsFound => '未找到模型';
+
+  @override
+  String get gatewayRestartNotice => '模型已更改。网关正在重新启动...';
+
+  @override
+  String get changeDefaultModelError => '更改默认模型失败';
 }

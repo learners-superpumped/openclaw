@@ -1,4 +1,6 @@
+import type { Cache } from "cache-manager";
 import { HttpService } from "@nestjs/axios";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { firstValueFrom } from "rxjs";
@@ -14,6 +16,19 @@ interface CreateKeyResponse {
   };
 }
 
+export interface OpenRouterModel {
+  id: string;
+  name: string;
+  context_length: number | null;
+  pricing: {
+    prompt: string;
+    completion: string;
+  } | null;
+}
+
+const MODELS_CACHE_KEY = "openrouter:models";
+const MODELS_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
 @Injectable()
 export class OpenRouterService {
   private readonly managementKey: string;
@@ -21,8 +36,30 @@ export class OpenRouterService {
   constructor(
     @Inject(HttpService) private httpService: HttpService,
     @Inject(ConfigService) configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.managementKey = configService.getOrThrow<string>("OPENROUTER_MANAGEMENT_KEY");
+  }
+
+  async listModels(): Promise<OpenRouterModel[]> {
+    const cached = await this.cacheManager.get<OpenRouterModel[]>(MODELS_CACHE_KEY);
+    if (cached) {
+      return cached;
+    }
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<{ data: OpenRouterModel[] }>("https://openrouter.ai/api/v1/models"),
+    );
+
+    const models = (data.data ?? []).map((m) => ({
+      id: m.id,
+      name: m.name,
+      context_length: m.context_length,
+      pricing: m.pricing,
+    }));
+
+    await this.cacheManager.set(MODELS_CACHE_KEY, models, MODELS_CACHE_TTL_MS);
+    return models;
   }
 
   async deleteKey(hash: string): Promise<void> {

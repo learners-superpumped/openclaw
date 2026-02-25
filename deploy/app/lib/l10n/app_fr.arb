@@ -265,5 +265,10 @@
   "resetsMonthly": "Réinitialisation mensuelle",
   "resetsDaily": "Réinitialisation quotidienne",
   "orDivider": "OU",
-  "viewOnWeb": "Voir sur ClawHub"
+  "viewOnWeb": "Voir sur ClawHub",
+  "defaultModel": "Modèle par défaut",
+  "searchModels": "Rechercher des modèles...",
+  "noModelsFound": "Aucun modèle trouvé",
+  "gatewayRestartNotice": "Modèle modifié. Le gateway redémarre...",
+  "changeDefaultModelError": "Échec du changement de modèle par défaut"
 }

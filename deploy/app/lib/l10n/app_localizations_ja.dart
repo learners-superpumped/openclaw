@@ -805,4 +805,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get viewOnWeb => 'ClawHubで見る';
+
+  @override
+  String get defaultModel => 'デフォルトモデル';
+
+  @override
+  String get searchModels => 'モデルを検索...';
+
+  @override
+  String get noModelsFound => 'モデルが見つかりません';
+
+  @override
+  String get gatewayRestartNotice => 'モデルが変更されました。ゲートウェイを再起動しています...';
+
+  @override
+  String get changeDefaultModelError => 'デフォルトモデルの変更に失敗しました';
 }

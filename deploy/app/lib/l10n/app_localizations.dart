@@ -1649,6 +1649,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View on ClawHub'**
   String get viewOnWeb;
+
+  /// Label for default AI model setting
+  ///
+  /// In en, this message translates to:
+  /// **'Default Model'**
+  String get defaultModel;
+
+  /// Placeholder for model search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search models...'**
+  String get searchModels;
+
+  /// Empty state when no models match search
+  ///
+  /// In en, this message translates to:
+  /// **'No models found'**
+  String get noModelsFound;
+
+  /// Snackbar after changing default model
+  ///
+  /// In en, this message translates to:
+  /// **'Model changed. Gateway is restarting...'**
+  String get gatewayRestartNotice;
+
+  /// Error snackbar when model change fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to change default model'**
+  String get changeDefaultModelError;
 }
 
 class _AppLocalizationsDelegate

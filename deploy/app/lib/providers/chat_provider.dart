@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/ai_model.dart';
 import '../models/chat_message.dart';
 import '../models/chat_session.dart';
 import '../services/chat_service.dart';
@@ -35,6 +36,9 @@ class ChatState {
   final int? totalMessageCount;
   final Set<String> refreshSessionsAfterRunIds;
   final String? error;
+  final List<AiModel> availableModels;
+  final String? configDefaultModel;
+  final String? configBaseHash;
 
   const ChatState({
     this.connectionState = ChatConnectionState.disconnected,
@@ -51,6 +55,9 @@ class ChatState {
     this.totalMessageCount,
     this.refreshSessionsAfterRunIds = const {},
     this.error,
+    this.availableModels = const [],
+    this.configDefaultModel,
+    this.configBaseHash,
   });
 
   /// Derive session name from sessions list for display.
@@ -105,6 +112,9 @@ class ChatState {
     int? totalMessageCount,
     Set<String>? refreshSessionsAfterRunIds,
     String? error,
+    List<AiModel>? availableModels,
+    String? configDefaultModel,
+    String? configBaseHash,
   }) {
     return ChatState(
       connectionState: connectionState ?? this.connectionState,
@@ -121,6 +131,9 @@ class ChatState {
       totalMessageCount: totalMessageCount ?? this.totalMessageCount,
       refreshSessionsAfterRunIds: refreshSessionsAfterRunIds ?? this.refreshSessionsAfterRunIds,
       error: error,
+      availableModels: availableModels ?? this.availableModels,
+      configDefaultModel: configDefaultModel ?? this.configDefaultModel,
+      configBaseHash: configBaseHash ?? this.configBaseHash,
     );
   }
 }
@@ -324,6 +337,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
       currentSessionKey: key,
       isAgentRunning: false,
       streamingContent: '',
+      availableModels: state.availableModels,
+      configDefaultModel: state.configDefaultModel,
+      configBaseHash: state.configBaseHash,
     );
     if (key != null) {
       await _loadHistory();
@@ -397,6 +413,73 @@ class ChatNotifier extends StateNotifier<ChatState> {
     await loadSessions();
     // Then load history for the selected session
     await _loadHistory();
+    // Load models and config in background (non-blocking)
+    unawaited(_loadModels());
+    unawaited(_loadConfig());
+  }
+
+  /// Load available models from OpenRouter via API.
+  Future<void> _loadModels() async {
+    try {
+      final apiClient = _ref.read(apiClientProvider);
+      final models = await apiClient.listModels();
+      state = state.copyWith(availableModels: models);
+    } catch (_) {}
+  }
+
+  /// Load gateway config to get current default model and baseHash.
+  Future<void> _loadConfig() async {
+    try {
+      final res = await _chatService?.getConfig();
+      if (res == null) return;
+
+      final ok = res['ok'] as bool? ?? false;
+      if (!ok) return;
+
+      final payload = res['payload'] as Map<String, dynamic>?;
+      final config = payload?['config'] as Map<String, dynamic>?;
+      final hash = payload?['hash'] as String?;
+
+      // Extract default model: agents.defaults.model.primary
+      final agents = config?['agents'] as Map<String, dynamic>?;
+      final defaults = agents?['defaults'] as Map<String, dynamic>?;
+      final model = defaults?['model'] as Map<String, dynamic>?;
+      final primary = model?['primary'] as String?;
+
+      state = state.copyWith(
+        configDefaultModel: primary,
+        configBaseHash: hash,
+      );
+    } catch (_) {}
+  }
+
+  /// Change the default model via config.patch.
+  Future<bool> setDefaultModel(String gatewayModelRef) async {
+    final baseHash = state.configBaseHash;
+    if (baseHash == null) return false;
+
+    try {
+      final raw = '{"agents":{"defaults":{"model":{"primary":"$gatewayModelRef"}}}}';
+      final res = await _chatService?.patchConfig(
+        raw: raw,
+        baseHash: baseHash,
+      );
+      if (res == null) return false;
+
+      final ok = res['ok'] as bool? ?? false;
+      if (!ok) return false;
+
+      // Update local state with new config
+      final payload = res['payload'] as Map<String, dynamic>?;
+      final newHash = payload?['hash'] as String?;
+      state = state.copyWith(
+        configDefaultModel: gatewayModelRef,
+        configBaseHash: newHash ?? baseHash,
+      );
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> _loadHistory() async {
@@ -708,6 +791,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
       sessions: state.sessions,
       currentSessionKey: null,
       refreshSessionsAfterRunIds: newIds,
+      availableModels: state.availableModels,
+      configDefaultModel: state.configDefaultModel,
+      configBaseHash: state.configBaseHash,
     );
     await loadSessions();
     await _loadHistory();

@@ -236,6 +236,22 @@ class ChatService {
     });
   }
 
+  /// Get gateway config (includes default model and baseHash).
+  Future<Map<String, dynamic>> getConfig() {
+    return sendRpc('config.get', {});
+  }
+
+  /// Patch gateway config (e.g. change default model). Triggers restart.
+  Future<Map<String, dynamic>> patchConfig({
+    required String raw,
+    required String baseHash,
+  }) {
+    return sendRpc('config.patch', {
+      'raw': raw,
+      'baseHash': baseHash,
+    });
+  }
+
   /// Delete a session.
   Future<Map<String, dynamic>> deleteSession({
     required String sessionKey,

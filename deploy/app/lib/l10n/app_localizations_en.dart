@@ -827,4 +827,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewOnWeb => 'View on ClawHub';
+
+  @override
+  String get defaultModel => 'Default Model';
+
+  @override
+  String get searchModels => 'Search models...';
+
+  @override
+  String get noModelsFound => 'No models found';
+
+  @override
+  String get gatewayRestartNotice => 'Model changed. Gateway is restarting...';
+
+  @override
+  String get changeDefaultModelError => 'Failed to change default model';
 }

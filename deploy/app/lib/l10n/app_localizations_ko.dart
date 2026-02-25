@@ -806,4 +806,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get viewOnWeb => 'ClawHub에서 보기';
+
+  @override
+  String get defaultModel => '기본 모델';
+
+  @override
+  String get searchModels => '모델 검색...';
+
+  @override
+  String get noModelsFound => '모델을 찾을 수 없습니다';
+
+  @override
+  String get gatewayRestartNotice => '모델이 변경되었습니다. 게이트웨이를 재시작합니다...';
+
+  @override
+  String get changeDefaultModelError => '기본 모델 변경에 실패했습니다';
 }

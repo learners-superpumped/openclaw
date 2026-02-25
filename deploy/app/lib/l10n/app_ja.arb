@@ -265,5 +265,10 @@
   "resetsMonthly": "毎月リセット",
   "resetsDaily": "毎日リセット",
   "orDivider": "または",
-  "viewOnWeb": "ClawHubで見る"
+  "viewOnWeb": "ClawHubで見る",
+  "defaultModel": "デフォルトモデル",
+  "searchModels": "モデルを検索...",
+  "noModelsFound": "モデルが見つかりません",
+  "gatewayRestartNotice": "モデルが変更されました。ゲートウェイを再起動しています...",
+  "changeDefaultModelError": "デフォルトモデルの変更に失敗しました"
 }

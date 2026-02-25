@@ -265,5 +265,10 @@
   "resetsMonthly": "每月重置",
   "resetsDaily": "每天重置",
   "orDivider": "或",
-  "viewOnWeb": "在ClawHub上查看"
+  "viewOnWeb": "在ClawHub上查看",
+  "defaultModel": "默认模型",
+  "searchModels": "搜索模型...",
+  "noModelsFound": "未找到模型",
+  "gatewayRestartNotice": "模型已更改。网关正在重新启动...",
+  "changeDefaultModelError": "更改默认模型失败"
 }

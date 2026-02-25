@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../constants.dart';
+import '../models/ai_model.dart';
 import '../models/auth_tokens.dart';
 import '../models/instance.dart';
 import '../models/skill.dart';
@@ -199,6 +200,31 @@ class ApiClient {
       'code': code,
     });
     return response.data;
+  }
+
+  // Generic RPC proxy
+  Future<Map<String, dynamic>> instanceRpc(
+    String instanceId,
+    String method, [
+    Map<String, dynamic>? params,
+  ]) async {
+    final response = await _dio.post(
+      '/instances/$instanceId/rpc',
+      data: {
+        'method': method,
+        if (params != null) 'params': params,
+      },
+      options: Options(receiveTimeout: const Duration(seconds: 30)),
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  // Models
+  Future<List<AiModel>> listModels() async {
+    final response = await _dio.get('/models');
+    final data = response.data as Map<String, dynamic>;
+    final models = data['models'] as List<dynamic>;
+    return models.map((e) => AiModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   // ClawHub

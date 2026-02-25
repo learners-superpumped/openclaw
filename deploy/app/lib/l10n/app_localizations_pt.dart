@@ -837,4 +837,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get viewOnWeb => 'Ver no ClawHub';
+
+  @override
+  String get defaultModel => 'Modelo padrão';
+
+  @override
+  String get searchModels => 'Pesquisar modelos...';
+
+  @override
+  String get noModelsFound => 'Nenhum modelo encontrado';
+
+  @override
+  String get gatewayRestartNotice =>
+      'Modelo alterado. O gateway está reiniciando...';
+
+  @override
+  String get changeDefaultModelError => 'Falha ao alterar o modelo padrão';
 }
