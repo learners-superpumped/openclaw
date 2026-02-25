@@ -132,7 +132,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             child: RefreshIndicator(
               onRefresh: () async {
                 await Future.wait([
-                  ref.read(instanceProvider.notifier).refresh(includeChannels: true),
+                  ref
+                      .read(instanceProvider.notifier)
+                      .refresh(includeChannels: true),
                   ref.read(usageProvider.notifier).refresh(),
                 ]);
                 _loadModelConfig();
@@ -148,71 +150,87 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   final tiles = <_BentoTile>[];
 
                   if (instance != null) {
-                    tiles.add(_BentoTile(
-                      key: 'hero',
-                      span: cols,
-                      stagger: _staggerAnimation(0.0, 0.3),
-                      child: _ChatHeroTile(
-                        isReady: instance.isReady,
-                        onTap: () => context.push('/dashboard/chat'),
+                    tiles.add(
+                      _BentoTile(
+                        key: 'hero',
+                        span: cols,
+                        stagger: _staggerAnimation(0.0, 0.3),
+                        child: _ChatHeroTile(
+                          isReady: instance.isReady,
+                          onTap: instance.isReady
+                              ? () => context.push('/dashboard/chat')
+                              : null,
+                        ),
                       ),
-                    ));
+                    );
 
-                    tiles.add(_BentoTile(
-                      key: 'instance',
-                      stagger: _staggerAnimation(0.06, 0.36),
-                      child: _InstanceTile(instance: instance),
-                    ));
-
-                    tiles.add(_BentoTile(
-                      key: 'channels',
-                      stagger: _staggerAnimation(0.12, 0.42),
-                      child: _ChannelsTile(
-                        channelState: channelState,
-                        telegramInfo: telegramInfo,
-                        whatsappInfo: whatsappInfo,
-                        discordInfo: discordInfo,
-                        onTap: () => context.push('/dashboard/channels'),
+                    tiles.add(
+                      _BentoTile(
+                        key: 'instance',
+                        stagger: _staggerAnimation(0.06, 0.36),
+                        child: _InstanceTile(instance: instance),
                       ),
-                    ));
+                    );
 
-                    tiles.add(_BentoTile(
-                      key: 'model',
-                      span: cols,
-                      stagger: _staggerAnimation(0.18, 0.48),
-                      child: _DefaultModelTile(
-                        instanceId: instance.instanceId,
-                        isReady: instance.isReady,
-                        onModelChanged: _startFastPolling,
+                    tiles.add(
+                      _BentoTile(
+                        key: 'channels',
+                        stagger: _staggerAnimation(0.12, 0.42),
+                        child: _ChannelsTile(
+                          channelState: channelState,
+                          telegramInfo: telegramInfo,
+                          whatsappInfo: whatsappInfo,
+                          discordInfo: discordInfo,
+                          onTap: () => context.push('/dashboard/channels'),
+                        ),
                       ),
-                    ));
+                    );
 
-                    tiles.add(_BentoTile(
-                      key: 'usage',
-                      span: cols,
-                      stagger: _staggerAnimation(0.24, 0.54),
-                      child: _UsageTile(
-                        usage: usageState.usage,
-                        isLoading: usageState.isLoading && usageState.usage == null,
+                    tiles.add(
+                      _BentoTile(
+                        key: 'model',
+                        span: cols,
+                        stagger: _staggerAnimation(0.18, 0.48),
+                        child: _DefaultModelTile(
+                          instanceId: instance.instanceId,
+                          isReady: instance.isReady,
+                          onModelChanged: _startFastPolling,
+                        ),
                       ),
-                    ));
+                    );
 
-                    if (instance.isReady) {
-                      tiles.add(_BentoTile(
+                    tiles.add(
+                      _BentoTile(
+                        key: 'usage',
+                        span: cols,
+                        stagger: _staggerAnimation(0.24, 0.54),
+                        child: _UsageTile(
+                          usage: usageState.usage,
+                          isLoading:
+                              usageState.isLoading && usageState.usage == null,
+                        ),
+                      ),
+                    );
+
+                    tiles.add(
+                      _BentoTile(
                         key: 'remote',
                         stagger: _staggerAnimation(0.30, 0.60),
                         child: _RemoteViewTile(
+                          isReady: instance.isReady,
                           onTap: () => context.push('/dashboard/remote-view'),
                         ),
-                      ));
-                    }
+                      ),
+                    );
 
                     if (instance.manager?.gatewayUrl != null) {
-                      tiles.add(_BentoTile(
-                        key: 'web',
-                        stagger: _staggerAnimation(0.36, 0.66),
-                        child: _WebAccessTile(manager: instance.manager!),
-                      ));
+                      tiles.add(
+                        _BentoTile(
+                          key: 'web',
+                          stagger: _staggerAnimation(0.36, 0.66),
+                          child: _WebAccessTile(manager: instance.manager!),
+                        ),
+                      );
                     }
                   }
 
@@ -228,9 +246,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'ClawBox',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  letterSpacing: -0.5,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(letterSpacing: -0.5),
                               ),
                             ),
                           ),
@@ -426,10 +443,7 @@ class _AtmosphericBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF0D0D0F),
-                  AppColors.background,
-                ],
+                colors: [Color(0xFF0D0D0F), AppColors.background],
               ),
             ),
             child: Stack(
@@ -501,9 +515,9 @@ class _AtmosphericBackground extends StatelessWidget {
 
 class _ChatHeroTile extends StatefulWidget {
   final bool isReady;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
-  const _ChatHeroTile({required this.isReady, required this.onTap});
+  const _ChatHeroTile({required this.isReady, this.onTap});
 
   @override
   State<_ChatHeroTile> createState() => _ChatHeroTileState();
@@ -704,11 +718,7 @@ class _PulsingGlowIconState extends State<_PulsingGlowIcon>
           child: child,
         );
       },
-      child: Icon(
-        widget.icon,
-        color: widget.color,
-        size: widget.size * 0.5,
-      ),
+      child: Icon(widget.icon, color: widget.color, size: widget.size * 0.5),
     );
   }
 }
@@ -738,10 +748,7 @@ class _StatusPill extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 5),
           Text(
@@ -788,7 +795,9 @@ class _InstanceTile extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               _PulsingDot(
-                color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
+                color: instance.isReady
+                    ? AppColors.accent
+                    : AppColors.textTertiary,
                 isActive: instance.isReady,
               ),
             ],
@@ -799,7 +808,9 @@ class _InstanceTile extends StatelessWidget {
                 ? l10n.statusRunning
                 : (instance.manager?.phase ?? l10n.statusWaiting),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: instance.isReady ? AppColors.accent : AppColors.textTertiary,
+              color: instance.isReady
+                  ? AppColors.accent
+                  : AppColors.textTertiary,
             ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -885,9 +896,9 @@ class _ChannelsTile extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             l10n.channelsSummary(_connectedCount()),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -962,7 +973,9 @@ class _PulsingDotState extends State<_PulsingDot>
             boxShadow: widget.isActive
                 ? [
                     BoxShadow(
-                      color: widget.color.withValues(alpha: 0.4 * _controller.value),
+                      color: widget.color.withValues(
+                        alpha: 0.4 * _controller.value,
+                      ),
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),
@@ -1008,12 +1021,16 @@ class _ChannelIcon extends StatelessWidget {
             child: iconData != null
                 ? FaIcon(
                     iconData!,
-                    color: effectiveColor.withValues(alpha: isConnected ? 1.0 : 0.5),
+                    color: effectiveColor.withValues(
+                      alpha: isConnected ? 1.0 : 0.5,
+                    ),
                     size: 15,
                   )
                 : Icon(
                     icon,
-                    color: effectiveColor.withValues(alpha: isConnected ? 1.0 : 0.5),
+                    color: effectiveColor.withValues(
+                      alpha: isConnected ? 1.0 : 0.5,
+                    ),
                     size: 16,
                   ),
           ),
@@ -1025,7 +1042,9 @@ class _ChannelIcon extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: isConnected ? AppColors.accentGreen : AppColors.textTertiary,
+              color: isConnected
+                  ? AppColors.accentGreen
+                  : AppColors.textTertiary,
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.background, width: 1.5),
             ),
@@ -1112,10 +1131,7 @@ class _UsageTile extends StatelessWidget {
                 enabled: loading,
                 child: Text(
                   loading ? l10n.resetsWeekly : _resetLabel(l10n),
-                  style: TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 11,
-                  ),
+                  style: TextStyle(color: AppColors.textTertiary, fontSize: 11),
                 ),
               ),
             ],
@@ -1169,10 +1185,7 @@ class _UsageTile extends StatelessWidget {
               builder: (context, value, _) {
                 return CustomPaint(
                   size: const Size(double.infinity, 8),
-                  painter: _GlassProgressPainter(
-                    fraction: value,
-                    color: color,
-                  ),
+                  painter: _GlassProgressPainter(fraction: value, color: color),
                 );
               },
             ),
@@ -1238,9 +1251,10 @@ class _GlassProgressPainter extends CustomPainter {
 // ─── Remote View Tile ──────────────────────────────────────────────────────
 
 class _RemoteViewTile extends StatelessWidget {
+  final bool isReady;
   final VoidCallback onTap;
 
-  const _RemoteViewTile({required this.onTap});
+  const _RemoteViewTile({required this.isReady, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1248,19 +1262,21 @@ class _RemoteViewTile extends StatelessWidget {
 
     return GlassCard.solid(
       padding: const EdgeInsets.all(16),
-      onTap: onTap,
+      onTap: isReady ? onTap : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.desktop_windows,
-            color: AppColors.textSecondary,
+            color: isReady ? AppColors.textSecondary : AppColors.textTertiary,
             size: 24,
           ),
           const SizedBox(height: 10),
           Text(
             l10n.remoteView,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: isReady ? null : AppColors.textTertiary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -1295,8 +1311,10 @@ class _WebAccessTile extends StatelessWidget {
               final token = manager.gatewayToken;
               if (url != null) {
                 final webUrl = token != null ? '$url#token=$token' : url;
-                launchUrl(Uri.parse(webUrl),
-                    mode: LaunchMode.externalApplication);
+                launchUrl(
+                  Uri.parse(webUrl),
+                  mode: LaunchMode.externalApplication,
+                );
               }
             }
           : null,
@@ -1305,7 +1323,9 @@ class _WebAccessTile extends StatelessWidget {
         children: [
           Icon(
             Icons.language,
-            color: gatewayReady ? AppColors.textSecondary : AppColors.textTertiary,
+            color: gatewayReady
+                ? AppColors.textSecondary
+                : AppColors.textTertiary,
             size: 24,
           ),
           const SizedBox(height: 10),
@@ -1343,13 +1363,9 @@ class _WebAccessTile extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               l10n.webAccessPreparingHint,
-              style: TextStyle(
-                color: AppColors.textTertiary,
-                fontSize: 10,
-              ),
+              style: TextStyle(color: AppColors.textTertiary, fontSize: 10),
             ),
-          ]
-          else
+          ] else
             Row(
               children: [
                 Container(
@@ -1364,10 +1380,7 @@ class _WebAccessTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     manager.gatewayUrl ?? '',
-                    style: TextStyle(
-                      color: AppColors.accent,
-                      fontSize: 11,
-                    ),
+                    style: TextStyle(color: AppColors.accent, fontSize: 11),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -1398,7 +1411,8 @@ class _DefaultModelTile extends ConsumerWidget {
     final configState = ref.watch(modelConfigProvider);
     final currentModel = configState.currentModel;
     final defaultModel = configState.defaultModel;
-    final isLoading = !isReady || (configState.isLoading && defaultModel == null);
+    final isLoading =
+        !isReady || (configState.isLoading && defaultModel == null);
 
     return GlassCard.solid(
       padding: const EdgeInsets.all(16),
@@ -1420,18 +1434,23 @@ class _DefaultModelTile extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        currentModel?.name ?? defaultModel ?? 'Loading model name',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: defaultModel != null && !isLoading
-                              ? AppColors.textPrimary
-                              : AppColors.textTertiary,
-                        ),
+                        currentModel?.name ??
+                            defaultModel ??
+                            'Loading model name',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: defaultModel != null && !isLoading
+                                  ? AppColors.textPrimary
+                                  : AppColors.textTertiary,
+                            ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        currentModel?.id ?? defaultModel ?? 'provider/model-name',
+                        currentModel?.id ??
+                            defaultModel ??
+                            'provider/model-name',
                         style: Theme.of(context).textTheme.bodySmall,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -1443,11 +1462,7 @@ class _DefaultModelTile extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Icon(
-            Icons.chevron_right,
-            color: AppColors.textTertiary,
-            size: 20,
-          ),
+          Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 20),
         ],
       ),
     );
@@ -1471,9 +1486,7 @@ class _DefaultModelTile extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            success
-                ? l10n.gatewayRestartNotice
-                : l10n.changeDefaultModelError,
+            success ? l10n.gatewayRestartNotice : l10n.changeDefaultModelError,
           ),
           behavior: SnackBarBehavior.floating,
         ),
