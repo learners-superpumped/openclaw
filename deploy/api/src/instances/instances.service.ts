@@ -116,6 +116,23 @@ export class InstancesService {
       }
     }
 
+    if (options?.include?.includes("usage")) {
+      try {
+        const key = await this.prisma.openRouterKey.findUnique({ where: { userId } });
+        if (!key) {
+          result.usage = { usage: 0, limitReset: null };
+        } else {
+          const { limit, limitRemaining, limitReset } = await this.openRouterService.getKeyUsage(
+            key.keyHash,
+          );
+          const usage = limit > 0 ? Math.round(((limit - limitRemaining) / limit) * 100) : 0;
+          result.usage = { usage, limitReset };
+        }
+      } catch {
+        result.usage = { usage: 0, limitReset: null };
+      }
+    }
+
     return result;
   }
 
