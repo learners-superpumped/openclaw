@@ -70,6 +70,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      await _ref.read(isProProvider.notifier).refresh();
       final subNotifier = _ref.read(isProProvider.notifier);
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
@@ -96,6 +97,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      await _ref.read(isProProvider.notifier).refresh();
       final subNotifier = _ref.read(isProProvider.notifier);
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
@@ -122,6 +124,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      await _ref.read(isProProvider.notifier).refresh();
       final subNotifier = _ref.read(isProProvider.notifier);
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
@@ -148,6 +151,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final apiClient = _ref.read(apiClientProvider);
       final user = await apiClient.getMe();
       await Purchases.logIn(user.id);
+      await _ref.read(isProProvider.notifier).refresh();
       final subNotifier = _ref.read(isProProvider.notifier);
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
