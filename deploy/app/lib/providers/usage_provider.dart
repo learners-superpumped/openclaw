@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/instance.dart';
 import '../models/usage.dart';
 import 'api_provider.dart';
 
@@ -31,6 +32,12 @@ class UsageNotifier extends StateNotifier<UsageState> {
     } catch (_) {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  void updateFromInstance(EmbeddedUsage embedded) {
+    state = UsageState(
+      usage: Usage(usage: embedded.usage, limitReset: embedded.limitReset),
+    );
   }
 }
 

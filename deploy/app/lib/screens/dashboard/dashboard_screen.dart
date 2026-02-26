@@ -37,12 +37,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     WidgetsBinding.instance.addObserver(this);
     Future.microtask(() {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
-      ref.read(usageProvider.notifier).refresh();
       _loadModelConfig();
     });
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
-      ref.read(usageProvider.notifier).refresh();
       _loadModelConfig();
     });
 
@@ -71,7 +69,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.read(instanceProvider.notifier).refresh(includeChannels: true);
-      ref.read(usageProvider.notifier).refresh();
       _loadModelConfig();
     }
   }
@@ -128,12 +125,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           SafeArea(
             child: RefreshIndicator(
               onRefresh: () async {
-                await Future.wait([
-                  ref
-                      .read(instanceProvider.notifier)
-                      .refresh(includeChannels: true),
-                  ref.read(usageProvider.notifier).refresh(),
-                ]);
+                await ref
+                    .read(instanceProvider.notifier)
+                    .refresh(includeChannels: true);
                 _loadModelConfig();
               },
               child: LayoutBuilder(

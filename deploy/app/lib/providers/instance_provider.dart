@@ -6,6 +6,7 @@ import '../models/instance.dart';
 import 'api_provider.dart';
 import 'channel_provider.dart';
 import 'onboarding_provider.dart';
+import 'usage_provider.dart';
 
 const _kTelegramSetupSkipped = 'telegram_setup_skipped';
 
@@ -136,15 +137,22 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
     if (state.instance != null) {
       try {
         final apiClient = _ref.read(apiClientProvider);
+        final includes = <String>[];
+        if (includeChannels) includes.add('channels');
+        includes.add('usage');
+
         final instance = await apiClient.getInstance(
           state.instance!.instanceId,
-          include: includeChannels ? ['channels'] : null,
+          include: includes,
           probe: includeChannels,
         );
         state = state.copyWith(instance: instance);
 
         if (instance.channels != null) {
           _ref.read(channelProvider.notifier).updateFromEmbedded(instance.channels!);
+        }
+        if (instance.usage != null) {
+          _ref.read(usageProvider.notifier).updateFromInstance(instance.usage!);
         }
       } catch (_) {}
     }

@@ -4,6 +4,7 @@ class Instance {
   final String? displayName;
   final ManagerStatus? manager;
   final EmbeddedChannels? channels;
+  final EmbeddedUsage? usage;
   final DateTime createdAt;
 
   const Instance({
@@ -12,6 +13,7 @@ class Instance {
     this.displayName,
     this.manager,
     this.channels,
+    this.usage,
     required this.createdAt,
   });
 
@@ -26,11 +28,28 @@ class Instance {
       channels: json['channels'] != null
           ? EmbeddedChannels.fromJson(json['channels'] as Map<String, dynamic>)
           : null,
+      usage: json['usage'] != null
+          ? EmbeddedUsage.fromJson(json['usage'] as Map<String, dynamic>)
+          : null,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
 
   bool get isReady => manager?.ready ?? false;
+}
+
+class EmbeddedUsage {
+  final int usage;
+  final String? limitReset;
+
+  const EmbeddedUsage({required this.usage, this.limitReset});
+
+  factory EmbeddedUsage.fromJson(Map<String, dynamic> json) {
+    return EmbeddedUsage(
+      usage: (json['usage'] as num).toInt(),
+      limitReset: json['limitReset'] as String?,
+    );
+  }
 }
 
 class EmbeddedChannels {
