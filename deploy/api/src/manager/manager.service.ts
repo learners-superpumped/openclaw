@@ -30,11 +30,24 @@ export class ManagerService {
     throw err;
   }
 
-  async createInstance(instanceId: string, secrets: Record<string, string>) {
+  async createInstance(
+    instanceId: string,
+    secrets: Record<string, string>,
+    profile?: {
+      user?: {
+        name?: string;
+        callName?: string;
+        pronouns?: string;
+        timezone?: string;
+        notes?: string;
+      };
+      agent?: { name?: string; creature?: string; vibe?: string; emoji?: string; avatar?: string };
+    },
+  ) {
     const { data } = await firstValueFrom(
       this.httpService.post(
         `${this.baseUrl}/api/instances`,
-        { userId: instanceId, secrets },
+        { userId: instanceId, secrets, ...(profile ? { profile } : {}) },
         { headers: this.headers },
       ),
     ).catch(this.rethrow);

@@ -48,9 +48,13 @@ export class InstancesService {
       });
     }
 
-    const managerResult = await this.managerService.createInstance(instanceId, {
-      OPENROUTER_API_KEY: openRouterKey.key,
-    });
+    const managerResult = await this.managerService.createInstance(
+      instanceId,
+      {
+        OPENROUTER_API_KEY: openRouterKey.key,
+      },
+      dto.profile,
+    );
 
     const instance = await this.prisma.instance.create({
       data: { instanceId, userId, displayName: dto.displayName },
