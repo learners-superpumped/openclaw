@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../models/channel.dart';
 import '../providers/channel_provider.dart';
@@ -90,7 +88,6 @@ class _ChannelsScreenState extends ConsumerState<ChannelsScreen> {
 
 class _ChannelTile extends StatelessWidget {
   final IconData? icon;
-  final IconData? iconData;
   final Color iconColor;
   final String name;
   final ChannelInfo? info;
@@ -129,11 +126,7 @@ class _ChannelTile extends StatelessWidget {
                   color: iconColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Center(
-                  child: iconData != null
-                      ? FaIcon(iconData!, color: iconColor, size: 22)
-                      : Icon(icon, color: iconColor, size: 24),
-                ),
+                child: Center(child: Icon(icon, color: iconColor, size: 24)),
               ),
               const SizedBox(width: 14),
               Expanded(

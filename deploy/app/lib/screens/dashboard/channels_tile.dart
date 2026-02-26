@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../../models/channel.dart';
@@ -98,7 +97,6 @@ class ChannelsTile extends StatelessWidget {
 
 class _ChannelIcon extends StatelessWidget {
   final IconData? icon;
-  final IconData? iconData;
   final Color color;
   final bool isConnected;
 
@@ -123,21 +121,11 @@ class _ChannelIcon extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
-            child: iconData != null
-                ? FaIcon(
-                    iconData!,
-                    color: effectiveColor.withValues(
-                      alpha: isConnected ? 1.0 : 0.5,
-                    ),
-                    size: 15,
-                  )
-                : Icon(
-                    icon,
-                    color: effectiveColor.withValues(
-                      alpha: isConnected ? 1.0 : 0.5,
-                    ),
-                    size: 16,
-                  ),
+            child: Icon(
+              icon,
+              color: effectiveColor.withValues(alpha: isConnected ? 1.0 : 0.5),
+              size: 16,
+            ),
           ),
         ),
         Positioned(
