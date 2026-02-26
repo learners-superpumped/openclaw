@@ -69,13 +69,19 @@ class ChatMessageBubble extends StatelessWidget {
                   textDirection: textDir,
                   child: Linkify(
                     onOpen: (link) {
-                      launchUrl(Uri.parse(link.url), mode: LaunchMode.externalApplication);
+                      launchUrl(
+                        Uri.parse(link.url),
+                        mode: LaunchMode.externalApplication,
+                      );
                     },
                     text: message.content,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
-                    linkStyle: const TextStyle(color: AppColors.accent, decoration: TextDecoration.underline),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                    linkStyle: const TextStyle(
+                      color: AppColors.accent,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
             ],
@@ -127,7 +133,11 @@ class ChatMessageBubble extends StatelessWidget {
                     bottomRight: const Radius.circular(18),
                   ),
                 ),
-                child: message.isStreaming && message.content.isEmpty && message.thinkingContent == null && message.toolCards == null
+                child:
+                    message.isStreaming &&
+                        message.content.isEmpty &&
+                        message.thinkingContent == null &&
+                        message.toolCards == null
                     ? const TypingIndicator()
                     : _buildMarkdownContent(context),
               ),
@@ -151,10 +161,7 @@ class ChatMessageBubble extends StatelessWidget {
       children: [
         // Thinking section
         if (thinking != null && thinking.isNotEmpty)
-          ThinkingSection(
-            content: thinking,
-            isStreaming: message.isStreaming,
-          ),
+          ThinkingSection(content: thinking, isStreaming: message.isStreaming),
 
         // Tool cards
         if (toolCards != null && toolCards.isNotEmpty)
@@ -182,9 +189,9 @@ class ChatMessageBubble extends StatelessWidget {
               textDirection: textDir,
               child: SelectableText(
                 content,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
               ),
             ),
           ] else
@@ -306,11 +313,7 @@ class ChatMessageBubble extends StatelessWidget {
           ),
         ),
       ),
-      blockquotePadding: const EdgeInsets.only(
-        left: 12,
-        top: 4,
-        bottom: 4,
-      ),
+      blockquotePadding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
       a: const TextStyle(color: AppColors.accent),
       listBullet: Theme.of(
         context,

@@ -42,13 +42,11 @@ class BrowseSkillsResponse {
   final List<BrowseSkillItem> skills;
   final String? cursor;
 
-  const BrowseSkillsResponse({
-    required this.skills,
-    this.cursor,
-  });
+  const BrowseSkillsResponse({required this.skills, this.cursor});
 
   factory BrowseSkillsResponse.fromJson(Map<String, dynamic> json) {
-    final skillsList = (json['skills'] as List?)
+    final skillsList =
+        (json['skills'] as List?)
             ?.map((e) => BrowseSkillItem.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [];
@@ -84,10 +82,9 @@ class BrowseSkillDetail {
     required this.raw,
   });
 
-  String? get clawHubUrl =>
-      ownerHandle != null && slug.isNotEmpty
-          ? 'https://clawhub.ai/$ownerHandle/$slug'
-          : null;
+  String? get clawHubUrl => ownerHandle != null && slug.isNotEmpty
+      ? 'https://clawhub.ai/$ownerHandle/$slug'
+      : null;
 
   factory BrowseSkillDetail.fromJson(Map<String, dynamic> json) {
     final skill = json['skill'] as Map<String, dynamic>?;

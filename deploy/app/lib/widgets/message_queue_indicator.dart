@@ -46,9 +46,9 @@ class MessageQueueIndicator extends ConsumerWidget {
             const SizedBox(width: 8),
             Text(
               l10n.messagesInQueue,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.accent,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.accent),
             ),
           ],
         ),

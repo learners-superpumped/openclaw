@@ -62,10 +62,9 @@ class ChatService {
 
         if (type == 'auth_required') {
           // Step 2: Server requests authentication
-          _channel!.sink.add(jsonEncode({
-            'type': 'auth',
-            'token': _accessToken,
-          }));
+          _channel!.sink.add(
+            jsonEncode({'type': 'auth', 'token': _accessToken}),
+          );
           return;
         }
 
@@ -169,12 +168,14 @@ class ChatService {
     final completer = Completer<Map<String, dynamic>>();
     _pendingRequests[id] = completer;
 
-    _channel!.sink.add(jsonEncode({
-      'type': 'req',
-      'id': id,
-      'method': method,
-      if (params != null) 'params': params,
-    }));
+    _channel!.sink.add(
+      jsonEncode({
+        'type': 'req',
+        'id': id,
+        'method': method,
+        'params': ?params,
+      }),
+    );
 
     // 60s timeout
     return completer.future.timeout(
@@ -228,10 +229,10 @@ class ChatService {
   }) {
     return sendRpc('sessions.patch', {
       'sessionKey': sessionKey,
-      if (label != null) 'label': label,
-      if (reasoningLevel != null) 'reasoningLevel': reasoningLevel,
-      if (thinkingLevel != null) 'thinkingLevel': thinkingLevel,
-      if (verboseLevel != null) 'verboseLevel': verboseLevel,
+      'label': ?label,
+      'reasoningLevel': ?reasoningLevel,
+      'thinkingLevel': ?thinkingLevel,
+      'verboseLevel': ?verboseLevel,
     });
   }
 
@@ -245,26 +246,17 @@ class ChatService {
     required String raw,
     required String baseHash,
   }) {
-    return sendRpc('config.patch', {
-      'raw': raw,
-      'baseHash': baseHash,
-    });
+    return sendRpc('config.patch', {'raw': raw, 'baseHash': baseHash});
   }
 
   /// Delete a session.
-  Future<Map<String, dynamic>> deleteSession({
-    required String sessionKey,
-  }) {
-    return sendRpc('sessions.delete', {
-      'sessionKey': sessionKey,
-    });
+  Future<Map<String, dynamic>> deleteSession({required String sessionKey}) {
+    return sendRpc('sessions.delete', {'sessionKey': sessionKey});
   }
 
   /// List available sessions.
   Future<List<ChatSession>> listSessions() async {
-    final res = await sendRpc('sessions.list', {
-      'includeDerivedTitles': true,
-    });
+    final res = await sendRpc('sessions.list', {'includeDerivedTitles': true});
     final ok = res['ok'] as bool? ?? false;
     if (!ok) {
       throw Exception(res['error'] ?? 'Failed to list sessions');

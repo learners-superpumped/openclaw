@@ -29,7 +29,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   final step = ref.watch(onboardingStepProvider);
 
   return GoRouter(
-    observers: [FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+    ],
     initialLocation: _locationForStep(step),
     redirect: (context, state) {
       final target = _locationForStep(step);
@@ -37,7 +39,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (step == OnboardingStep.auth && currentPath.startsWith('/auth')) {
         return null;
       }
-      if (step == OnboardingStep.dashboard && currentPath.startsWith('/dashboard')) {
+      if (step == OnboardingStep.dashboard &&
+          currentPath.startsWith('/dashboard')) {
         return null;
       }
       if (currentPath != target) {
@@ -66,9 +69,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/setup/ai-disclosure',
-        builder: (context, state) => const Scaffold(
-          body: AiDisclosureScreen(),
-        ),
+        builder: (context, state) => const Scaffold(body: AiDisclosureScreen()),
       ),
       ShellRoute(
         builder: (context, state, child) => OnboardingShell(child: child),
@@ -101,9 +102,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'skills/:slug',
-            builder: (context, state) => SkillDetailScreen(
-              slug: state.pathParameters['slug']!,
-            ),
+            builder: (context, state) =>
+                SkillDetailScreen(slug: state.pathParameters['slug']!),
           ),
           GoRoute(
             path: 'channels',
@@ -121,7 +121,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                         appBar: AppBar(),
                         body: TelegramSetupScreen(
                           onTokenSubmitted: () async {
-                            await router.push('/dashboard/channels/telegram/pairing');
+                            await router.push(
+                              '/dashboard/channels/telegram/pairing',
+                            );
                             if (context.mounted) router.pop();
                           },
                           onSkipped: () => router.pop(),
@@ -156,7 +158,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                         appBar: AppBar(),
                         body: DiscordSetupScreen(
                           onTokenSubmitted: () async {
-                            await router.push('/dashboard/channels/discord/pairing');
+                            await router.push(
+                              '/dashboard/channels/discord/pairing',
+                            );
                             if (context.mounted) router.pop();
                           },
                         ),

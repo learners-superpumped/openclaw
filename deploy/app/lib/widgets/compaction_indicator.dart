@@ -32,9 +32,9 @@ class CompactionIndicator extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             l10n.compactingContext,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.accent,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.accent),
           ),
         ],
       ),

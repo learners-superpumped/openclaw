@@ -52,15 +52,13 @@ class _BrandedLogoLoaderState extends State<BrandedLogoLoader>
         ),
       );
 
-      _logoSlide = Tween<Offset>(
-        begin: const Offset(0, 0.08),
-        end: Offset.zero,
-      ).animate(
-        CurvedAnimation(
-          parent: _entryController!,
-          curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
-        ),
-      );
+      _logoSlide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
+          .animate(
+            CurvedAnimation(
+              parent: _entryController!,
+              curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+            ),
+          );
 
       _indicatorFade = CurvedAnimation(
         parent: _entryController!,
@@ -93,10 +91,7 @@ class _BrandedLogoLoaderState extends State<BrandedLogoLoader>
       mainAxisSize: MainAxisSize.min,
       children: [
         AnimatedBuilder(
-          animation: Listenable.merge([
-            ?_entryController,
-            _glowController,
-          ]),
+          animation: Listenable.merge([?_entryController, _glowController]),
           builder: (context, child) {
             final glowOpacity =
                 0.15 + 0.1 * math.sin(_glowController.value * math.pi);
@@ -114,8 +109,9 @@ class _BrandedLogoLoaderState extends State<BrandedLogoLoader>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color:
-                              AppColors.accent.withValues(alpha: glowOpacity),
+                          color: AppColors.accent.withValues(
+                            alpha: glowOpacity,
+                          ),
                           blurRadius: 60,
                           spreadRadius: 20,
                         ),
@@ -140,10 +136,7 @@ class _BrandedLogoLoaderState extends State<BrandedLogoLoader>
                 opacity: _logoFade!,
                 child: SlideTransition(
                   position: _logoSlide!,
-                  child: ScaleTransition(
-                    scale: _logoScale!,
-                    child: logo,
-                  ),
+                  child: ScaleTransition(scale: _logoScale!, child: logo),
                 ),
               );
             }

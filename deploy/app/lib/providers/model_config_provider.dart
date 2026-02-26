@@ -98,13 +98,17 @@ class ModelConfigNotifier extends StateNotifier<ModelConfigState> {
     } catch (_) {}
   }
 
-  Future<bool> setDefaultModel(String instanceId, String gatewayModelRef) async {
+  Future<bool> setDefaultModel(
+    String instanceId,
+    String gatewayModelRef,
+  ) async {
     final baseHash = state.configHash;
     if (baseHash == null) return false;
 
     try {
       final apiClient = _ref.read(apiClientProvider);
-      final raw = '{"agents":{"defaults":{"model":{"primary":"$gatewayModelRef"}}}}';
+      final raw =
+          '{"agents":{"defaults":{"model":{"primary":"$gatewayModelRef"}}}}';
       final res = await apiClient.instanceRpc(instanceId, 'config.patch', {
         'raw': raw,
         'baseHash': baseHash,
@@ -127,5 +131,5 @@ class ModelConfigNotifier extends StateNotifier<ModelConfigState> {
 
 final modelConfigProvider =
     StateNotifierProvider<ModelConfigNotifier, ModelConfigState>((ref) {
-  return ModelConfigNotifier(ref);
-});
+      return ModelConfigNotifier(ref);
+    });

@@ -104,17 +104,19 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
       final detail = await ref
           .read(clawHubProvider.notifier)
           .getSkillDetail(widget.slug);
-      if (mounted)
+      if (mounted) {
         setState(() {
           _detail = detail;
           _isLoading = false;
         });
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = e.toString();
           _isLoading = false;
         });
+      }
     }
   }
 

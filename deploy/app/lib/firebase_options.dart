@@ -70,8 +70,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '406140376321',
     projectId: 'clawbox-487506',
     storageBucket: 'clawbox-487506.firebasestorage.app',
-    androidClientId: '406140376321-osplq7qhase88im4dvqvfovr1bvdmqkn.apps.googleusercontent.com',
-    iosClientId: '406140376321-bb5gpgfie93bo8gg744c2d7tq77nhfjd.apps.googleusercontent.com',
+    androidClientId:
+        '406140376321-osplq7qhase88im4dvqvfovr1bvdmqkn.apps.googleusercontent.com',
+    iosClientId:
+        '406140376321-bb5gpgfie93bo8gg744c2d7tq77nhfjd.apps.googleusercontent.com',
     iosBundleId: 'com.teamlearners.clawbox',
   );
 }

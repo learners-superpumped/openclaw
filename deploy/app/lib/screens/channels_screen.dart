@@ -44,11 +44,10 @@ class _ChannelsScreenState extends ConsumerState<ChannelsScreen> {
     final channelState = ref.watch(channelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.channels),
-      ),
+      appBar: AppBar(title: Text(l10n.channels)),
       body: RefreshIndicator(
-        onRefresh: () => ref.read(channelProvider.notifier).loadAll(force: true),
+        onRefresh: () =>
+            ref.read(channelProvider.notifier).loadAll(force: true),
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -57,7 +56,9 @@ class _ChannelsScreenState extends ConsumerState<ChannelsScreen> {
               iconColor: const Color(0xFF26A5E4),
               name: 'Telegram',
               info: channelState.channels[ChannelType.telegram],
-              isLoading: channelState.isLoading && !channelState.channels.containsKey(ChannelType.telegram),
+              isLoading:
+                  channelState.isLoading &&
+                  !channelState.channels.containsKey(ChannelType.telegram),
               onTap: () => context.push('/dashboard/channels/telegram'),
             ),
             const SizedBox(height: 12),
@@ -98,7 +99,6 @@ class _ChannelTile extends StatelessWidget {
 
   const _ChannelTile({
     this.icon,
-    this.iconData,
     required this.iconColor,
     required this.name,
     required this.info,
@@ -140,10 +140,7 @@ class _ChannelTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    Text(name, style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 3),
                     Row(
                       children: [
@@ -161,7 +158,9 @@ class _ChannelTile extends StatelessWidget {
                             width: 7,
                             height: 7,
                             decoration: BoxDecoration(
-                              color: isConnected ? AppColors.accentGreen : AppColors.textTertiary,
+                              color: isConnected
+                                  ? AppColors.accentGreen
+                                  : AppColors.textTertiary,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -170,11 +169,14 @@ class _ChannelTile extends StatelessWidget {
                           isLoading
                               ? l10n.statusWaiting
                               : isConnected
-                                  ? l10n.channelConnected
-                                  : l10n.channelDisconnected,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: isConnected ? AppColors.accentGreen : AppColors.textTertiary,
-                          ),
+                              ? l10n.channelConnected
+                              : l10n.channelDisconnected,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: isConnected
+                                    ? AppColors.accentGreen
+                                    : AppColors.textTertiary,
+                              ),
                         ),
                         if (info != null && info!.subtitle != null) ...[
                           const SizedBox(width: 6),
@@ -182,9 +184,9 @@ class _ChannelTile extends StatelessWidget {
                             child: Text(
                               info!.subtitle!,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontSize: 11,
-                              ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(fontSize: 11),
                             ),
                           ),
                         ],
@@ -195,7 +197,10 @@ class _ChannelTile extends StatelessWidget {
               ),
               if (info != null && info!.pendingPairings > 0)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),

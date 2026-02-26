@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show kDebugMode, kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -65,7 +66,8 @@ class RevenueCatService {
       barrierDismissible: true,
       barrierLabel: 'Paywall',
       barrierColor: Colors.black87,
-      pageBuilder: (_, __, ___) => _WebPaywallDialog(packages: current.availablePackages),
+      pageBuilder: (_, _, _) =>
+          _WebPaywallDialog(packages: current.availablePackages),
     );
   }
 
@@ -171,7 +173,8 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
         return null;
     }
 
-    final savings = ((weeklyEquivalent - pkgPrice) / weeklyEquivalent * 100).round();
+    final savings = ((weeklyEquivalent - pkgPrice) / weeklyEquivalent * 100)
+        .round();
     if (savings <= 0) return null;
     return savings;
   }
@@ -264,7 +267,11 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                       mainAxisSize: MainAxisSize.min,
                       children: List.generate(
                         5,
-                        (_) => const Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 24),
+                        (_) => const Icon(
+                          Icons.star_rounded,
+                          color: Color(0xFFFFD700),
+                          size: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -283,7 +290,10 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                   Text(
                     '- ${l10n.paywallReviewAuthor}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
+                    style: const TextStyle(
+                      color: Color(0xFF9E9E9E),
+                      fontSize: 13,
+                    ),
                   ),
                   const SizedBox(height: 24),
 
@@ -293,12 +303,15 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                       label: _packageLabel(widget.packages[i], l10n),
                       price: _pricePerPeriod(widget.packages[i]),
                       savings: _savingsPercent(widget.packages[i]) != null
-                          ? l10n.savePercent(_savingsPercent(widget.packages[i])!)
+                          ? l10n.savePercent(
+                              _savingsPercent(widget.packages[i])!,
+                            )
                           : null,
                       selected: _selectedIndex == i,
                       onTap: () => setState(() => _selectedIndex = i),
                     ),
-                    if (i < widget.packages.length - 1) const SizedBox(height: 10),
+                    if (i < widget.packages.length - 1)
+                      const SizedBox(height: 10),
                   ],
                   const SizedBox(height: 24),
 
@@ -310,7 +323,9 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF5E6A3),
                         foregroundColor: const Color(0xFF1A1A1A),
-                        disabledBackgroundColor: const Color(0xFFF5E6A3).withValues(alpha: 0.5),
+                        disabledBackgroundColor: const Color(
+                          0xFFF5E6A3,
+                        ).withValues(alpha: 0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -320,11 +335,17 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                           ? const SizedBox(
                               width: 22,
                               height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFF1A1A1A)),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Color(0xFF1A1A1A),
+                              ),
                             )
                           : Text(
                               l10n.subscribe,
-                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                     ),
                   ),
@@ -334,7 +355,10 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                   Center(
                     child: Text(
                       l10n.cancelAnytime,
-                      style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
+                      style: const TextStyle(
+                        color: Color(0xFF9E9E9E),
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -355,12 +379,14 @@ class _WebPaywallDialogState extends State<_WebPaywallDialog> {
                       const _FooterDot(),
                       _FooterLink(
                         text: l10n.termsOfService,
-                        onTap: () => launchUrl(Uri.parse('$apiBaseUrl/legal/terms')),
+                        onTap: () =>
+                            launchUrl(Uri.parse('$apiBaseUrl/legal/terms')),
                       ),
                       const _FooterDot(),
                       _FooterLink(
                         text: l10n.privacyPolicy,
-                        onTap: () => launchUrl(Uri.parse('$apiBaseUrl/legal/privacy')),
+                        onTap: () =>
+                            launchUrl(Uri.parse('$apiBaseUrl/legal/privacy')),
                       ),
                     ],
                   ),
@@ -383,11 +409,18 @@ class _FeatureLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text('\u2022 ', style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16)),
+        const Text(
+          '\u2022 ',
+          style: TextStyle(color: Color(0xFFB0B0B0), fontSize: 16),
+        ),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: Color(0xFFB0B0B0), fontSize: 15, height: 1.3),
+            style: const TextStyle(
+              color: Color(0xFFB0B0B0),
+              fontSize: 15,
+              height: 1.3,
+            ),
           ),
         ),
       ],
@@ -473,7 +506,9 @@ class _WebPackageCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Icon(
                   selected ? Icons.check_circle : Icons.circle_outlined,
-                  color: selected ? const Color(0xFF4A6CF7) : const Color(0xFF5A5A5A),
+                  color: selected
+                      ? const Color(0xFF4A6CF7)
+                      : const Color(0xFF5A5A5A),
                   size: 22,
                 ),
               ],
@@ -509,7 +544,10 @@ class _FooterDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Text('\u00B7', style: TextStyle(color: Color(0xFF6A6A6A), fontSize: 12)),
+      child: Text(
+        '\u00B7',
+        style: TextStyle(color: Color(0xFF6A6A6A), fontSize: 12),
+      ),
     );
   }
 }

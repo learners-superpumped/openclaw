@@ -43,9 +43,7 @@ class _VncViewState extends State<VncView> {
         },
       )
       ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: (_) => _connect(),
-        ),
+        NavigationDelegate(onPageFinished: (_) => _connect()),
       );
     _loadPage();
   }

@@ -129,7 +129,8 @@ class ChatState {
       messageQueue: messageQueue ?? this.messageQueue,
       isCompacting: isCompacting ?? this.isCompacting,
       totalMessageCount: totalMessageCount ?? this.totalMessageCount,
-      refreshSessionsAfterRunIds: refreshSessionsAfterRunIds ?? this.refreshSessionsAfterRunIds,
+      refreshSessionsAfterRunIds:
+          refreshSessionsAfterRunIds ?? this.refreshSessionsAfterRunIds,
       error: error,
       availableModels: availableModels ?? this.availableModels,
       configDefaultModel: configDefaultModel ?? this.configDefaultModel,
@@ -181,9 +182,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       await _chatService!.connect(instanceId, accessToken);
 
-      state = state.copyWith(
-        connectionState: ChatConnectionState.connected,
-      );
+      state = state.copyWith(connectionState: ChatConnectionState.connected);
 
       // Load sessions and history after connection
       await _loadInitialData();
@@ -208,10 +207,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// If agent is running, queue the message instead.
   /// /stop and /abort are handled immediately.
   /// /new and /reset are sent to the server; sessions refresh on completion.
-  Future<void> sendMessage(
-    String text, {
-    List<ChatAttachment>? images,
-  }) async {
+  Future<void> sendMessage(String text, {List<ChatAttachment>? images}) async {
     if (_chatService == null || !_chatService!.isConnected) return;
 
     final sessionKey = state.currentSessionKey;
@@ -236,13 +232,15 @@ class ChatNotifier extends StateNotifier<ChatState> {
         queuedAt: DateTime.now(),
         refreshSessions: refreshSessions,
       );
-      state = state.copyWith(
-        messageQueue: [...state.messageQueue, queued],
-      );
+      state = state.copyWith(messageQueue: [...state.messageQueue, queued]);
       return;
     }
 
-    await _sendMessageDirect(text, images: images, refreshSessions: refreshSessions);
+    await _sendMessageDirect(
+      text,
+      images: images,
+      refreshSessions: refreshSessions,
+    );
   }
 
   Future<void> _sendMessageDirect(
@@ -286,10 +284,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       if (!ok) {
         final errorMsg =
             res['error']?['message'] as String? ?? 'Failed to send message';
-        state = state.copyWith(
-          isAgentRunning: false,
-          error: errorMsg,
-        );
+        state = state.copyWith(isAgentRunning: false, error: errorMsg);
       } else if (refreshSessions) {
         // Track runId so we refresh sessions when this run completes
         final runId = res['payload']?['runId'] as String?;
@@ -303,10 +298,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
         }
       }
     } catch (e) {
-      state = state.copyWith(
-        isAgentRunning: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isAgentRunning: false, error: e.toString());
     }
   }
 
@@ -446,10 +438,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       final model = defaults?['model'] as Map<String, dynamic>?;
       final primary = model?['primary'] as String?;
 
-      state = state.copyWith(
-        configDefaultModel: primary,
-        configBaseHash: hash,
-      );
+      state = state.copyWith(configDefaultModel: primary, configBaseHash: hash);
     } catch (_) {}
   }
 
@@ -459,11 +448,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     if (baseHash == null) return false;
 
     try {
-      final raw = '{"agents":{"defaults":{"model":{"primary":"$gatewayModelRef"}}}}';
-      final res = await _chatService?.patchConfig(
-        raw: raw,
-        baseHash: baseHash,
-      );
+      final raw =
+          '{"agents":{"defaults":{"model":{"primary":"$gatewayModelRef"}}}}';
+      final res = await _chatService?.patchConfig(raw: raw, baseHash: baseHash);
       if (res == null) return false;
 
       final ok = res['ok'] as bool? ?? false;
@@ -497,40 +484,43 @@ class ChatNotifier extends StateNotifier<ChatState> {
       final messagesList = payload?['messages'] as List<dynamic>? ?? [];
       final total = payload?['total'] as int?;
 
-      final messages = messagesList.where((m) {
-        final role = (m as Map<String, dynamic>)['role'] as String?;
-        return role == 'user' || role == 'assistant';
-      }).map((m) {
-        final msg = m as Map<String, dynamic>;
-        final extracted = extractMessageContent(msg['content']);
+      final messages = messagesList
+          .where((m) {
+            final role = (m as Map<String, dynamic>)['role'] as String?;
+            return role == 'user' || role == 'assistant';
+          })
+          .map((m) {
+            final msg = m as Map<String, dynamic>;
+            final extracted = extractMessageContent(msg['content']);
 
-        final rawText = msg['role'] == 'user'
-            ? _cleanUserContent(extracted.text)
-            : extracted.text;
+            final rawText = msg['role'] == 'user'
+                ? _cleanUserContent(extracted.text)
+                : extracted.text;
 
-        return ChatMessage(
-          id: msg['id'] as String? ?? '',
-          role: msg['role'] as String? ?? 'assistant',
-          content: rawText,
-          timestamp: msg['timestamp'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(
-                  msg['timestamp'] is int
-                      ? msg['timestamp'] as int
-                      : int.tryParse(msg['timestamp'].toString()) ?? 0,
-                )
-              : DateTime.now(),
-          thinkingContent: msg['role'] == 'assistant' ? extracted.thinking : null,
-          toolCards: msg['role'] == 'assistant' && extracted.toolCards.isNotEmpty
-              ? extracted.toolCards
-              : null,
-        );
-      }).toList();
+            return ChatMessage(
+              id: msg['id'] as String? ?? '',
+              role: msg['role'] as String? ?? 'assistant',
+              content: rawText,
+              timestamp: msg['timestamp'] != null
+                  ? DateTime.fromMillisecondsSinceEpoch(
+                      msg['timestamp'] is int
+                          ? msg['timestamp'] as int
+                          : int.tryParse(msg['timestamp'].toString()) ?? 0,
+                    )
+                  : DateTime.now(),
+              thinkingContent: msg['role'] == 'assistant'
+                  ? extracted.thinking
+                  : null,
+              toolCards:
+                  msg['role'] == 'assistant' && extracted.toolCards.isNotEmpty
+                  ? extracted.toolCards
+                  : null,
+            );
+          })
+          .toList();
 
       final filtered = _filterHeartbeatMessages(messages);
-      state = state.copyWith(
-        messages: filtered,
-        totalMessageCount: total,
-      );
+      state = state.copyWith(messages: filtered, totalMessageCount: total);
     } catch (_) {}
   }
 
@@ -547,7 +537,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
           timestamp: DateTime.now(),
           stopReason: 'disconnected',
           thinkingContent: state.streamingThinking,
-          toolCards: toolCards != null && toolCards.isNotEmpty ? toolCards : null,
+          toolCards: toolCards != null && toolCards.isNotEmpty
+              ? toolCards
+              : null,
         );
         state = state.copyWith(
           connectionState: ChatConnectionState.disconnected,
@@ -572,9 +564,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       }
     } else {
       // WebSocket reconnected — reload history to get server-side completed messages
-      state = state.copyWith(
-        connectionState: ChatConnectionState.connected,
-      );
+      state = state.copyWith(connectionState: ChatConnectionState.connected);
       _loadInitialData();
     }
   }
@@ -634,7 +624,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
     if (stream != 'tool') return;
 
     final phase = payload['phase'] as String?;
-    final toolCallId = payload['toolCallId'] as String? ?? payload['id'] as String? ?? '';
+    final toolCallId =
+        payload['toolCallId'] as String? ?? payload['id'] as String? ?? '';
 
     switch (phase) {
       case 'start':
@@ -665,7 +656,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       case 'result':
         if (!state.toolStreamById.containsKey(toolCallId)) return;
-        final output = payload['output'] as String? ?? payload['result'] as String? ?? '';
+        final output =
+            payload['output'] as String? ?? payload['result'] as String? ?? '';
         final newMap = Map<String, ToolCardData>.from(state.toolStreamById);
         newMap[toolCallId] = newMap[toolCallId]!.copyWith(
           kind: 'result',
@@ -691,8 +683,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
         if (type == 'text') {
           textAccum = block['text'] as String? ?? '';
         } else if (type == 'thinking') {
-          thinkingAccum = block['thinking'] as String? ??
-              block['text'] as String? ?? '';
+          thinkingAccum =
+              block['thinking'] as String? ?? block['text'] as String? ?? '';
         }
       }
 
@@ -711,7 +703,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     if (content == null && message == null) return;
     final text = content is String
         ? content
-        : (message?['content'] is String ? message!['content'] as String : null);
+        : (message?['content'] is String
+              ? message!['content'] as String
+              : null);
     if (text == null) return;
 
     if (_isHeartbeatMessage(text, 'assistant')) return;
@@ -746,7 +740,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
 
     // Skip adding empty assistant messages (e.g., silent replies)
-    if (content.isEmpty && thinking == null && (toolCards == null || toolCards.isEmpty)) {
+    if (content.isEmpty &&
+        thinking == null &&
+        (toolCards == null || toolCards.isEmpty)) {
       _resetStreamingState();
       return;
     }
@@ -783,7 +779,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// and load the new session's history.
   Future<void> _refreshAfterNewSession(String runId) async {
     _ref.read(analyticsProvider).logSessionCreated();
-    final newIds = Set<String>.from(state.refreshSessionsAfterRunIds)..remove(runId);
+    final newIds = Set<String>.from(state.refreshSessionsAfterRunIds)
+      ..remove(runId);
     // Clear current session so loadSessions auto-selects the new one
     state = ChatState(
       connectionState: state.connectionState,
@@ -825,7 +822,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
     final runId = payload['runId'] as String?;
     Set<String>? updatedRunIds;
     if (runId != null && state.refreshSessionsAfterRunIds.contains(runId)) {
-      updatedRunIds = Set<String>.from(state.refreshSessionsAfterRunIds)..remove(runId);
+      updatedRunIds = Set<String>.from(state.refreshSessionsAfterRunIds)
+        ..remove(runId);
     }
 
     state = state.copyWith(
@@ -842,8 +840,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   void _handleAborted() {
     // If there was any streamed content before abort, save it as a partial message
-    if (state.streamingContent.isNotEmpty ||
-        state.streamingThinking != null) {
+    if (state.streamingContent.isNotEmpty || state.streamingThinking != null) {
       final toolCards = _collectToolStreamCards();
       final partialMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -885,9 +882,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   void _flushQueue() {
     if (state.messageQueue.isEmpty) return;
     final next = state.messageQueue.first;
-    state = state.copyWith(
-      messageQueue: state.messageQueue.sublist(1),
-    );
+    state = state.copyWith(messageQueue: state.messageQueue.sublist(1));
     _sendMessageDirect(
       next.text,
       images: next.attachments,
@@ -897,7 +892,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   // ── Heartbeat filtering ──────────────────────────────────────────
 
-  static final _timestampEnvelope = RegExp(r'^\[[^\]]*\d{4}-\d{2}-\d{2}[^\]]*\]\s*');
+  static final _timestampEnvelope = RegExp(
+    r'^\[[^\]]*\d{4}-\d{2}-\d{2}[^\]]*\]\s*',
+  );
 
   static String _stripTimestampEnvelope(String text) {
     return text.replaceFirst(_timestampEnvelope, '');
@@ -938,7 +935,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     return false;
   }
 
-  static List<ChatMessage> _filterHeartbeatMessages(List<ChatMessage> messages) {
+  static List<ChatMessage> _filterHeartbeatMessages(
+    List<ChatMessage> messages,
+  ) {
     final skip = <int>{};
     for (var i = 0; i < messages.length; i++) {
       if (skip.contains(i)) continue;
@@ -951,9 +950,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
         skip.add(i + 1);
       }
       // Assistant heartbeat ack → skip the preceding user prompt if heartbeat
-      if (messages[i].role == 'assistant' &&
-          i > 0 &&
-          !skip.contains(i - 1)) {
+      if (messages[i].role == 'assistant' && i > 0 && !skip.contains(i - 1)) {
         if (_isHeartbeatMessage(messages[i - 1].content, 'user')) {
           skip.add(i - 1);
         }
@@ -971,9 +968,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   static final _inboundMetaBlock = RegExp(
     r'^[^\n]+ \(untrusted[^\n]*\):\n```(?:json)?\n[\s\S]*?\n```\s*',
   );
-  static final _envelopePrefix = RegExp(
-    r'^\[([^\]]+)\]\s*',
-  );
+  static final _envelopePrefix = RegExp(r'^\[([^\]]+)\]\s*');
   static final _messageIdLine = RegExp(
     r'^\s*\[message_id:\s*[^\]]+\]\s*$',
     multiLine: true,

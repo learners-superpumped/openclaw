@@ -58,11 +58,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
       );
       return;
     }
-    ref.read(authProvider.notifier).signUpWithEmail(
-      _emailController.text.trim(),
-      _passwordController.text,
-      name: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : null,
-    );
+    ref
+        .read(authProvider.notifier)
+        .signUpWithEmail(
+          _emailController.text.trim(),
+          _passwordController.text,
+          name: _nameController.text.trim().isNotEmpty
+              ? _nameController.text.trim()
+              : null,
+        );
   }
 
   Widget _buildTermsText(BuildContext context, AppLocalizations l10n) {
@@ -70,7 +74,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
     const privacyMarker = '\u0000PRIVACY\u0000';
     final full = l10n.agreeToTerms(termsMarker, privacyMarker);
     final parts = full.split(RegExp('\u0000(TERMS|PRIVACY)\u0000'));
-    final markers = RegExp('\u0000(TERMS|PRIVACY)\u0000').allMatches(full).map((m) => m.group(1)).toList();
+    final markers = RegExp(
+      '\u0000(TERMS|PRIVACY)\u0000',
+    ).allMatches(full).map((m) => m.group(1)).toList();
 
     final spans = <InlineSpan>[];
     int markerIdx = 0;
@@ -80,17 +86,24 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
       }
       if (markerIdx < markers.length && i < parts.length - 1) {
         final isTerms = markers[markerIdx] == 'TERMS';
-        spans.add(TextSpan(
-          text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
-          style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrl(
-                Uri.parse('$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}'),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-        ));
+        spans.add(
+          TextSpan(
+            text: isTerms ? l10n.termsOfService : l10n.privacyPolicy,
+            style: TextStyle(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w600,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrl(
+                  Uri.parse(
+                    '$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}',
+                  ),
+                  mode: LaunchMode.externalApplication,
+                );
+              },
+          ),
+        );
         markerIdx++;
       }
     }
@@ -103,7 +116,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
     );
   }
 
-  Widget _buildSignupForm(BuildContext context, AppLocalizations l10n, AuthState authState, bool isLoading) {
+  Widget _buildSignupForm(
+    BuildContext context,
+    AppLocalizations l10n,
+    AuthState authState,
+    bool isLoading,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,7 +193,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -202,7 +222,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                      _obscureConfirmPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -238,9 +260,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
               ),
             ),
             const SizedBox(width: 8),
-            Expanded(
-              child: _buildTermsText(context, l10n),
-            ),
+            Expanded(child: _buildTermsText(context, l10n)),
           ],
         ),
         const SizedBox(height: 16),
@@ -305,7 +325,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 420),
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 48,
+                        ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -329,7 +352,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
                               ),
                             ),
                             const SizedBox(height: 32),
-                            _buildSignupForm(context, l10n, authState, isLoading),
+                            _buildSignupForm(
+                              context,
+                              l10n,
+                              authState,
+                              isLoading,
+                            ),
                           ],
                         ),
                       ),
@@ -350,7 +378,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight:
+                  MediaQuery.of(context).size.height -
                   MediaQuery.of(context).padding.top -
                   MediaQuery.of(context).padding.bottom,
             ),
@@ -360,7 +389,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen>
                 const SizedBox(height: 48),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset('assets/images/logo.png', width: 80, height: 80),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 80,
+                    height: 80,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -402,9 +435,7 @@ class _SignupBrandPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF050508),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFF050508)),
       child: Stack(
         children: [
           // Animated gradient orbs
@@ -523,9 +554,7 @@ class _GlowOrb extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, color.withValues(alpha: 0.0)],
-        ),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0.0)]),
       ),
     );
   }

@@ -33,10 +33,8 @@ class ModelPickerSheet extends StatefulWidget {
         minChildSize: 0.5,
         maxChildSize: 0.95,
         expand: false,
-        builder: (context, scrollController) => ModelPickerSheet(
-          models: models,
-          currentModelRef: currentModelRef,
-        ),
+        builder: (context, scrollController) =>
+            ModelPickerSheet(models: models, currentModelRef: currentModelRef),
       ),
     );
   }
@@ -69,9 +67,11 @@ class _ModelPickerSheetState extends State<ModelPickerSheet> {
         _filtered = widget.models;
       } else {
         _filtered = widget.models
-            .where((m) =>
-                m.name.toLowerCase().contains(query) ||
-                m.id.toLowerCase().contains(query))
+            .where(
+              (m) =>
+                  m.name.toLowerCase().contains(query) ||
+                  m.id.toLowerCase().contains(query),
+            )
             .toList();
       }
     });
@@ -100,9 +100,9 @@ class _ModelPickerSheetState extends State<ModelPickerSheet> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Text(
             l10n.defaultModel,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
           ),
         ),
         // Search
@@ -113,8 +113,10 @@ class _ModelPickerSheetState extends State<ModelPickerSheet> {
             style: const TextStyle(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: l10n.searchModels,
-              prefixIcon:
-                  const Icon(Icons.search, color: AppColors.textTertiary),
+              prefixIcon: const Icon(
+                Icons.search,
+                color: AppColors.textTertiary,
+              ),
               filled: true,
               fillColor: AppColors.surfaceLight,
               border: OutlineInputBorder(
@@ -178,8 +180,11 @@ class _ModelTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: isSelected
           ? const Icon(Icons.check_circle, color: AppColors.accent, size: 20)
-          : const Icon(Icons.circle_outlined,
-              color: AppColors.textTertiary, size: 20),
+          : const Icon(
+              Icons.circle_outlined,
+              color: AppColors.textTertiary,
+              size: 20,
+            ),
       title: Text(
         model.name,
         style: TextStyle(
@@ -190,10 +195,7 @@ class _ModelTile extends StatelessWidget {
       ),
       subtitle: Text(
         model.id,
-        style: const TextStyle(
-          color: AppColors.textTertiary,
-          fontSize: 12,
-        ),
+        style: const TextStyle(color: AppColors.textTertiary, fontSize: 12),
       ),
       trailing: model.contextLength != null
           ? Text(

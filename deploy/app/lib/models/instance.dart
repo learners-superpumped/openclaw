@@ -114,7 +114,8 @@ class ManagerStatus {
           : null,
       certificate: json['certificate'] != null
           ? CertificateStatus.fromJson(
-              json['certificate'] as Map<String, dynamic>)
+              json['certificate'] as Map<String, dynamic>,
+            )
           : null,
       gatewayReady: json['gatewayReady'] as bool?,
       gatewayUrl: json['gatewayUrl'] as String?,

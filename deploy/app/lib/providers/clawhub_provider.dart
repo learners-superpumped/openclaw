@@ -115,9 +115,7 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
     final instanceId = _instanceId;
     if (instanceId == null) return;
 
-    state = state.copyWith(
-      installingSlugs: {...state.installingSlugs, slug},
-    );
+    state = state.copyWith(installingSlugs: {...state.installingSlugs, slug});
     try {
       final apiClient = _ref.read(apiClientProvider);
       await apiClient.installSkill(instanceId, slug);
@@ -180,7 +178,9 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
     try {
       final apiClient = _ref.read(apiClientProvider);
       final items = await apiClient.getInstalledSkills(instanceId);
-      final skills = items.map((e) => BrowseSkillItem.fromInstalledJson(e)).toList();
+      final skills = items
+          .map((e) => BrowseSkillItem.fromInstalledJson(e))
+          .toList();
       state = state.copyWith(skills: skills, isLoading: false, hasMore: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -198,6 +198,8 @@ class ClawHubNotifier extends StateNotifier<ClawHubState> {
   }
 }
 
-final clawHubProvider = StateNotifierProvider<ClawHubNotifier, ClawHubState>((ref) {
+final clawHubProvider = StateNotifierProvider<ClawHubNotifier, ClawHubState>((
+  ref,
+) {
   return ClawHubNotifier(ref);
 });

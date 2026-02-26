@@ -8,11 +8,7 @@ class RemoteViewTile extends StatelessWidget {
   final bool isReady;
   final VoidCallback onTap;
 
-  const RemoteViewTile({
-    super.key,
-    required this.isReady,
-    required this.onTap,
-  });
+  const RemoteViewTile({super.key, required this.isReady, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

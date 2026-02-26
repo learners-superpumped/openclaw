@@ -12,8 +12,7 @@ class ChatSession {
   });
 
   /// Returns the best available name for display.
-  String get title =>
-      displayName ?? derivedTitle ?? _formatKeyForDisplay(key);
+  String get title => displayName ?? derivedTitle ?? _formatKeyForDisplay(key);
 
   factory ChatSession.fromJson(Map<String, dynamic> json) {
     final updatedAtRaw = json['updatedAt'];

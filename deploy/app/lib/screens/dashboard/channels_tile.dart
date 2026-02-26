@@ -104,7 +104,6 @@ class _ChannelIcon extends StatelessWidget {
 
   const _ChannelIcon({
     this.icon,
-    this.iconData,
     required this.color,
     required this.isConnected,
   });

@@ -27,7 +27,8 @@ class SubscriptionNotifier extends StateNotifier<bool> {
     bool revenueCatActive = false;
     try {
       final info = await Purchases.getCustomerInfo();
-      revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
+      revenueCatActive =
+          info.entitlements.all[entitlementId]?.isActive ?? false;
     } catch (_) {}
 
     final referralValue = await _storage.read(key: 'is_referral_user');
@@ -39,7 +40,8 @@ class SubscriptionNotifier extends StateNotifier<bool> {
   }
 
   void _onUpdate(CustomerInfo info) {
-    final revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
+    final revenueCatActive =
+        info.entitlements.all[entitlementId]?.isActive ?? false;
     state = revenueCatActive || _isReferral;
   }
 
@@ -47,7 +49,8 @@ class SubscriptionNotifier extends StateNotifier<bool> {
     bool revenueCatActive = false;
     try {
       final info = await Purchases.getCustomerInfo();
-      revenueCatActive = info.entitlements.all[entitlementId]?.isActive ?? false;
+      revenueCatActive =
+          info.entitlements.all[entitlementId]?.isActive ?? false;
     } catch (_) {}
 
     final referralValue = await _storage.read(key: 'is_referral_user');

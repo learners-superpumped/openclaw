@@ -159,19 +159,27 @@ class _ToolCardWidgetState extends State<ToolCardWidget> {
     if (lower.contains('read') || lower.contains('file')) {
       return Icons.description_outlined;
     }
-    if (lower.contains('bash') || lower.contains('exec') || lower.contains('shell')) {
+    if (lower.contains('bash') ||
+        lower.contains('exec') ||
+        lower.contains('shell')) {
       return Icons.terminal_rounded;
     }
-    if (lower.contains('search') || lower.contains('grep') || lower.contains('find')) {
+    if (lower.contains('search') ||
+        lower.contains('grep') ||
+        lower.contains('find')) {
       return Icons.search_rounded;
     }
     if (lower.contains('write') || lower.contains('edit')) {
       return Icons.edit_outlined;
     }
-    if (lower.contains('web') || lower.contains('fetch') || lower.contains('http')) {
+    if (lower.contains('web') ||
+        lower.contains('fetch') ||
+        lower.contains('http')) {
       return Icons.language_rounded;
     }
-    if (lower.contains('list') || lower.contains('ls') || lower.contains('glob')) {
+    if (lower.contains('list') ||
+        lower.contains('ls') ||
+        lower.contains('glob')) {
       return Icons.folder_outlined;
     }
     return Icons.build_outlined;

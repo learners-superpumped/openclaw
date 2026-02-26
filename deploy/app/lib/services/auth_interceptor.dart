@@ -15,7 +15,10 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (!_isAuthPath(options.path)) {
       final accessToken = await _storage.read(key: 'access_token');
       if (accessToken != null) {
@@ -60,9 +63,11 @@ class AuthInterceptor extends Interceptor {
     try {
       final parts = token.split('.');
       if (parts.length != 3) return;
-      final payload = json.decode(
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
-      ) as Map<String, dynamic>;
+      final payload =
+          json.decode(
+                utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+              )
+              as Map<String, dynamic>;
       final exp = payload['exp'] as int?;
       final iat = payload['iat'] as int?;
       if (exp == null || iat == null) return;

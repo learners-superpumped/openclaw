@@ -16,7 +16,8 @@ class WhatsAppDetailScreen extends ConsumerStatefulWidget {
   const WhatsAppDetailScreen({super.key});
 
   @override
-  ConsumerState<WhatsAppDetailScreen> createState() => _WhatsAppDetailScreenState();
+  ConsumerState<WhatsAppDetailScreen> createState() =>
+      _WhatsAppDetailScreenState();
 }
 
 class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
@@ -78,7 +79,10 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
   void _startPairingPolling() {
     _pollTimer?.cancel();
     _pollPendingCodes();
-    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+    _pollTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _pollPendingCodes(),
+    );
   }
 
   Future<void> _pollPendingCodes() async {
@@ -86,7 +90,10 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
-      final codes = await apiClient.listPairing(instance.instanceId, 'whatsapp');
+      final codes = await apiClient.listPairing(
+        instance.instanceId,
+        'whatsapp',
+      );
       if (mounted) setState(() => _pendingCodes = codes);
     } catch (_) {}
   }
@@ -142,7 +149,9 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
           _approvingCode = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.pairingApproved)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.pairingApproved),
+          ),
         );
       }
     } catch (_) {
@@ -170,13 +179,19 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel, style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.disconnectChannel,
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -219,11 +234,17 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF25D366).withValues(alpha: 0.15),
+                              color: const Color(
+                                0xFF25D366,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Center(
-                              child: FaIcon(FontAwesomeIcons.whatsapp, color: Color(0xFF25D366), size: 22),
+                              child: FaIcon(
+                                FontAwesomeIcons.whatsapp,
+                                color: Color(0xFF25D366),
+                                size: 22,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -231,7 +252,12 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(l10n.whatsapp, style: Theme.of(context).textTheme.titleMedium),
+                                Text(
+                                  l10n.whatsapp,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
                                 const SizedBox(height: 3),
                                 Row(
                                   children: [
@@ -239,22 +265,34 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                                       width: 7,
                                       height: 7,
                                       decoration: BoxDecoration(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
+                                        color: _isConnected
+                                            ? AppColors.accentGreen
+                                            : AppColors.textTertiary,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      _isConnected ? l10n.channelConnected : l10n.channelDisconnected,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
-                                      ),
+                                      _isConnected
+                                          ? l10n.channelConnected
+                                          : l10n.channelDisconnected,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: _isConnected
+                                                ? AppColors.accentGreen
+                                                : AppColors.textTertiary,
+                                          ),
                                     ),
                                     if (_phone != null) ...[
                                       const SizedBox(width: 6),
                                       Text(
                                         _phone!,
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontSize: 11),
                                       ),
                                     ],
                                   ],
@@ -286,7 +324,12 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                               color: AppColors.surfaceLight,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4, right: 4),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              top: 4,
+                              bottom: 4,
+                              right: 4,
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
@@ -307,16 +350,23 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                                     child: SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.accent,
+                                      ),
                                     ),
                                   )
                                 else
                                   IconButton(
                                     onPressed: () => _approvePairing(code),
-                                    icon: const Icon(Icons.check_rounded, size: 18),
+                                    icon: const Icon(
+                                      Icons.check_rounded,
+                                      size: 18,
+                                    ),
                                     style: IconButton.styleFrom(
                                       foregroundColor: AppColors.accent,
-                                      backgroundColor: AppColors.accent.withValues(alpha: 0.1),
+                                      backgroundColor: AppColors.accent
+                                          .withValues(alpha: 0.1),
                                       minimumSize: const Size(36, 36),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
@@ -343,7 +393,10 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.error,
+                              ),
                             )
                           : Text(l10n.disconnectChannel),
                     ),
@@ -378,12 +431,16 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                                     const SizedBox(
                                       width: 14,
                                       height: 14,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
                                       l10n.waitingForScan,
-                                      style: Theme.of(context).textTheme.bodySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
                                     ),
                                   ],
                                 ),
@@ -405,7 +462,10 @@ class _WhatsAppDetailScreenState extends ConsumerState<WhatsAppDetailScreen> {
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.background),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.background,
+                                ),
                               )
                             : Text(l10n.connectWhatsApp),
                       ),

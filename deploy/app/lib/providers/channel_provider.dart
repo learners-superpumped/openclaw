@@ -9,13 +9,11 @@ class ChannelState {
   final Map<ChannelType, ChannelInfo> channels;
   final bool isLoading;
 
-  const ChannelState({
-    this.channels = const {},
-    this.isLoading = false,
-  });
+  const ChannelState({this.channels = const {}, this.isLoading = false});
 
   int get connectedCount => channels.values.where((c) => c.isConnected).length;
-  int get totalPending => channels.values.fold(0, (sum, c) => sum + c.pendingPairings);
+  int get totalPending =>
+      channels.values.fold(0, (sum, c) => sum + c.pendingPairings);
 
   ChannelState copyWith({
     Map<ChannelType, ChannelInfo>? channels,
@@ -97,13 +95,25 @@ class ChannelNotifier extends StateNotifier<ChannelState> {
     // Fetch pairing counts in parallel for connected channels
     final pairingFutures = <ChannelType, Future<int>>{};
     if (waConnected) {
-      pairingFutures[ChannelType.whatsapp] = _fetchPairingCount(apiClient, instanceId, 'whatsapp');
+      pairingFutures[ChannelType.whatsapp] = _fetchPairingCount(
+        apiClient,
+        instanceId,
+        'whatsapp',
+      );
     }
     if (tgConnected) {
-      pairingFutures[ChannelType.telegram] = _fetchPairingCount(apiClient, instanceId, 'telegram');
+      pairingFutures[ChannelType.telegram] = _fetchPairingCount(
+        apiClient,
+        instanceId,
+        'telegram',
+      );
     }
     if (dcConnected) {
-      pairingFutures[ChannelType.discord] = _fetchPairingCount(apiClient, instanceId, 'discord');
+      pairingFutures[ChannelType.discord] = _fetchPairingCount(
+        apiClient,
+        instanceId,
+        'discord',
+      );
     }
 
     final pairingCounts = <ChannelType, int>{};
@@ -194,7 +204,11 @@ class ChannelNotifier extends StateNotifier<ChannelState> {
     state = ChannelState(channels: results, isLoading: false);
   }
 
-  Future<int> _fetchPairingCount(dynamic apiClient, String instanceId, String channel) async {
+  Future<int> _fetchPairingCount(
+    dynamic apiClient,
+    String instanceId,
+    String channel,
+  ) async {
     try {
       final codes = await apiClient.listPairing(instanceId, channel);
       return codes.length;
@@ -204,6 +218,8 @@ class ChannelNotifier extends StateNotifier<ChannelState> {
   }
 }
 
-final channelProvider = StateNotifierProvider<ChannelNotifier, ChannelState>((ref) {
+final channelProvider = StateNotifierProvider<ChannelNotifier, ChannelState>((
+  ref,
+) {
   return ChannelNotifier(ref);
 });

@@ -34,8 +34,8 @@ class GlassCard extends StatefulWidget {
     this.glowColor,
     this.glowIntensity = 0.0,
     this.onTap,
-  })  : blurSigma = 0,
-        solid = true;
+  }) : blurSigma = 0,
+       solid = true;
 
   @override
   State<GlassCard> createState() => _GlassCardState();
@@ -54,7 +54,9 @@ class _GlassCardState extends State<GlassCard> {
         color: GlassColors.glassSurface,
         borderRadius: radius,
         border: Border.all(
-          color: hasGlow ? GlassColors.glassBorderAccent : GlassColors.glassBorder,
+          color: hasGlow
+              ? GlassColors.glassBorderAccent
+              : GlassColors.glassBorder,
           width: 0.5,
         ),
         boxShadow: [
@@ -66,7 +68,9 @@ class _GlassCardState extends State<GlassCard> {
           ),
           if (hasGlow)
             BoxShadow(
-              color: widget.glowColor!.withValues(alpha: widget.glowIntensity * 0.3),
+              color: widget.glowColor!.withValues(
+                alpha: widget.glowIntensity * 0.3,
+              ),
               blurRadius: 32,
               spreadRadius: -4,
             ),
@@ -96,20 +100,14 @@ class _GlassCardState extends State<GlassCard> {
               ),
             ),
           ),
-          Padding(
-            padding: widget.padding,
-            child: widget.child,
-          ),
+          Padding(padding: widget.padding, child: widget.child),
         ],
       ),
     );
 
     Widget content;
     if (widget.solid) {
-      content = ClipRRect(
-        borderRadius: radius,
-        child: container,
-      );
+      content = ClipRRect(borderRadius: radius, child: container);
     } else {
       content = ClipRRect(
         borderRadius: radius,

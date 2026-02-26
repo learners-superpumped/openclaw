@@ -48,18 +48,20 @@ ExtractedContent extractMessageContent(dynamic content) {
         break;
 
       case 'thinking':
-        thinking = block['thinking'] as String? ??
-            block['text'] as String? ??
-            '';
+        thinking =
+            block['thinking'] as String? ?? block['text'] as String? ?? '';
         break;
 
       case 'tool_call':
-        toolCards.add(ToolCardData(
-          kind: 'call',
-          name: block['name'] as String? ?? 'unknown',
-          args: block['input'] ?? block['args'],
-          toolCallId: block['id'] as String? ?? block['tool_call_id'] as String?,
-        ));
+        toolCards.add(
+          ToolCardData(
+            kind: 'call',
+            name: block['name'] as String? ?? 'unknown',
+            args: block['input'] ?? block['args'],
+            toolCallId:
+                block['id'] as String? ?? block['tool_call_id'] as String?,
+          ),
+        );
         break;
 
       case 'tool_result':
@@ -76,13 +78,16 @@ ExtractedContent extractMessageContent(dynamic content) {
           }
           output = parts.join('\n');
         }
-        toolCards.add(ToolCardData(
-          kind: 'result',
-          name: block['name'] as String? ?? 'tool',
-          output: output,
-          toolCallId: block['tool_use_id'] as String? ??
-              block['tool_call_id'] as String?,
-        ));
+        toolCards.add(
+          ToolCardData(
+            kind: 'result',
+            name: block['name'] as String? ?? 'tool',
+            output: output,
+            toolCallId:
+                block['tool_use_id'] as String? ??
+                block['tool_call_id'] as String?,
+          ),
+        );
         break;
     }
   }

@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -62,7 +63,11 @@ class AuthService {
     return tokens;
   }
 
-  Future<AuthTokens> signUpWithEmail(String email, String password, {String? name}) async {
+  Future<AuthTokens> signUpWithEmail(
+    String email,
+    String password, {
+    String? name,
+  }) async {
     final tokens = await _apiClient.emailSignup(email, password, name: name);
     await _saveTokens(tokens);
     return tokens;

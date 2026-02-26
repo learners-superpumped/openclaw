@@ -24,11 +24,11 @@ class LoadingButton extends StatelessWidget {
     final effectiveOnPressed = isLoading
         ? null
         : onPressed != null
-            ? () {
-                HapticFeedback.lightImpact();
-                onPressed!();
-              }
-            : null;
+        ? () {
+            HapticFeedback.lightImpact();
+            onPressed!();
+          }
+        : null;
     final effectiveLabel = isLoading
         ? const SizedBox(
             width: 20,
