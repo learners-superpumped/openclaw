@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/api_provider.dart';
-import '../providers/auth_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../services/api_client.dart';
 import '../services/revenue_cat_service.dart';
 import '../theme/app_theme.dart';
-import 'auth_screen.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 
 class PaywallScreen extends ConsumerWidget {
@@ -26,16 +24,6 @@ class PaywallScreen extends ConsumerWidget {
           ? _WidePaywall(ref: ref)
           : _NarrowPaywall(ref: ref),
     );
-  }
-
-  static Future<void> loginAndRestore(BuildContext context, WidgetRef ref) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const _AuthScreenAutoClose()),
-    );
-    final authState = ref.read(authProvider);
-    if (authState.status == AuthStatus.authenticated) {
-      ref.read(isProProvider.notifier).refresh();
-    }
   }
 
   static void showReferralCodeDialog(BuildContext context, WidgetRef ref) {
@@ -116,27 +104,6 @@ class _NarrowPaywall extends ConsumerWidget {
               child: Text(
                 l10n.haveReferralCode,
                 style: TextStyle(color: AppColors.textTertiary),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () => PaywallScreen.loginAndRestore(context, ref),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    l10n.alreadyHaveAccount,
-                    style: TextStyle(color: AppColors.textSecondary),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.logIn,
-                    style: TextStyle(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
               ),
             ),
             const SizedBox(height: 32),
@@ -499,13 +466,6 @@ class _RightPanel extends ConsumerWidget {
                     label: l10n.haveReferralCode,
                     onTap: () => PaywallScreen.showReferralCodeDialog(context, ref),
                   ),
-                  const SizedBox(height: 12),
-                  _SecondaryAction(
-                    icon: Icons.login_rounded,
-                    label: '${l10n.alreadyHaveAccount} ${l10n.logIn}',
-                    accentLabel: true,
-                    onTap: () => PaywallScreen.loginAndRestore(context, ref),
-                  ),
                 ],
               ),
             ),
@@ -648,13 +608,10 @@ class _SecondaryAction extends StatefulWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final bool accentLabel;
-
   const _SecondaryAction({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.accentLabel = false,
   });
 
   @override
@@ -688,7 +645,7 @@ class _SecondaryActionState extends State<_SecondaryAction> {
             children: [
               Icon(
                 widget.icon,
-                color: widget.accentLabel ? AppColors.accent : AppColors.textSecondary,
+                color: AppColors.textSecondary,
                 size: 20,
               ),
               const SizedBox(width: 14),
@@ -696,9 +653,7 @@ class _SecondaryActionState extends State<_SecondaryAction> {
                 child: Text(
                   widget.label,
                   style: TextStyle(
-                    color: widget.accentLabel
-                        ? AppColors.accent
-                        : AppColors.textSecondary,
+                    color: AppColors.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -833,16 +788,3 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
   }
 }
 
-class _AuthScreenAutoClose extends ConsumerWidget {
-  const _AuthScreenAutoClose();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AuthState>(authProvider, (previous, next) {
-      if (next.status == AuthStatus.authenticated) {
-        Navigator.of(context).pop();
-      }
-    });
-    return const AuthScreen();
-  }
-}
