@@ -2,21 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
+import '../providers/api_provider.dart';
 import '../theme/app_theme.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'settings_screen.dart';
 import 'skills_screen.dart';
 
-class MainShell extends StatefulWidget {
+class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key});
 
   @override
-  State<MainShell> createState() => _MainShellState();
+  ConsumerState<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends ConsumerState<MainShell> {
   int _currentIndex = 0;
 
   @override
@@ -48,7 +50,12 @@ class _MainShellState extends State<MainShell> {
                       icon: Icons.home_rounded,
                       label: l10n.home,
                       isSelected: _currentIndex == 0,
-                      onTap: () => setState(() => _currentIndex = 0),
+                      onTap: () {
+                        ref
+                            .read(analyticsProvider)
+                            .logBottomNavTapped(tab: 'dashboard');
+                        setState(() => _currentIndex = 0);
+                      },
                     ),
                   ),
                   Expanded(
@@ -56,7 +63,12 @@ class _MainShellState extends State<MainShell> {
                       icon: Icons.extension_rounded,
                       label: l10n.skills,
                       isSelected: _currentIndex == 1,
-                      onTap: () => setState(() => _currentIndex = 1),
+                      onTap: () {
+                        ref
+                            .read(analyticsProvider)
+                            .logBottomNavTapped(tab: 'skills');
+                        setState(() => _currentIndex = 1);
+                      },
                     ),
                   ),
                   Expanded(
@@ -64,7 +76,12 @@ class _MainShellState extends State<MainShell> {
                       icon: Icons.settings_rounded,
                       label: l10n.settings,
                       isSelected: _currentIndex == 2,
-                      onTap: () => setState(() => _currentIndex = 2),
+                      onTap: () {
+                        ref
+                            .read(analyticsProvider)
+                            .logBottomNavTapped(tab: 'settings');
+                        setState(() => _currentIndex = 2);
+                      },
                     ),
                   ),
                 ],

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../providers/api_provider.dart';
-import '../providers/onboarding_provider.dart' show OnboardingStep, setupProgressProvider;
+import '../providers/onboarding_provider.dart'
+    show OnboardingStep, setupProgressProvider;
 import '../theme/app_theme.dart';
 
 class SetupCompleteScreen extends ConsumerWidget {
@@ -11,6 +12,7 @@ class SetupCompleteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'setup_complete');
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),

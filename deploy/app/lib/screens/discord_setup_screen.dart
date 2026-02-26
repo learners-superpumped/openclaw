@@ -10,10 +10,7 @@ import '../widgets/loading_button.dart';
 class DiscordSetupScreen extends ConsumerStatefulWidget {
   final VoidCallback? onTokenSubmitted;
 
-  const DiscordSetupScreen({
-    super.key,
-    this.onTokenSubmitted,
-  });
+  const DiscordSetupScreen({super.key, this.onTokenSubmitted});
 
   @override
   ConsumerState<DiscordSetupScreen> createState() => _DiscordSetupScreenState();
@@ -59,6 +56,7 @@ class _DiscordSetupScreenState extends ConsumerState<DiscordSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.read(analyticsProvider).logChannelSetupStarted(channel: 'discord');
     final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -91,7 +89,10 @@ class _DiscordSetupScreenState extends ConsumerState<DiscordSetupScreen> {
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: TextStyle(color: AppColors.error, fontSize: 13)),
+            Text(
+              _error!,
+              style: TextStyle(color: AppColors.error, fontSize: 13),
+            ),
           ],
           const SizedBox(height: 24),
           LoadingButton(

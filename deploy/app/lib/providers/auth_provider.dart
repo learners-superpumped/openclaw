@@ -75,7 +75,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
         if (referralCode != null) {
-          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+          try {
+            await apiClient.activateReferral(referralCode);
+          } catch (_) {}
         }
       }
       await _ref.read(instanceProvider.notifier).loadExisting();
@@ -85,6 +87,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       analytics.setUserProperties(authProvider: 'google');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logLoginFailed(method: 'google', error: e.toString());
       state = AuthState(status: AuthStatus.error, error: e.toString());
     }
   }
@@ -102,7 +107,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
         if (referralCode != null) {
-          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+          try {
+            await apiClient.activateReferral(referralCode);
+          } catch (_) {}
         }
       }
       await _ref.read(instanceProvider.notifier).loadExisting();
@@ -112,6 +119,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       analytics.setUserProperties(authProvider: 'apple');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logLoginFailed(method: 'apple', error: e.toString());
       state = AuthState(status: AuthStatus.error, error: e.toString());
     }
   }
@@ -129,7 +139,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
         if (referralCode != null) {
-          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+          try {
+            await apiClient.activateReferral(referralCode);
+          } catch (_) {}
         }
       }
       await _ref.read(instanceProvider.notifier).loadExisting();
@@ -139,11 +151,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
       analytics.setUserProperties(authProvider: 'email');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logLoginFailed(method: 'email', error: e.toString());
       state = AuthState(status: AuthStatus.error, error: _parseError(e));
     }
   }
 
-  Future<void> signUpWithEmail(String email, String password, {String? name}) async {
+  Future<void> signUpWithEmail(
+    String email,
+    String password, {
+    String? name,
+  }) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
       final authService = _ref.read(authServiceProvider);
@@ -156,7 +175,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (subNotifier.isReferral) {
         final referralCode = await subNotifier.getReferralCode();
         if (referralCode != null) {
-          try { await apiClient.activateReferral(referralCode); } catch (_) {}
+          try {
+            await apiClient.activateReferral(referralCode);
+          } catch (_) {}
         }
       }
       await _ref.read(instanceProvider.notifier).loadExisting();
@@ -166,6 +187,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       analytics.setUserProperties(authProvider: 'email');
       state = AuthState(status: AuthStatus.authenticated, user: user);
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logSignUpFailed(method: 'email', error: e.toString());
       state = AuthState(status: AuthStatus.error, error: _parseError(e));
     }
   }
@@ -205,7 +229,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // 서버 호출 실패해도 로컬 정리 진행
     }
-    try { await Purchases.logOut(); } catch (_) {}
+    try {
+      await Purchases.logOut();
+    } catch (_) {}
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
     _ref.read(instanceProvider.notifier).resetState();

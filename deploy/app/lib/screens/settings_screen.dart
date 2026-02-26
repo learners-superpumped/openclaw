@@ -48,12 +48,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-      ),
+      appBar: AppBar(title: Text(l10n.settings)),
       body: ListView(
         padding: EdgeInsets.fromLTRB(
-          20, 16, 20, 16 + MediaQuery.of(context).padding.bottom + 24,
+          20,
+          16,
+          20,
+          16 + MediaQuery.of(context).padding.bottom + 24,
         ),
         children: [
           // General section
@@ -63,7 +64,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _SettingsItem(
                 icon: Icons.credit_card_rounded,
                 title: l10n.manageSubscription,
-                onTap: () => RevenueCatService.showCustomerCenter(),
+                onTap: () {
+                  ref.read(analyticsProvider).logSettingsSubscriptionTapped();
+                  RevenueCatService.showCustomerCenter();
+                },
               ),
             ],
           ),
@@ -151,6 +155,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _handleAiConsentToggle(bool value) async {
+    ref.read(analyticsProvider).logSettingsAiConsentToggled(enabled: value);
     final storage = ref.read(secureStorageProvider);
     if (!value) {
       // Revoking consent
@@ -178,7 +183,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Text(
                 l10n.revoke,
                 style: TextStyle(
-                    color: AppColors.error, fontWeight: FontWeight.w600),
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -230,10 +237,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 12),
             Text(
               l10n.aiDataProvidersDesc,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -241,18 +247,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               name: 'OpenRouter',
               role: l10n.aiConsentRecipientOpenRouter,
             ),
-            _ProviderTile(
-              name: 'OpenAI',
-              role: 'GPT models',
-            ),
-            _ProviderTile(
-              name: 'Anthropic',
-              role: 'Claude models',
-            ),
-            _ProviderTile(
-              name: 'Google',
-              role: 'Gemini models',
-            ),
+            _ProviderTile(name: 'OpenAI', role: 'GPT models'),
+            _ProviderTile(name: 'Anthropic', role: 'Claude models'),
+            _ProviderTile(name: 'Google', role: 'Gemini models'),
             const SizedBox(height: 16),
           ],
         ),
@@ -270,9 +267,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           side: const BorderSide(color: AppColors.border),
         ),
         title: Text(AppLocalizations.of(context)!.recreateInstance),
-        content: Text(
-          AppLocalizations.of(context)!.recreateConfirmMessage,
-        ),
+        content: Text(AppLocalizations.of(context)!.recreateConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -290,7 +285,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Text(
               AppLocalizations.of(context)!.recreate,
               style: TextStyle(
-                  color: AppColors.error, fontWeight: FontWeight.w600),
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -337,7 +334,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Text(
               AppLocalizations.of(context)!.delete,
               style: TextStyle(
-                  color: AppColors.error, fontWeight: FontWeight.w600),
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -358,11 +357,11 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textTertiary,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.8,
-              fontSize: 11,
-            ),
+          color: AppColors.textTertiary,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.8,
+          fontSize: 11,
+        ),
       ),
     );
   }
@@ -432,10 +431,10 @@ class _SettingsItem extends StatelessWidget {
               child: Text(
                 title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: color,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  color: color,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
             Icon(
@@ -475,10 +474,10 @@ class _SettingsToggleItem extends StatelessWidget {
             child: Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
+                color: AppColors.textPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
           Switch.adaptive(
@@ -533,15 +532,15 @@ class _ProviderTile extends StatelessWidget {
                 Text(
                   name,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Text(
                   role,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
+                    color: AppColors.textTertiary,
+                  ),
                 ),
               ],
             ),

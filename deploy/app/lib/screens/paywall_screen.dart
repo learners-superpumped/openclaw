@@ -18,13 +18,12 @@ class PaywallScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'paywall');
     final width = MediaQuery.of(context).size.width;
     final isWide = width >= 720;
 
     return Scaffold(
-      body: isWide
-          ? _WidePaywall(ref: ref)
-          : _NarrowPaywall(ref: ref),
+      body: isWide ? _WidePaywall(ref: ref) : _NarrowPaywall(ref: ref),
     );
   }
 
@@ -74,7 +73,11 @@ class _NarrowPaywall extends ConsumerWidget {
             const Spacer(flex: 2),
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.asset('assets/images/logo.png', width: 80, height: 80),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 80,
+                height: 80,
+              ),
             ),
             const SizedBox(height: 32),
             Text('ClawBox', style: Theme.of(context).textTheme.displayLarge),
@@ -88,6 +91,7 @@ class _NarrowPaywall extends ConsumerWidget {
             FilledButton(
               onPressed: () async {
                 HapticFeedback.lightImpact();
+                ref.read(analyticsProvider).logPaywallPurchaseTapped();
                 await RevenueCatService.showPaywall(context: context);
                 ref.read(isProProvider.notifier).refresh();
               },
@@ -183,10 +187,7 @@ class _WidePaywallState extends ConsumerState<_WidePaywall>
           // ---- Left panel: brand showcase ----
           Expanded(
             flex: isDesktop ? 5 : 4,
-            child: _LeftPanel(
-              orbController: _orbController,
-              l10n: l10n,
-            ),
+            child: _LeftPanel(orbController: _orbController, l10n: l10n),
           ),
 
           // ---- Right panel: actions ----
@@ -212,9 +213,7 @@ class _LeftPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF050508),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFF050508)),
       child: Stack(
         children: [
           // Animated gradient orbs
@@ -320,10 +319,7 @@ class _LeftPanel extends StatelessWidget {
                   const SizedBox(height: 40),
 
                   // Feature cards
-                  _FeatureRow(
-                    icon: Icons.telegram,
-                    text: l10n.paywallFeature1,
-                  ),
+                  _FeatureRow(icon: Icons.telegram, text: l10n.paywallFeature1),
                   const SizedBox(height: 16),
                   _FeatureRow(
                     icon: Icons.bolt_rounded,
@@ -447,6 +443,7 @@ class _RightPanel extends ConsumerWidget {
                   _PrimaryCta(
                     label: l10n.getStarted,
                     onPressed: () async {
+                      ref.read(analyticsProvider).logPaywallPurchaseTapped();
                       await RevenueCatService.showPaywall(context: context);
                       ref.read(isProProvider.notifier).refresh();
                     },
@@ -484,7 +481,8 @@ class _RightPanel extends ConsumerWidget {
                   _SecondaryAction(
                     icon: Icons.card_giftcard_rounded,
                     label: l10n.haveReferralCode,
-                    onTap: () => PaywallScreen.showReferralCodeDialog(context, ref),
+                    onTap: () =>
+                        PaywallScreen.showReferralCodeDialog(context, ref),
                   ),
                   const SizedBox(height: 12),
                   _SecondaryAction(
@@ -518,9 +516,7 @@ class _GlowOrb extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, color.withValues(alpha: 0.0)],
-        ),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0.0)]),
       ),
     );
   }
@@ -596,7 +592,9 @@ class _PrimaryCtaState extends State<_PrimaryCta> {
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accent.withValues(alpha: _hovered ? 0.35 : 0.2),
+                color: AppColors.accent.withValues(
+                  alpha: _hovered ? 0.35 : 0.2,
+                ),
                 blurRadius: _hovered ? 24 : 12,
                 offset: const Offset(0, 4),
               ),
@@ -675,11 +673,7 @@ class _SecondaryActionState extends State<_SecondaryAction> {
           ),
           child: Row(
             children: [
-              Icon(
-                widget.icon,
-                color: AppColors.textSecondary,
-                size: 20,
-              ),
+              Icon(widget.icon, color: AppColors.textSecondary, size: 20),
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
@@ -756,9 +750,9 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
       if (!mounted) return;
       Navigator.of(context).pop();
       if (!widget.parentContext.mounted) return;
-      ScaffoldMessenger.of(widget.parentContext).showSnackBar(
-        SnackBar(content: Text(widget.l10n.referralCodeInvalid)),
-      );
+      ScaffoldMessenger.of(
+        widget.parentContext,
+      ).showSnackBar(SnackBar(content: Text(widget.l10n.referralCodeInvalid)));
     }
   }
 
@@ -797,10 +791,12 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
           ),
           const SizedBox(height: 20),
           FilledButton(
-            onPressed: _isLoading ? null : () {
-              HapticFeedback.lightImpact();
-              _submit();
-            },
+            onPressed: _isLoading
+                ? null
+                : () {
+                    HapticFeedback.lightImpact();
+                    _submit();
+                  },
             child: _isLoading
                 ? const SizedBox(
                     width: 20,
@@ -822,4 +818,3 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
     );
   }
 }
-

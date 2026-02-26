@@ -14,14 +14,11 @@ class TelegramSetupScreen extends ConsumerStatefulWidget {
   final VoidCallback? onTokenSubmitted;
   final VoidCallback? onSkipped;
 
-  const TelegramSetupScreen({
-    super.key,
-    this.onTokenSubmitted,
-    this.onSkipped,
-  });
+  const TelegramSetupScreen({super.key, this.onTokenSubmitted, this.onSkipped});
 
   @override
-  ConsumerState<TelegramSetupScreen> createState() => _TelegramSetupScreenState();
+  ConsumerState<TelegramSetupScreen> createState() =>
+      _TelegramSetupScreenState();
 }
 
 class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
@@ -53,7 +50,8 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
         if (widget.onTokenSubmitted != null) {
           widget.onTokenSubmitted!();
         } else {
-          ref.read(setupProgressProvider.notifier).state = OnboardingStep.telegramPairing;
+          ref.read(setupProgressProvider.notifier).state =
+              OnboardingStep.telegramPairing;
         }
       }
     } catch (e) {
@@ -68,6 +66,7 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.read(analyticsProvider).logChannelSetupStarted(channel: 'telegram');
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -85,10 +84,22 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
           ),
           const SizedBox(height: 32),
           // Guide steps
-          _buildStep(context, '1', AppLocalizations.of(context)!.stepSearchBotFather),
+          _buildStep(
+            context,
+            '1',
+            AppLocalizations.of(context)!.stepSearchBotFather,
+          ),
           _buildStep(context, '2', AppLocalizations.of(context)!.stepNewBot),
-          _buildStep(context, '3', AppLocalizations.of(context)!.stepSetBotName),
-          _buildStep(context, '4', AppLocalizations.of(context)!.stepEnterToken),
+          _buildStep(
+            context,
+            '3',
+            AppLocalizations.of(context)!.stepSetBotName,
+          ),
+          _buildStep(
+            context,
+            '4',
+            AppLocalizations.of(context)!.stepEnterToken,
+          ),
           const SizedBox(height: 32),
           TextField(
             controller: _tokenController,
@@ -100,7 +111,10 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: TextStyle(color: AppColors.error, fontSize: 13)),
+            Text(
+              _error!,
+              style: TextStyle(color: AppColors.error, fontSize: 13),
+            ),
           ],
           const SizedBox(height: 24),
           LoadingButton(
@@ -145,17 +159,22 @@ class _TelegramSetupScreenState extends ConsumerState<TelegramSetupScreen> {
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop();
+              ref.read(analyticsProvider).logTelegramSetupSkipped();
               if (widget.onSkipped != null) {
                 widget.onSkipped!();
               } else {
                 final storage = ref.read(secureStorageProvider);
                 await storage.write(key: _kTelegramSetupSkipped, value: 'true');
-                ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+                ref.read(setupProgressProvider.notifier).state =
+                    OnboardingStep.dashboard;
               }
             },
             child: Text(
               AppLocalizations.of(context)!.skip,
-              style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.accent,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

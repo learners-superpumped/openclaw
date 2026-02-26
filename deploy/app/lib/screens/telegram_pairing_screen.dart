@@ -7,7 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
-import '../providers/onboarding_provider.dart' show OnboardingStep, setupProgressProvider;
+import '../providers/onboarding_provider.dart'
+    show OnboardingStep, setupProgressProvider;
 import '../theme/app_theme.dart';
 import '../widgets/branded_logo_loader.dart';
 import '../widgets/loading_button.dart';
@@ -18,7 +19,8 @@ class TelegramPairingScreen extends ConsumerStatefulWidget {
   const TelegramPairingScreen({super.key, this.onPairingComplete});
 
   @override
-  ConsumerState<TelegramPairingScreen> createState() => _TelegramPairingScreenState();
+  ConsumerState<TelegramPairingScreen> createState() =>
+      _TelegramPairingScreenState();
 }
 
 class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
@@ -36,6 +38,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
   @override
   void initState() {
     super.initState();
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepViewed(step: 'telegram_pairing');
+    ref.read(analyticsProvider).logChannelPairingStarted(channel: 'telegram');
     WidgetsBinding.instance.addObserver(this);
     _startBotPolling();
   }
@@ -62,7 +68,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
 
   void _startBotPolling() {
     _pollBotStatus();
-    _botPollTimer = Timer.periodic(const Duration(seconds: 3), (_) => _pollBotStatus());
+    _botPollTimer = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => _pollBotStatus(),
+    );
   }
 
   Future<void> _pollBotStatus() async {
@@ -70,7 +79,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
-      final status = await apiClient.getTelegramStatus(instance.instanceId, probe: true);
+      final status = await apiClient.getTelegramStatus(
+        instance.instanceId,
+        probe: true,
+      );
       final restarting = status['restarting'] == true;
       if (mounted && restarting) {
         setState(() => _isRestarting = true);
@@ -97,7 +109,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
 
   void _startCodePolling() {
     _pollPendingCodes();
-    _codesPollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+    _codesPollTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _pollPendingCodes(),
+    );
   }
 
   Future<void> _pollPendingCodes() async {
@@ -105,7 +120,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
-      final codes = await apiClient.listPairing(instance.instanceId, 'telegram');
+      final codes = await apiClient.listPairing(
+        instance.instanceId,
+        'telegram',
+      );
       if (mounted) {
         setState(() => _pendingCodes = codes);
       }
@@ -133,7 +151,8 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
         if (widget.onPairingComplete != null) {
           widget.onPairingComplete!();
         } else {
-          ref.read(setupProgressProvider.notifier).state = OnboardingStep.setupComplete;
+          ref.read(setupProgressProvider.notifier).state =
+              OnboardingStep.setupComplete;
         }
       }
     } catch (e) {
@@ -169,9 +188,9 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
           const SizedBox(height: 8),
           Text(
             _isRestarting ? l10n.botRestartingDesc : l10n.connectingBotDesc,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -221,8 +240,8 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
               child: Text(
                 l10n.noPendingCodes,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             )
@@ -231,7 +250,9 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
               final item = _pendingCodes[i];
               final code = item['code'] as String? ?? '';
               return Padding(
-                padding: EdgeInsets.only(bottom: i < _pendingCodes.length - 1 ? 8 : 0),
+                padding: EdgeInsets.only(
+                  bottom: i < _pendingCodes.length - 1 ? 8 : 0,
+                ),
                 child: Material(
                   color: AppColors.surfaceLight,
                   borderRadius: BorderRadius.circular(12),
@@ -239,10 +260,17 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
                     borderRadius: BorderRadius.circular(12),
                     onTap: _isSubmitting ? null : () => _approve(code),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       child: Row(
                         children: [
-                          const Icon(Icons.vpn_key_rounded, size: 20, color: AppColors.accent),
+                          const Icon(
+                            Icons.vpn_key_rounded,
+                            size: 20,
+                            color: AppColors.accent,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -257,12 +285,15 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
                           ),
                           Text(
                             l10n.tapToApprove,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.accent,
-                                ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.accent),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.chevron_right, size: 18, color: AppColors.accent),
+                          const Icon(
+                            Icons.chevron_right,
+                            size: 18,
+                            color: AppColors.accent,
+                          ),
                         ],
                       ),
                     ),
@@ -294,7 +325,10 @@ class _TelegramPairingScreenState extends ConsumerState<TelegramPairingScreen>
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: TextStyle(color: AppColors.error, fontSize: 13)),
+            Text(
+              _error!,
+              style: TextStyle(color: AppColors.error, fontSize: 13),
+            ),
           ],
         ],
       ),

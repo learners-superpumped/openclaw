@@ -16,7 +16,8 @@ class DiscordPairingScreen extends ConsumerStatefulWidget {
   const DiscordPairingScreen({super.key, this.onPairingComplete});
 
   @override
-  ConsumerState<DiscordPairingScreen> createState() => _DiscordPairingScreenState();
+  ConsumerState<DiscordPairingScreen> createState() =>
+      _DiscordPairingScreenState();
 }
 
 class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
@@ -34,6 +35,7 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
   @override
   void initState() {
     super.initState();
+    ref.read(analyticsProvider).logChannelPairingStarted(channel: 'discord');
     WidgetsBinding.instance.addObserver(this);
     _startBotPolling();
   }
@@ -60,7 +62,10 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
 
   void _startBotPolling() {
     _pollBotStatus();
-    _botPollTimer = Timer.periodic(const Duration(seconds: 3), (_) => _pollBotStatus());
+    _botPollTimer = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => _pollBotStatus(),
+    );
   }
 
   Future<void> _pollBotStatus() async {
@@ -68,7 +73,10 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
-      final status = await apiClient.getDiscordStatus(instance.instanceId, probe: true);
+      final status = await apiClient.getDiscordStatus(
+        instance.instanceId,
+        probe: true,
+      );
       final restarting = status['restarting'] == true;
       if (mounted && restarting) {
         setState(() => _isRestarting = true);
@@ -98,7 +106,10 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
 
   void _startCodePolling() {
     _pollPendingCodes();
-    _codesPollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+    _codesPollTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _pollPendingCodes(),
+    );
   }
 
   Future<void> _pollPendingCodes() async {
@@ -158,15 +169,19 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
           const BrandedLogoLoader(animate: true, showProgressBar: true),
           const SizedBox(height: 32),
           Text(
-            _isRestarting ? l10n.discordBotRestarting : l10n.connectingDiscordBot,
+            _isRestarting
+                ? l10n.discordBotRestarting
+                : l10n.connectingDiscordBot,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            _isRestarting ? l10n.discordBotRestartingDesc : l10n.connectingDiscordBotDesc,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            _isRestarting
+                ? l10n.discordBotRestartingDesc
+                : l10n.connectingDiscordBotDesc,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -202,7 +217,11 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.smart_toy_outlined, size: 18, color: Color(0xFF5865F2)),
+                  const Icon(
+                    Icons.smart_toy_outlined,
+                    size: 18,
+                    color: Color(0xFF5865F2),
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     _botUsername!,
@@ -232,8 +251,8 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
               child: Text(
                 l10n.discordNoPendingCodes,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             )
@@ -242,7 +261,9 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
               final item = _pendingCodes[i];
               final code = item['code'] as String? ?? '';
               return Padding(
-                padding: EdgeInsets.only(bottom: i < _pendingCodes.length - 1 ? 8 : 0),
+                padding: EdgeInsets.only(
+                  bottom: i < _pendingCodes.length - 1 ? 8 : 0,
+                ),
                 child: Material(
                   color: AppColors.surfaceLight,
                   borderRadius: BorderRadius.circular(12),
@@ -250,10 +271,17 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
                     borderRadius: BorderRadius.circular(12),
                     onTap: _isSubmitting ? null : () => _approve(code),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       child: Row(
                         children: [
-                          const Icon(Icons.vpn_key_rounded, size: 20, color: AppColors.accent),
+                          const Icon(
+                            Icons.vpn_key_rounded,
+                            size: 20,
+                            color: AppColors.accent,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -268,12 +296,15 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
                           ),
                           Text(
                             l10n.tapToApprove,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.accent,
-                                ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.accent),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.chevron_right, size: 18, color: AppColors.accent),
+                          const Icon(
+                            Icons.chevron_right,
+                            size: 18,
+                            color: AppColors.accent,
+                          ),
                         ],
                       ),
                     ),
@@ -305,7 +336,10 @@ class _DiscordPairingScreenState extends ConsumerState<DiscordPairingScreen>
           ),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(_error!, style: TextStyle(color: AppColors.error, fontSize: 13)),
+            Text(
+              _error!,
+              style: TextStyle(color: AppColors.error, fontSize: 13),
+            ),
           ],
         ],
       ),

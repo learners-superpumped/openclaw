@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
+import '../providers/api_provider.dart';
 import '../providers/clawhub_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -45,11 +46,7 @@ class _SkillIcon extends StatelessWidget {
   final String name;
   final double size;
 
-  const _SkillIcon({
-    required this.slug,
-    required this.name,
-    this.size = 48,
-  });
+  const _SkillIcon({required this.slug, required this.name, this.size = 48});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +112,12 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      ref.read(clawHubProvider.notifier).loadSkills(q: query.isEmpty ? null : query);
+      if (query.isNotEmpty) {
+        ref.read(analyticsProvider).logSkillSearchPerformed(query: query);
+      }
+      ref
+          .read(clawHubProvider.notifier)
+          .loadSkills(q: query.isEmpty ? null : query);
     });
   }
 
@@ -126,7 +128,8 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
+        onRefresh: () =>
+            ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
         child: CustomScrollView(
           controller: _scrollController,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -147,7 +150,9 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   onSearchChanged: _onSearchChanged,
                   filterInstalled: state.filterInstalled,
                   onFilterChanged: (index) {
-                    ref.read(clawHubProvider.notifier).setFilterInstalled(index == 1);
+                    ref
+                        .read(clawHubProvider.notifier)
+                        .setFilterInstalled(index == 1);
                   },
                 ),
               ),
@@ -159,7 +164,11 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     );
   }
 
-  List<Widget> _buildContentSlivers(BuildContext context, AppLocalizations l10n, ClawHubState state) {
+  List<Widget> _buildContentSlivers(
+    BuildContext context,
+    AppLocalizations l10n,
+    ClawHubState state,
+  ) {
     if (state.isLoading && state.skills.isEmpty) {
       return [
         const SliverFillRemaining(
@@ -184,19 +193,28 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     color: AppColors.error.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.wifi_off_rounded, color: AppColors.error, size: 28),
+                  child: const Icon(
+                    Icons.wifi_off_rounded,
+                    color: AppColors.error,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   state.error!,
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
                   onPressed: () {
                     HapticFeedback.lightImpact();
-                    ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery);
+                    ref
+                        .read(clawHubProvider.notifier)
+                        .loadSkills(q: state.searchQuery);
                   },
                   child: Text(l10n.retry),
                 ),
@@ -224,12 +242,19 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     color: AppColors.textTertiary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.extension_off_outlined, color: AppColors.textTertiary, size: 28),
+                  child: const Icon(
+                    Icons.extension_off_outlined,
+                    color: AppColors.textTertiary,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   l10n.noSkillsFound,
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
@@ -263,16 +288,20 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
             onTap: () => context.push('/dashboard/skills/${skill.slug}'),
             onInstall: () async {
               try {
-                await ref.read(clawHubProvider.notifier).installSkill(skill.slug);
+                await ref
+                    .read(clawHubProvider.notifier)
+                    .installSkill(skill.slug);
               } catch (e) {
                 if (!context.mounted) return;
                 final l10n = AppLocalizations.of(context)!;
                 final detail = e is DioException
-                    ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.installFailed)
+                    ? (e.response?.data?['message'] ??
+                          e.response?.data?['error'] ??
+                          l10n.installFailed)
                     : l10n.installFailed;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(detail.toString())),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(detail.toString())));
               }
             },
             onUninstall: () => _confirmUninstall(context, l10n, skill.slug),
@@ -283,7 +312,11 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     ];
   }
 
-  void _confirmUninstall(BuildContext context, AppLocalizations l10n, String slug) {
+  void _confirmUninstall(
+    BuildContext context,
+    AppLocalizations l10n,
+    String slug,
+  ) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -302,14 +335,19 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
               } catch (e) {
                 if (!context.mounted) return;
                 final detail = e is DioException
-                    ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.uninstallFailed)
+                    ? (e.response?.data?['message'] ??
+                          e.response?.data?['error'] ??
+                          l10n.uninstallFailed)
                     : l10n.uninstallFailed;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(detail.toString())),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(detail.toString())));
               }
             },
-            child: Text(l10n.uninstall, style: const TextStyle(color: AppColors.error)),
+            child: Text(
+              l10n.uninstall,
+              style: const TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -351,7 +389,11 @@ class _SearchAndFilterHeader extends StatelessWidget {
               style: const TextStyle(fontSize: 15),
               decoration: InputDecoration(
                 hintText: l10n.searchSkills,
-                prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.textTertiary),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 20,
+                  color: AppColors.textTertiary,
+                ),
                 suffixIcon: searchController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear, size: 18),
@@ -437,7 +479,9 @@ class _PillToggle extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                    color: isSelected
+                        ? AppColors.textPrimary
+                        : AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -575,7 +619,9 @@ class _GetButton extends StatelessWidget {
           backgroundColor: isInstalled
               ? Colors.transparent
               : AppColors.accent.withValues(alpha: 0.12),
-          foregroundColor: isInstalled ? AppColors.textTertiary : AppColors.accent,
+          foregroundColor: isInstalled
+              ? AppColors.textTertiary
+              : AppColors.accent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
             side: isInstalled

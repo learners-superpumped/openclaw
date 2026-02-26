@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../models/channel.dart';
+import '../../providers/api_provider.dart';
 import '../../providers/channel_provider.dart';
 import '../../providers/instance_provider.dart';
 import '../../providers/model_config_provider.dart';
@@ -149,7 +150,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                         child: ChatHeroTile(
                           isReady: instance.isReady,
                           onTap: instance.isReady
-                              ? () => context.push('/dashboard/chat')
+                              ? () {
+                                  ref
+                                      .read(analyticsProvider)
+                                      .logDashboardTileTapped(tile: 'chat');
+                                  context.push('/dashboard/chat');
+                                }
                               : null,
                         ),
                       ),
@@ -173,7 +179,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                           whatsappInfo: whatsappInfo,
                           discordInfo: discordInfo,
                           isReady: instance.isReady,
-                          onTap: () => context.push('/dashboard/channels'),
+                          onTap: () {
+                            ref
+                                .read(analyticsProvider)
+                                .logDashboardTileTapped(tile: 'channels');
+                            context.push('/dashboard/channels');
+                          },
                         ),
                       ),
                     );
@@ -210,7 +221,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                         stagger: _staggerAnimation(0.30, 0.60),
                         child: RemoteViewTile(
                           isReady: instance.isReady,
-                          onTap: () => context.push('/dashboard/remote-view'),
+                          onTap: () {
+                            ref
+                                .read(analyticsProvider)
+                                .logDashboardTileTapped(tile: 'remote_view');
+                            context.push('/dashboard/remote-view');
+                          },
                         ),
                       ),
                     );

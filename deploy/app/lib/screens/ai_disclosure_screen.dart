@@ -16,6 +16,7 @@ class AiDisclosureScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'ai_disclosure');
     final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
@@ -126,6 +127,7 @@ class AiDisclosureScreen extends ConsumerWidget {
                 children: [
                   FilledButton(
                     onPressed: () async {
+                      ref.read(analyticsProvider).logAiDisclosureAccepted();
                       final storage = ref.read(secureStorageProvider);
                       await storage.write(key: _consentKey, value: 'true');
                       ref.read(aiDisclosureAcceptedProvider.notifier).state =
@@ -164,9 +166,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 }
@@ -188,9 +190,9 @@ class _BulletItem extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ),
         ],

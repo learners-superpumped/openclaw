@@ -15,7 +15,8 @@ class TelegramDetailScreen extends ConsumerStatefulWidget {
   const TelegramDetailScreen({super.key});
 
   @override
-  ConsumerState<TelegramDetailScreen> createState() => _TelegramDetailScreenState();
+  ConsumerState<TelegramDetailScreen> createState() =>
+      _TelegramDetailScreenState();
 }
 
 class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
@@ -30,6 +31,7 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(analyticsProvider).logChannelDetailViewed(channel: 'telegram');
     _loadStatus();
   }
 
@@ -45,7 +47,10 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
 
-      final status = await apiClient.getTelegramStatus(instance.instanceId, probe: true);
+      final status = await apiClient.getTelegramStatus(
+        instance.instanceId,
+        probe: true,
+      );
       final connected = status['connected'] == true;
       String? username;
       if (connected) {
@@ -73,7 +78,10 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
   void _startCodePolling() {
     _pollTimer?.cancel();
     _pollPendingCodes();
-    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+    _pollTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _pollPendingCodes(),
+    );
   }
 
   Future<void> _pollPendingCodes() async {
@@ -81,7 +89,10 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
       final apiClient = ref.read(apiClientProvider);
       final instance = ref.read(instanceProvider).instance;
       if (instance == null) return;
-      final codes = await apiClient.listPairing(instance.instanceId, 'telegram');
+      final codes = await apiClient.listPairing(
+        instance.instanceId,
+        'telegram',
+      );
       if (mounted) setState(() => _pendingCodes = codes);
     } catch (_) {}
   }
@@ -105,7 +116,9 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
           _approvingCode = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.pairingApproved)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.pairingApproved),
+          ),
         );
       }
     } catch (_) {
@@ -133,13 +146,19 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel, style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.disconnectChannel,
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -191,17 +210,28 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF26A5E4).withValues(alpha: 0.15),
+                              color: const Color(
+                                0xFF26A5E4,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(Icons.telegram, color: Color(0xFF26A5E4), size: 24),
+                            child: const Icon(
+                              Icons.telegram,
+                              color: Color(0xFF26A5E4),
+                              size: 24,
+                            ),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Telegram', style: Theme.of(context).textTheme.titleMedium),
+                                Text(
+                                  'Telegram',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
                                 const SizedBox(height: 3),
                                 Row(
                                   children: [
@@ -209,22 +239,34 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                                       width: 7,
                                       height: 7,
                                       decoration: BoxDecoration(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
+                                        color: _isConnected
+                                            ? AppColors.accentGreen
+                                            : AppColors.textTertiary,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      _isConnected ? l10n.channelConnected : l10n.channelDisconnected,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
-                                      ),
+                                      _isConnected
+                                          ? l10n.channelConnected
+                                          : l10n.channelDisconnected,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: _isConnected
+                                                ? AppColors.accentGreen
+                                                : AppColors.textTertiary,
+                                          ),
                                     ),
                                     if (_botUsername != null) ...[
                                       const SizedBox(width: 6),
                                       Text(
                                         '@$_botUsername',
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontSize: 11),
                                       ),
                                     ],
                                   ],
@@ -265,7 +307,12 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                               color: AppColors.surfaceLight,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4, right: 4),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              top: 4,
+                              bottom: 4,
+                              right: 4,
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
@@ -286,16 +333,23 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                                     child: SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.accent,
+                                      ),
                                     ),
                                   )
                                 else
                                   IconButton(
                                     onPressed: () => _approvePairing(code),
-                                    icon: const Icon(Icons.check_rounded, size: 18),
+                                    icon: const Icon(
+                                      Icons.check_rounded,
+                                      size: 18,
+                                    ),
                                     style: IconButton.styleFrom(
                                       foregroundColor: AppColors.accent,
-                                      backgroundColor: AppColors.accent.withValues(alpha: 0.1),
+                                      backgroundColor: AppColors.accent
+                                          .withValues(alpha: 0.1),
                                       minimumSize: const Size(36, 36),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
@@ -323,7 +377,10 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.error,
+                              ),
                             )
                           : Text(l10n.disconnectChannel),
                     ),
@@ -331,7 +388,9 @@ class _TelegramDetailScreenState extends ConsumerState<TelegramDetailScreen> {
                     // Connect Telegram CTA
                     FilledButton.icon(
                       onPressed: () async {
-                        await context.push('/dashboard/channels/telegram/setup');
+                        await context.push(
+                          '/dashboard/channels/telegram/setup',
+                        );
                         if (mounted) _loadStatus();
                       },
                       icon: const Icon(Icons.telegram),

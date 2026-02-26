@@ -41,14 +41,13 @@ class _VncScreenState extends ConsumerState<VncScreen> {
   @override
   void dispose() {
     if (!kIsWeb) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
     super.dispose();
   }
 
   Future<void> _loadConfig() async {
+    ref.read(analyticsProvider).logRemoteViewOpened();
     final instance = ref.read(instanceProvider).instance;
     if (instance == null) {
       setState(() {
@@ -69,7 +68,8 @@ class _VncScreenState extends ConsumerState<VncScreen> {
     }
 
     setState(() {
-      _wsUrl = 'wss://api.openclaw.zazz.buzz/instances/${instance.instanceId}/vnc';
+      _wsUrl =
+          'wss://api.openclaw.zazz.buzz/instances/${instance.instanceId}/vnc';
       _jwtToken = token;
       _status = _VncStatus.connecting;
     });
@@ -119,7 +119,8 @@ class _VncScreenState extends ConsumerState<VncScreen> {
                   shape: BoxShape.circle,
                   color: switch (_status) {
                     _VncStatus.connected => AppColors.accentGreen,
-                    _VncStatus.loading || _VncStatus.connecting => AppColors.warning,
+                    _VncStatus.loading ||
+                    _VncStatus.connecting => AppColors.warning,
                     _VncStatus.disconnected => AppColors.textTertiary,
                     _VncStatus.error => AppColors.error,
                   },
@@ -179,7 +180,8 @@ class _VncScreenState extends ConsumerState<VncScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(
-              width: 24, height: 24,
+              width: 24,
+              height: 24,
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
             const SizedBox(height: 12),
@@ -208,13 +210,17 @@ class _VncScreenState extends ConsumerState<VncScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(
-                    width: 24, height: 24,
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     l10n.vncConnecting,
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),

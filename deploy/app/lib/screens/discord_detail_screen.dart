@@ -16,7 +16,8 @@ class DiscordDetailScreen extends ConsumerStatefulWidget {
   const DiscordDetailScreen({super.key});
 
   @override
-  ConsumerState<DiscordDetailScreen> createState() => _DiscordDetailScreenState();
+  ConsumerState<DiscordDetailScreen> createState() =>
+      _DiscordDetailScreenState();
 }
 
 class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
@@ -31,6 +32,7 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(analyticsProvider).logChannelDetailViewed(channel: 'discord');
     _loadStatus();
   }
 
@@ -73,7 +75,10 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
   void _startCodePolling() {
     _pollTimer?.cancel();
     _pollPendingCodes();
-    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _pollPendingCodes());
+    _pollTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _pollPendingCodes(),
+    );
   }
 
   Future<void> _pollPendingCodes() async {
@@ -99,7 +104,9 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
           _approvingCode = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.pairingApproved)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.pairingApproved),
+          ),
         );
       }
     } catch (_) {
@@ -127,13 +134,19 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel, style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               l10n.disconnectChannel,
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -185,11 +198,17 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF5865F2).withValues(alpha: 0.15),
+                              color: const Color(
+                                0xFF5865F2,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Center(
-                              child: FaIcon(FontAwesomeIcons.discord, color: Color(0xFF5865F2), size: 22),
+                              child: FaIcon(
+                                FontAwesomeIcons.discord,
+                                color: Color(0xFF5865F2),
+                                size: 22,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -197,7 +216,12 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(l10n.discord, style: Theme.of(context).textTheme.titleMedium),
+                                Text(
+                                  l10n.discord,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
                                 const SizedBox(height: 3),
                                 Row(
                                   children: [
@@ -205,22 +229,34 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                                       width: 7,
                                       height: 7,
                                       decoration: BoxDecoration(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
+                                        color: _isConnected
+                                            ? AppColors.accentGreen
+                                            : AppColors.textTertiary,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      _isConnected ? l10n.channelConnected : l10n.channelDisconnected,
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: _isConnected ? AppColors.accentGreen : AppColors.textTertiary,
-                                      ),
+                                      _isConnected
+                                          ? l10n.channelConnected
+                                          : l10n.channelDisconnected,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: _isConnected
+                                                ? AppColors.accentGreen
+                                                : AppColors.textTertiary,
+                                          ),
                                     ),
                                     if (_botUsername != null) ...[
                                       const SizedBox(width: 6),
                                       Text(
                                         _botUsername!,
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontSize: 11),
                                       ),
                                     ],
                                   ],
@@ -252,7 +288,12 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                               color: AppColors.surfaceLight,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4, right: 4),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              top: 4,
+                              bottom: 4,
+                              right: 4,
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
@@ -273,16 +314,23 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                                     child: SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.accent,
+                                      ),
                                     ),
                                   )
                                 else
                                   IconButton(
                                     onPressed: () => _approvePairing(code),
-                                    icon: const Icon(Icons.check_rounded, size: 18),
+                                    icon: const Icon(
+                                      Icons.check_rounded,
+                                      size: 18,
+                                    ),
                                     style: IconButton.styleFrom(
                                       foregroundColor: AppColors.accent,
-                                      backgroundColor: AppColors.accent.withValues(alpha: 0.1),
+                                      backgroundColor: AppColors.accent
+                                          .withValues(alpha: 0.1),
                                       minimumSize: const Size(36, 36),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
@@ -310,14 +358,18 @@ class _DiscordDetailScreenState extends ConsumerState<DiscordDetailScreen> {
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.error),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.error,
+                              ),
                             )
                           : Text(l10n.disconnectChannel),
                     ),
                   ] else ...[
                     // Connect Discord CTA
                     FilledButton.icon(
-                      onPressed: () => context.push('/dashboard/channels/discord/setup'),
+                      onPressed: () =>
+                          context.push('/dashboard/channels/discord/setup'),
                       icon: const FaIcon(FontAwesomeIcons.discord, size: 18),
                       label: Text(l10n.connectDiscord),
                     ),

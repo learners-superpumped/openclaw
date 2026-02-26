@@ -23,7 +23,11 @@ class InstanceState {
     this.error,
   });
 
-  InstanceState copyWith({InstanceStatus? status, Instance? instance, String? error}) {
+  InstanceState copyWith({
+    InstanceStatus? status,
+    Instance? instance,
+    String? error,
+  }) {
     return InstanceState(
       status: status ?? this.status,
       instance: instance ?? this.instance,
@@ -47,15 +51,24 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         final instance = instances.first;
         if (instance.isReady) {
           await _checkTelegramSetup(instance);
-          state = InstanceState(status: InstanceStatus.ready, instance: instance);
+          state = InstanceState(
+            status: InstanceStatus.ready,
+            instance: instance,
+          );
         } else {
-          state = InstanceState(status: InstanceStatus.polling, instance: instance);
+          state = InstanceState(
+            status: InstanceStatus.polling,
+            instance: instance,
+          );
           _startPolling(instance.instanceId);
         }
       } else {
         await createAndPoll();
       }
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logInstanceCreationFailed(error: e.toString());
       state = InstanceState(status: InstanceStatus.error, error: e.toString());
     }
   }
@@ -68,6 +81,9 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
       state = InstanceState(status: InstanceStatus.polling, instance: instance);
       _startPolling(instance.instanceId);
     } catch (e) {
+      _ref
+          .read(analyticsProvider)
+          .logInstanceCreationFailed(error: e.toString());
       state = InstanceState(status: InstanceStatus.error, error: e.toString());
     }
   }
@@ -80,9 +96,15 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         final instance = instances.first;
         if (instance.isReady) {
           await _checkTelegramSetup(instance);
-          state = InstanceState(status: InstanceStatus.ready, instance: instance);
+          state = InstanceState(
+            status: InstanceStatus.ready,
+            instance: instance,
+          );
         } else {
-          state = InstanceState(status: InstanceStatus.polling, instance: instance);
+          state = InstanceState(
+            status: InstanceStatus.polling,
+            instance: instance,
+          );
           _startPolling(instance.instanceId);
         }
       }
@@ -100,6 +122,7 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         state = state.copyWith(instance: instance);
         if (instance.isReady) {
           _pollTimer?.cancel();
+          _ref.read(analyticsProvider).logInstanceCreationCompleted();
           await _checkTelegramSetup(instance);
           state = state.copyWith(status: InstanceStatus.ready);
         }
@@ -113,13 +136,17 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
       final status = await apiClient.getTelegramStatus(instance.instanceId);
       final telegram = status['telegram'] as Map<String, dynamic>?;
       final accounts = status['accounts'] as List?;
-      if (telegram?['configured'] == true && accounts != null && accounts.isNotEmpty) {
-        _ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+      if (telegram?['configured'] == true &&
+          accounts != null &&
+          accounts.isNotEmpty) {
+        _ref.read(setupProgressProvider.notifier).state =
+            OnboardingStep.dashboard;
       } else {
         final storage = _ref.read(secureStorageProvider);
         final skipped = await storage.read(key: _kTelegramSetupSkipped);
         if (skipped == 'true') {
-          _ref.read(setupProgressProvider.notifier).state = OnboardingStep.dashboard;
+          _ref.read(setupProgressProvider.notifier).state =
+              OnboardingStep.dashboard;
         }
       }
     } catch (_) {}
@@ -149,7 +176,9 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
         state = state.copyWith(instance: instance);
 
         if (instance.channels != null) {
-          _ref.read(channelProvider.notifier).updateFromEmbedded(instance.channels!);
+          _ref
+              .read(channelProvider.notifier)
+              .updateFromEmbedded(instance.channels!);
         }
         if (instance.usage != null) {
           _ref.read(usageProvider.notifier).updateFromInstance(instance.usage!);
@@ -170,6 +199,8 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
   }
 }
 
-final instanceProvider = StateNotifierProvider<InstanceNotifier, InstanceState>((ref) {
-  return InstanceNotifier(ref);
-});
+final instanceProvider = StateNotifierProvider<InstanceNotifier, InstanceState>(
+  (ref) {
+    return InstanceNotifier(ref);
+  },
+);

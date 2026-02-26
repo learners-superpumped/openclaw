@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
+import '../providers/api_provider.dart';
 import '../providers/instance_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/branded_logo_loader.dart';
@@ -10,7 +11,8 @@ class InstanceLoadingScreen extends ConsumerStatefulWidget {
   const InstanceLoadingScreen({super.key});
 
   @override
-  ConsumerState<InstanceLoadingScreen> createState() => _InstanceLoadingScreenState();
+  ConsumerState<InstanceLoadingScreen> createState() =>
+      _InstanceLoadingScreenState();
 }
 
 class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
@@ -18,8 +20,13 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(analyticsProvider)
+          .logOnboardingStepViewed(step: 'instance_loading');
+      ref.read(analyticsProvider).logInstanceCreationStarted();
       final state = ref.read(instanceProvider);
-      if (state.status == InstanceStatus.idle || state.status == InstanceStatus.error) {
+      if (state.status == InstanceStatus.idle ||
+          state.status == InstanceStatus.error) {
         ref.read(instanceProvider.notifier).ensureInstance();
       }
     });
@@ -49,7 +56,8 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: () => ref.read(instanceProvider.notifier).ensureInstance(),
+              onPressed: () =>
+                  ref.read(instanceProvider.notifier).ensureInstance(),
               child: Text(AppLocalizations.of(context)!.retry),
             ),
           ] else ...[
@@ -68,7 +76,10 @@ class _InstanceLoadingScreenState extends ConsumerState<InstanceLoadingScreen> {
             if (state.instance?.manager != null) ...[
               const SizedBox(height: 24),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceLight,
                   borderRadius: BorderRadius.circular(8),

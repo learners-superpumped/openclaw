@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/chat_message.dart';
+import '../providers/api_provider.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
@@ -69,6 +70,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
             ),
           );
         });
+        ref.read(analyticsProvider).logChatFileAttached();
       }
     } catch (_) {}
   }

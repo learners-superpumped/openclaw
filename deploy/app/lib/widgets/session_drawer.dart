@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/chat_session.dart';
+import '../providers/api_provider.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:clawbox/l10n/app_localizations.dart';
@@ -28,7 +29,11 @@ class SessionDrawer extends ConsumerWidget {
               child: sessions.isEmpty
                   ? _buildEmptyState(context)
                   : _buildSessionList(
-                      context, ref, sessions, currentSessionKey),
+                      context,
+                      ref,
+                      sessions,
+                      currentSessionKey,
+                    ),
             ),
           ],
         ),
@@ -43,10 +48,9 @@ class SessionDrawer extends ConsumerWidget {
         children: [
           Text(
             AppLocalizations.of(context)!.sessions,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: AppColors.textPrimary),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
           ),
           const Spacer(),
           IconButton(
@@ -79,10 +83,9 @@ class SessionDrawer extends ConsumerWidget {
           const SizedBox(height: 12),
           Text(
             AppLocalizations.of(context)!.noSessionsYet,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.textTertiary),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary),
           ),
         ],
       ),
@@ -124,9 +127,9 @@ class SessionDrawer extends ConsumerWidget {
         title: Text(
           session.title,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: isActive ? AppColors.accent : AppColors.textPrimary,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-              ),
+            color: isActive ? AppColors.accent : AppColors.textPrimary,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -146,16 +149,20 @@ class SessionDrawer extends ConsumerWidget {
               ),
             if (session.updatedAt != null)
               Text(
-                _formatLastActivity(session.updatedAt!, AppLocalizations.of(context)!),
+                _formatLastActivity(
+                  session.updatedAt!,
+                  AppLocalizations.of(context)!,
+                ),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textTertiary,
-                      fontSize: 11,
-                    ),
+                  color: AppColors.textTertiary,
+                  fontSize: 11,
+                ),
               ),
           ],
         ),
         onTap: () {
           HapticFeedback.lightImpact();
+          ref.read(analyticsProvider).logChatSessionSwitched();
           ref.read(chatProvider.notifier).switchSession(session.key);
           Navigator.of(context).pop();
         },
@@ -199,15 +206,18 @@ class SessionDrawer extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 session.title,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(color: AppColors.textPrimary),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.edit_outlined, color: AppColors.textSecondary),
+              leading: const Icon(
+                Icons.edit_outlined,
+                color: AppColors.textSecondary,
+              ),
               title: Text(l10n.editSessionLabel),
               onTap: () {
                 HapticFeedback.lightImpact();
@@ -258,9 +268,7 @@ class SessionDrawer extends ConsumerWidget {
               Navigator.of(ctx).pop();
               ref.read(chatProvider.notifier).deleteSession(session.key);
             },
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             child: Text(l10n.delete),
           ),
         ],

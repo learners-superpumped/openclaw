@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/api_provider.dart';
 import '../providers/chat_provider.dart';
 import '../theme/app_theme.dart';
 import 'model_picker_sheet.dart';
@@ -75,9 +76,9 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
                 l10n.sessionSettings,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
               ),
             ),
             const Divider(height: 1, color: AppColors.border),
@@ -87,9 +88,9 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Text(
                 l10n.editSessionLabel,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ),
             Padding(
@@ -120,9 +121,9 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Text(
                 l10n.defaultModel,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ),
             Padding(
@@ -147,8 +148,9 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
                       Expanded(
                         child: Consumer(
                           builder: (context, ref, _) {
-                            final defaultModel =
-                                ref.watch(chatProvider).configDefaultModel;
+                            final defaultModel = ref
+                                .watch(chatProvider)
+                                .configDefaultModel;
                             return Text(
                               defaultModel ?? '—',
                               style: const TextStyle(
@@ -176,42 +178,37 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
                 l10n.reasoningLevel,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SegmentedButton<String>(
                 segments: [
-                  ButtonSegment(
-                    value: 'low',
-                    label: Text(l10n.reasoningLow),
-                  ),
+                  ButtonSegment(value: 'low', label: Text(l10n.reasoningLow)),
                   ButtonSegment(
                     value: 'medium',
                     label: Text(l10n.reasoningMedium),
                   ),
-                  ButtonSegment(
-                    value: 'high',
-                    label: Text(l10n.reasoningHigh),
-                  ),
+                  ButtonSegment(value: 'high', label: Text(l10n.reasoningHigh)),
                 ],
                 selected: {_reasoningLevel},
                 onSelectionChanged: (selected) {
                   HapticFeedback.selectionClick();
                   setState(() => _reasoningLevel = selected.first);
-                  ref.read(chatProvider.notifier).patchSession(
-                    reasoningLevel: selected.first,
-                  );
+                  ref
+                      .read(chatProvider.notifier)
+                      .patchSession(reasoningLevel: selected.first);
                 },
                 style: SegmentedButton.styleFrom(
                   backgroundColor: AppColors.surfaceLight,
                   foregroundColor: AppColors.textSecondary,
                   selectedForegroundColor: AppColors.accent,
-                  selectedBackgroundColor:
-                      AppColors.accent.withValues(alpha: 0.15),
+                  selectedBackgroundColor: AppColors.accent.withValues(
+                    alpha: 0.15,
+                  ),
                 ),
               ),
             ),
@@ -229,7 +226,10 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
                     HapticFeedback.lightImpact();
                     _confirmDeleteSession(context);
                   },
-                  icon: const Icon(Icons.delete_outline, color: AppColors.error),
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: AppColors.error,
+                  ),
                   label: Text(
                     l10n.deleteSession,
                     style: const TextStyle(color: AppColors.error),
@@ -256,6 +256,9 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
     );
     if (selected == null || !context.mounted) return;
 
+    ref
+        .read(analyticsProvider)
+        .logChatModelChanged(model: selected.gatewayModelRef);
     final success = await ref
         .read(chatProvider.notifier)
         .setDefaultModel(selected.gatewayModelRef);
@@ -295,9 +298,7 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               Navigator.of(context).pop();
               ref.read(chatProvider.notifier).deleteSession(sessionKey);
             },
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             child: Text(l10n.delete),
           ),
         ],

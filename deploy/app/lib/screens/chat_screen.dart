@@ -68,8 +68,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
       return;
     }
     if (!mounted) return;
+    ref.read(analyticsProvider).logChatConsentShown();
     final agreed = await AiConsentSheet.show(context);
     if (agreed == true) {
+      ref.read(analyticsProvider).logChatConsentAccepted();
       await storage.write(key: _consentKey, value: 'true');
       if (mounted) {
         ref.read(aiDisclosureAcceptedProvider.notifier).state = true;
@@ -315,67 +317,67 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           if (chatState.isCompacting) const CompactionIndicator(),
           Expanded(
             child: Stack(
-            children: [
-              messages.isEmpty && streamingMessage == null
-                  ? _buildEmptyState()
-                  : _buildMessageList(messages, streamingMessage, chatState),
-              // "New messages" FAB
-              if (_showNewMessagesFab)
-                Positioned(
-                  bottom: 12,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        _scrollToBottom();
-                        setState(() => _showNewMessagesFab = false);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.accent,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.arrow_downward_rounded,
-                              size: 16,
-                              color: AppColors.background,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              AppLocalizations.of(context)!.newMessagesBelow,
-                              style: const TextStyle(
-                                color: AppColors.background,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+              children: [
+                messages.isEmpty && streamingMessage == null
+                    ? _buildEmptyState()
+                    : _buildMessageList(messages, streamingMessage, chatState),
+                // "New messages" FAB
+                if (_showNewMessagesFab)
+                  Positioned(
+                    bottom: 12,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          _scrollToBottom();
+                          setState(() => _showNewMessagesFab = false);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.arrow_downward_rounded,
+                                size: 16,
+                                color: AppColors.background,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                AppLocalizations.of(context)!.newMessagesBelow,
+                                style: const TextStyle(
+                                  color: AppColors.background,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const ChatInputBar(),
-      ],
+          const ChatInputBar(),
+        ],
       ),
     );
   }
@@ -434,7 +436,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     // History pagination info
     final int? total = chatState.totalMessageCount;
     final int resolvedTotal = total ?? 0;
-    final hasHiddenMessages = total != null && resolvedTotal > allMessages.length;
+    final hasHiddenMessages =
+        total != null && resolvedTotal > allMessages.length;
 
     return ListView.builder(
       controller: _scrollController,
@@ -444,10 +447,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
       itemBuilder: (context, index) {
         // Extra item at the end (top of reversed list) for pagination info
         if (hasHiddenMessages && index == allMessages.length) {
-          return _buildHiddenMessagesInfo(
-            resolvedTotal,
-            allMessages.length,
-          );
+          return _buildHiddenMessagesInfo(resolvedTotal, allMessages.length);
         }
 
         // reversed list: index 0 = most recent

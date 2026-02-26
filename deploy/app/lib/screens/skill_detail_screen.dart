@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../models/skill.dart';
+import '../providers/api_provider.dart';
 import '../providers/clawhub_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/loading_button.dart';
@@ -44,11 +45,7 @@ class _SkillIcon extends StatelessWidget {
   final String name;
   final double size;
 
-  const _SkillIcon({
-    required this.slug,
-    required this.name,
-    this.size = 80,
-  });
+  const _SkillIcon({required this.slug, required this.name, this.size = 80});
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +91,7 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(analyticsProvider).logSkillDetailViewed(slug: widget.slug);
     _loadDetail();
   }
 
@@ -103,10 +101,20 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
       _error = null;
     });
     try {
-      final detail = await ref.read(clawHubProvider.notifier).getSkillDetail(widget.slug);
-      if (mounted) setState(() { _detail = detail; _isLoading = false; });
+      final detail = await ref
+          .read(clawHubProvider.notifier)
+          .getSkillDetail(widget.slug);
+      if (mounted)
+        setState(() {
+          _detail = detail;
+          _isLoading = false;
+        });
     } catch (e) {
-      if (mounted) setState(() { _error = e.toString(); _isLoading = false; });
+      if (mounted)
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
     }
   }
 
@@ -115,18 +123,20 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
       await ref.read(clawHubProvider.notifier).installSkill(widget.slug);
       await _loadDetail();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.installSuccess)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.installSuccess)));
       }
     } catch (e) {
       if (mounted) {
         final detail = e is DioException
-            ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.installFailed)
+            ? (e.response?.data?['message'] ??
+                  e.response?.data?['error'] ??
+                  l10n.installFailed)
             : l10n.installFailed;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(detail.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(detail.toString())));
       }
     }
   }
@@ -144,7 +154,10 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.uninstall, style: const TextStyle(color: AppColors.error)),
+            child: Text(
+              l10n.uninstall,
+              style: const TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -155,18 +168,20 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
       await ref.read(clawHubProvider.notifier).uninstallSkill(widget.slug);
       await _loadDetail();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.uninstallSuccess)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.uninstallSuccess)));
       }
     } catch (e) {
       if (mounted) {
         final detail = e is DioException
-            ? (e.response?.data?['message'] ?? e.response?.data?['error'] ?? l10n.uninstallFailed)
+            ? (e.response?.data?['message'] ??
+                  e.response?.data?['error'] ??
+                  l10n.uninstallFailed)
             : l10n.uninstallFailed;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(detail.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(detail.toString())));
       }
     }
   }
@@ -187,7 +202,12 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context, AppLocalizations l10n, bool isInstalling, bool isUninstalling) {
+  Widget _buildBody(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isInstalling,
+    bool isUninstalling,
+  ) {
     if (_isLoading) {
       return const _DetailSkeleton();
     }
@@ -204,19 +224,23 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
                 color: AppColors.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.error_outline, color: AppColors.error, size: 28),
+              child: const Icon(
+                Icons.error_outline,
+                color: AppColors.error,
+                size: 28,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
               _error!,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            FilledButton(
-              onPressed: _loadDetail,
-              child: Text(l10n.retry),
-            ),
+            FilledButton(onPressed: _loadDetail, child: Text(l10n.retry)),
           ],
         ),
       );
@@ -242,20 +266,24 @@ class _SkillDetailScreenState extends ConsumerState<SkillDetailScreen> {
           onPressed: isBusy
               ? null
               : detail.installed
-                  ? () => _handleUninstall(l10n)
-                  : () => _handleInstall(l10n),
+              ? () => _handleUninstall(l10n)
+              : () => _handleInstall(l10n),
           outlined: detail.installed,
           label: Text(
             isInstalling
                 ? l10n.installing
                 : isUninstalling
-                    ? l10n.uninstalling
-                    : detail.installed
-                        ? l10n.uninstall
-                        : l10n.install,
+                ? l10n.uninstalling
+                : detail.installed
+                ? l10n.uninstall
+                : l10n.install,
           ),
           icon: !isBusy
-              ? Icon(detail.installed ? Icons.delete_outline : Icons.download_rounded)
+              ? Icon(
+                  detail.installed
+                      ? Icons.delete_outline
+                      : Icons.download_rounded,
+                )
               : null,
         ),
 
@@ -366,11 +394,7 @@ class _DetailHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _SkillIcon(
-          slug: slug,
-          name: detail.name ?? slug,
-          size: 80,
-        ),
+        _SkillIcon(slug: slug, name: detail.name ?? slug, size: 80),
         const SizedBox(height: 16),
         Text(
           detail.name ?? detail.slug,
@@ -410,22 +434,23 @@ class _InfoBar extends StatelessWidget {
     final items = <_InfoBarItem>[];
 
     if (detail.latestVersion != null) {
-      items.add(_InfoBarItem(
-        label: l10n.version.toUpperCase(),
-        value: detail.latestVersion!,
-      ));
+      items.add(
+        _InfoBarItem(
+          label: l10n.version.toUpperCase(),
+          value: detail.latestVersion!,
+        ),
+      );
     }
 
-    items.add(_InfoBarItem(
-      label: 'STATUS',
-      value: detail.installed ? l10n.installed : '---',
-    ));
+    items.add(
+      _InfoBarItem(
+        label: 'STATUS',
+        value: detail.installed ? l10n.installed : '---',
+      ),
+    );
 
     if (detail.author != null) {
-      items.add(_InfoBarItem(
-        label: 'AUTHOR',
-        value: detail.author!,
-      ));
+      items.add(_InfoBarItem(label: 'AUTHOR', value: detail.author!));
     }
 
     return Container(
