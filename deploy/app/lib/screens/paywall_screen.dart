@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/api_provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../services/api_client.dart';
 import '../services/revenue_cat_service.dart';
@@ -103,6 +104,14 @@ class _NarrowPaywall extends ConsumerWidget {
               onPressed: () => PaywallScreen.showReferralCodeDialog(context, ref),
               child: Text(
                 l10n.haveReferralCode,
+                style: TextStyle(color: AppColors.textTertiary),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => ref.read(authProvider.notifier).signOut(),
+              child: Text(
+                l10n.logout,
                 style: TextStyle(color: AppColors.textTertiary),
               ),
             ),
@@ -465,6 +474,12 @@ class _RightPanel extends ConsumerWidget {
                     icon: Icons.card_giftcard_rounded,
                     label: l10n.haveReferralCode,
                     onTap: () => PaywallScreen.showReferralCodeDialog(context, ref),
+                  ),
+                  const SizedBox(height: 12),
+                  _SecondaryAction(
+                    icon: Icons.logout_rounded,
+                    label: l10n.logout,
+                    onTap: () => ref.read(authProvider.notifier).signOut(),
                   ),
                 ],
               ),
