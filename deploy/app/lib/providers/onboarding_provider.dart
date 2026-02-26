@@ -6,8 +6,8 @@ import 'subscription_provider.dart';
 
 enum OnboardingStep {
   initializing,
-  paywall,
   auth,
+  paywall,
   aiDisclosure,
   instanceLoading,
   telegramSetup,
@@ -31,13 +31,13 @@ final onboardingStepProvider = Provider<OnboardingStep>((ref) {
   final initialized = ref.watch(appInitializedProvider);
   if (!initialized) return OnboardingStep.initializing;
 
-  final isPro = ref.watch(isProProvider);
   final authState = ref.watch(authProvider);
+  final isPro = ref.watch(isProProvider);
   final instanceState = ref.watch(instanceProvider);
   final setupProgress = ref.watch(setupProgressProvider);
 
-  if (!isPro) return OnboardingStep.paywall;
   if (authState.status != AuthStatus.authenticated) return OnboardingStep.auth;
+  if (!isPro) return OnboardingStep.paywall;
 
   final aiDisclosureAccepted = ref.watch(aiDisclosureAcceptedProvider);
   if (!aiDisclosureAccepted) return OnboardingStep.aiDisclosure;
