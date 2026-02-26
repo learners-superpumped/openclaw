@@ -1,6 +1,7 @@
 import type { V1ContainerStatus, V1Pod, V1PodCondition } from "@kubernetes/client-node";
 import { Router } from "express";
 import { randomBytes } from "node:crypto";
+import type { InstanceProfile } from "../services/profile-renderer.js";
 import { config } from "../config.js";
 import { readGatewayToken } from "../services/instance-auth.js";
 import * as k8s from "../services/k8s-client.js";
@@ -103,11 +104,13 @@ instancesRouter.post("/", async (req, res) => {
       secrets = {},
       persistence,
       imageTag,
+      profile,
     } = req.body as {
       userId?: string;
       secrets?: Record<string, string>;
       persistence?: { size?: string };
       imageTag?: string;
+      profile?: InstanceProfile;
     };
 
     if (!userId || !/^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]?$/.test(userId)) {
@@ -134,6 +137,7 @@ instancesRouter.post("/", async (req, res) => {
       secrets,
       persistence,
       imageTag,
+      profile,
     };
 
     // Create resources in order: Secret, ConfigMap, PVC first, then Deployment, Service

@@ -1,5 +1,6 @@
 import type * as k8s from "@kubernetes/client-node";
 import { config } from "../config.js";
+import { renderUserMd, renderIdentityMd, type InstanceProfile } from "./profile-renderer.js";
 
 function resourceName(userId: string): string {
   return `${userId}-openclaw`;
@@ -34,6 +35,7 @@ export interface CreateInstanceParams {
   secrets: Record<string, string>;
   persistence?: { size?: string };
   imageTag?: string;
+  profile?: InstanceProfile;
 }
 
 export function buildSecret(params: CreateInstanceParams): k8s.V1Secret {
@@ -86,6 +88,8 @@ export function buildConfigMap(params: CreateInstanceParams): k8s.V1ConfigMap {
           },
         },
       }),
+      ...(params.profile?.user ? { "USER.md": renderUserMd(params.profile.user) } : {}),
+      ...(params.profile?.agent ? { "IDENTITY.md": renderIdentityMd(params.profile.agent) } : {}),
     },
   };
 }
@@ -151,7 +155,12 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
               command: [
                 "sh",
                 "-c",
-                "if [ ! -f /data/openclaw.json ]; then cp /config-defaults/openclaw.json /data/openclaw.json; echo 'Copied default config'; else echo 'Config already exists, skipping'; fi",
+                [
+                  "if [ ! -f /data/openclaw.json ]; then cp /config-defaults/openclaw.json /data/openclaw.json; echo 'Copied default config'; else echo 'Config already exists, skipping'; fi",
+                  "WORKSPACE=/data/.openclaw/workspace",
+                  "mkdir -p $WORKSPACE",
+                  'for f in USER.md IDENTITY.md; do if [ -f /config-defaults/$f ] && [ ! -f $WORKSPACE/$f ]; then cp /config-defaults/$f $WORKSPACE/$f; echo "Copied $f"; fi; done',
+                ].join(" && "),
               ],
               volumeMounts: [
                 { name: "data", mountPath: "/data" },
@@ -238,7 +247,6 @@ export function buildDeployment(params: CreateInstanceParams): k8s.V1Deployment 
               name: "config",
               configMap: {
                 name: resourceName(params.userId),
-                items: [{ key: "openclaw.json", path: "openclaw.json" }],
               },
             },
           ],
