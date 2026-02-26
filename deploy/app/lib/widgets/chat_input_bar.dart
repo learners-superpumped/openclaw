@@ -96,6 +96,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   }
 
   Future<void> _sendMessage() async {
+    HapticFeedback.mediumImpact();
     final text = _textController.text.trim();
     if (text.isEmpty && _attachments.isEmpty) return;
 
@@ -137,6 +138,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
   }
 
   void _abortChat() {
+    HapticFeedback.mediumImpact();
     ref.read(chatProvider.notifier).abortChat();
   }
 
@@ -204,7 +206,10 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
                 top: -4,
                 right: -4,
                 child: GestureDetector(
-                  onTap: () => _removeAttachment(index),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _removeAttachment(index);
+                  },
                   child: Container(
                     width: 20,
                     height: 20,
@@ -230,7 +235,10 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
 
   Widget _buildImageButton() {
     return IconButton(
-      onPressed: _pickImage,
+      onPressed: () {
+        HapticFeedback.lightImpact();
+        _pickImage();
+      },
       icon: const Icon(Icons.add_photo_alternate_outlined),
       color: AppColors.textTertiary,
       padding: const EdgeInsets.all(8),

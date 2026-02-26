@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/api_provider.dart';
@@ -86,6 +87,7 @@ class _NarrowPaywall extends ConsumerWidget {
             const Spacer(flex: 3),
             FilledButton(
               onPressed: () async {
+                HapticFeedback.lightImpact();
                 await RevenueCatService.showPaywall(context: context);
                 ref.read(isProProvider.notifier).refresh();
               },
@@ -93,7 +95,10 @@ class _NarrowPaywall extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             TextButton(
-              onPressed: () => RevenueCatService.showCustomerCenter(),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                RevenueCatService.showCustomerCenter();
+              },
               child: Text(
                 l10n.alreadySubscribed,
                 style: TextStyle(color: AppColors.textSecondary),
@@ -101,7 +106,10 @@ class _NarrowPaywall extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => PaywallScreen.showReferralCodeDialog(context, ref),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                PaywallScreen.showReferralCodeDialog(context, ref);
+              },
               child: Text(
                 l10n.haveReferralCode,
                 style: TextStyle(color: AppColors.textTertiary),
@@ -109,7 +117,10 @@ class _NarrowPaywall extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => ref.read(authProvider.notifier).signOut(),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                ref.read(authProvider.notifier).signOut();
+              },
               child: Text(
                 l10n.logout,
                 style: TextStyle(color: AppColors.textTertiary),
@@ -570,7 +581,10 @@ class _PrimaryCtaState extends State<_PrimaryCta> {
       onExit: (_) => setState(() => _hovered = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: widget.onPressed,
+        onTap: () {
+          HapticFeedback.mediumImpact();
+          widget.onPressed();
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
@@ -643,7 +657,10 @@ class _SecondaryActionState extends State<_SecondaryAction> {
       onExit: (_) => setState(() => _hovered = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          widget.onTap();
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
@@ -780,7 +797,10 @@ class _ReferralCodeSheetState extends State<_ReferralCodeSheet> {
           ),
           const SizedBox(height: 20),
           FilledButton(
-            onPressed: _isLoading ? null : _submit,
+            onPressed: _isLoading ? null : () {
+              HapticFeedback.lightImpact();
+              _submit();
+            },
             child: _isLoading
                 ? const SizedBox(
                     width: 20,

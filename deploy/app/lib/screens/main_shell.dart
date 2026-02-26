@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
@@ -92,7 +93,10 @@ class _GlassNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         height: kBottomNavigationBarHeight,

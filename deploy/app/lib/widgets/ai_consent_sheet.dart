@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
@@ -89,10 +90,13 @@ class AiConsentSheet extends StatelessWidget {
                     _BulletItem(text: l10n.aiConsentUsageDeletion),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: () => launchUrl(
-                        Uri.parse('$apiBaseUrl/legal/privacy'),
-                        mode: LaunchMode.externalApplication,
-                      ),
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        launchUrl(
+                          Uri.parse('$apiBaseUrl/legal/privacy'),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
                       child: Text(
                         l10n.aiConsentViewPrivacy,
                         style: TextStyle(
@@ -113,12 +117,18 @@ class AiConsentSheet extends StatelessWidget {
                   child: Column(
                     children: [
                       FilledButton(
-                        onPressed: () => Navigator.of(context).pop(true),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          Navigator.of(context).pop(true);
+                        },
                         child: Text(l10n.aiDisclosureAgree),
                       ),
                       const SizedBox(height: 8),
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          Navigator.of(context).pop(false);
+                        },
                         child: Text(
                           l10n.decline,
                           style: TextStyle(color: AppColors.textSecondary),

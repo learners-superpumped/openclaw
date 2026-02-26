@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
 
@@ -134,6 +135,7 @@ class _GlassCardState extends State<GlassCard> {
         onTapDown: (_) => setState(() => _pressed = true),
         onTapUp: (_) {
           setState(() => _pressed = false);
+          HapticFeedback.lightImpact();
           widget.onTap?.call();
         },
         onTapCancel: () => setState(() => _pressed = false),

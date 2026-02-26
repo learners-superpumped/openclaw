@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/chat_provider.dart';
@@ -127,7 +128,10 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: InkWell(
-                onTap: () => _openModelPicker(context),
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  _openModelPicker(context);
+                },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -196,6 +200,7 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
                 ],
                 selected: {_reasoningLevel},
                 onSelectionChanged: (selected) {
+                  HapticFeedback.selectionClick();
                   setState(() => _reasoningLevel = selected.first);
                   ref.read(chatProvider.notifier).patchSession(
                     reasoningLevel: selected.first,
@@ -220,7 +225,10 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () => _confirmDeleteSession(context),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    _confirmDeleteSession(context);
+                  },
                   icon: const Icon(Icons.delete_outline, color: AppColors.error),
                   label: Text(
                     l10n.deleteSession,
@@ -282,6 +290,7 @@ class _SessionConfigSheetState extends ConsumerState<SessionConfigSheet> {
           ),
           FilledButton(
             onPressed: () {
+              HapticFeedback.mediumImpact();
               Navigator.of(ctx).pop();
               Navigator.of(context).pop();
               ref.read(chatProvider.notifier).deleteSession(sessionKey);

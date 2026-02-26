@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart'
     show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -84,6 +85,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
+                HapticFeedback.lightImpact();
                 launchUrl(
                   Uri.parse(
                     '$apiBaseUrl/legal/${isTerms ? 'terms' : 'privacy'}',
@@ -182,6 +184,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                           : Icons.visibility,
                     ),
                     onPressed: () {
+                      HapticFeedback.lightImpact();
                       setState(() {
                         _obscurePassword = !_obscurePassword;
                       });
@@ -258,7 +261,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
             ),
             const SizedBox(width: 4),
             GestureDetector(
-              onTap: () => context.go('/auth/signup'),
+              onTap: () {
+                HapticFeedback.lightImpact();
+                context.go('/auth/signup');
+              },
               child: Text(
                 l10n.signUp,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

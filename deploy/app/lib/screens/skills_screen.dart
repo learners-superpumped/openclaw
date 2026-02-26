@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -193,7 +194,10 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: () => ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    ref.read(clawHubProvider.notifier).loadSkills(q: state.searchQuery);
+                  },
                   child: Text(l10n.retry),
                 ),
               ],
@@ -352,6 +356,7 @@ class _SearchAndFilterHeader extends StatelessWidget {
                     ? IconButton(
                         icon: const Icon(Icons.clear, size: 18),
                         onPressed: () {
+                          HapticFeedback.lightImpact();
                           searchController.clear();
                           onSearchChanged('');
                         },
@@ -406,7 +411,10 @@ class _PillToggle extends StatelessWidget {
           final isSelected = i == selectedIndex;
           return Expanded(
             child: GestureDetector(
-              onTap: () => onChanged(i),
+              onTap: () {
+                HapticFeedback.selectionClick();
+                onChanged(i);
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeInOut,
@@ -465,7 +473,10 @@ class _SkillListItem extends StatelessWidget {
     final isBusy = isInstalling || isUninstalling;
 
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap();
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
@@ -553,7 +564,10 @@ class _GetButton extends StatelessWidget {
       width: 68,
       height: 28,
       child: TextButton(
-        onPressed: onPressed,
+        onPressed: () {
+          HapticFeedback.lightImpact();
+          onPressed();
+        },
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           minimumSize: Size.zero,

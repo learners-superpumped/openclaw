@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -175,7 +176,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () {
+          HapticFeedback.lightImpact();
+          Navigator.of(context).pop();
+        },
       ),
       centerTitle: false,
       title: Row(
@@ -324,6 +328,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         _scrollToBottom();
                         setState(() => _showNewMessagesFab = false);
                       },
@@ -614,6 +619,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: () {
+                HapticFeedback.lightImpact();
                 final instanceState = ref.read(instanceProvider);
                 if (instanceState.instance != null) {
                   ref

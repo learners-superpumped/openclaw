@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/ai_model.dart';
 import '../theme/app_theme.dart';
@@ -170,7 +171,10 @@ class _ModelTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: isSelected
           ? const Icon(Icons.check_circle, color: AppColors.accent, size: 20)

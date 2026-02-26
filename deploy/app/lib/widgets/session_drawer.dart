@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/chat_session.dart';
@@ -50,6 +51,7 @@ class SessionDrawer extends ConsumerWidget {
           const Spacer(),
           IconButton(
             onPressed: () {
+              HapticFeedback.lightImpact();
               ref.read(chatProvider.notifier).switchSession(null);
               Navigator.of(context).pop();
             },
@@ -153,10 +155,12 @@ class SessionDrawer extends ConsumerWidget {
           ],
         ),
         onTap: () {
+          HapticFeedback.lightImpact();
           ref.read(chatProvider.notifier).switchSession(session.key);
           Navigator.of(context).pop();
         },
         onLongPress: () {
+          HapticFeedback.mediumImpact();
           _showSessionContextMenu(context, ref, session);
         },
       ),
@@ -206,6 +210,7 @@ class SessionDrawer extends ConsumerWidget {
               leading: const Icon(Icons.edit_outlined, color: AppColors.textSecondary),
               title: Text(l10n.editSessionLabel),
               onTap: () {
+                HapticFeedback.lightImpact();
                 Navigator.of(ctx).pop();
                 Navigator.of(context).pop();
                 SessionConfigSheet.show(context);
@@ -218,6 +223,7 @@ class SessionDrawer extends ConsumerWidget {
                 style: const TextStyle(color: AppColors.error),
               ),
               onTap: () {
+                HapticFeedback.lightImpact();
                 Navigator.of(ctx).pop();
                 _confirmDeleteSession(context, ref, session);
               },
@@ -248,6 +254,7 @@ class SessionDrawer extends ConsumerWidget {
           ),
           FilledButton(
             onPressed: () {
+              HapticFeedback.mediumImpact();
               Navigator.of(ctx).pop();
               ref.read(chatProvider.notifier).deleteSession(session.key);
             },

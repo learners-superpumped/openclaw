@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoadingButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -20,7 +21,14 @@ class LoadingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveOnPressed = isLoading ? null : onPressed;
+    final effectiveOnPressed = isLoading
+        ? null
+        : onPressed != null
+            ? () {
+                HapticFeedback.lightImpact();
+                onPressed!();
+              }
+            : null;
     final effectiveLabel = isLoading
         ? const SizedBox(
             width: 20,

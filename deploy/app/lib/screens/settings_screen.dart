@@ -1,5 +1,6 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -282,6 +283,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () {
+              HapticFeedback.mediumImpact();
               Navigator.of(context).pop();
               _deleteInstance();
             },
@@ -328,6 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () {
+              HapticFeedback.mediumImpact();
               Navigator.of(context).pop();
               ref.read(authProvider.notifier).deleteAccount();
             },
@@ -414,7 +417,10 @@ class _SettingsItem extends StatelessWidget {
     final color = destructive ? AppColors.error : AppColors.textPrimary;
 
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap();
+      },
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -477,7 +483,10 @@ class _SettingsToggleItem extends StatelessWidget {
           ),
           Switch.adaptive(
             value: value,
-            onChanged: onChanged,
+            onChanged: (v) {
+              HapticFeedback.selectionClick();
+              onChanged(v);
+            },
             activeTrackColor: AppColors.accent,
           ),
         ],
