@@ -1,7 +1,9 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/profile_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
@@ -129,6 +131,7 @@ class _AgentCreationScreenState extends ConsumerState<AgentCreationScreen> {
     super.initState();
     _agentNameController = TextEditingController();
     _agentNameController.addListener(_onChanged);
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'agent_creation');
   }
 
   void _onChanged() => setState(() {});
@@ -142,6 +145,10 @@ class _AgentCreationScreenState extends ConsumerState<AgentCreationScreen> {
   bool get _isValid => _agentNameController.text.trim().isNotEmpty;
 
   void _onContinue() {
+    HapticFeedback.lightImpact();
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepCompleted(step: 'agent_creation');
     if (!_isValid) return;
     ref
         .read(profileProvider.notifier)
@@ -162,6 +169,10 @@ class _AgentCreationScreenState extends ConsumerState<AgentCreationScreen> {
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'agent_creation');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.userProfile;
       },
@@ -326,9 +337,15 @@ class _AgentCreationScreenState extends ConsumerState<AgentCreationScreen> {
     final isSelected = _selectedCreature == creature.key;
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
         setState(() {
           _selectedCreature = isSelected ? null : creature.key;
         });
+        if (!isSelected) {
+          ref
+              .read(analyticsProvider)
+              .logOnboardingCreatureSelected(creature: creature.key);
+        }
       },
       child: Container(
         width: 75,
@@ -387,9 +404,13 @@ class _AgentCreationScreenState extends ConsumerState<AgentCreationScreen> {
     final isSelected = _selectedEmoji == emoji;
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
         setState(() {
           _selectedEmoji = isSelected ? null : emoji;
         });
+        if (!isSelected) {
+          ref.read(analyticsProvider).logOnboardingEmojiSelected(emoji: emoji);
+        }
       },
       child: Container(
         width: 48,

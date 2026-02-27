@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/profile_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
@@ -30,7 +32,17 @@ class VibeSelectionScreen extends ConsumerStatefulWidget {
 class _VibeSelectionScreenState extends ConsumerState<VibeSelectionScreen> {
   String? _selectedVibe;
 
+  @override
+  void initState() {
+    super.initState();
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'vibe_selection');
+  }
+
   void _onContinue() {
+    HapticFeedback.lightImpact();
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepCompleted(step: 'vibe_selection');
     if (_selectedVibe == null) return;
     ref.read(profileProvider.notifier).setVibe(_selectedVibe!);
     ref.read(onboardingScreenProvider.notifier).state =
@@ -67,6 +79,10 @@ class _VibeSelectionScreenState extends ConsumerState<VibeSelectionScreen> {
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'vibe_selection');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.agentCreation;
       },
@@ -125,9 +141,11 @@ class _VibeSelectionScreenState extends ConsumerState<VibeSelectionScreen> {
     final isSelected = _selectedVibe == vibe.name;
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
         setState(() {
           _selectedVibe = vibe.name;
         });
+        ref.read(analyticsProvider).logOnboardingVibeSelected(vibe: vibe.name);
       },
       child: Container(
         width: double.infinity,
