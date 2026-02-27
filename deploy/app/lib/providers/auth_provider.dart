@@ -5,6 +5,8 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../models/user.dart';
 import 'api_provider.dart';
 import 'instance_provider.dart';
+import 'onboarding_provider.dart';
+import 'profile_provider.dart';
 import 'subscription_provider.dart';
 
 enum AuthStatus { unauthenticated, loading, authenticated, error }
@@ -215,7 +217,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     analytics.setUserId(null);
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
+    try {
+      await Purchases.logOut();
+    } catch (_) {}
+    // secure storage 온보딩 관련 값 삭제
+    final storage = _ref.read(secureStorageProvider);
+    await Future.wait([
+      storage.delete(key: 'onboarding_completed'),
+      storage.delete(key: 'ai_data_consent_v2'),
+      storage.delete(key: 'telegram_setup_skipped'),
+    ]);
     _ref.read(instanceProvider.notifier).resetState();
+    _ref.read(profileProvider.notifier).reset();
+    _ref.read(profileCompletedProvider.notifier).state = false;
+    _ref.read(onboardingScreenProvider.notifier).state =
+        OnboardingStep.welcomeLanding;
+    _ref.read(setupProgressProvider.notifier).state =
+        OnboardingStep.telegramSetup;
+    _ref.read(aiDisclosureAcceptedProvider.notifier).state = false;
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 

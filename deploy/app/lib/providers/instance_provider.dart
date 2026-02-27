@@ -6,6 +6,7 @@ import '../models/instance.dart';
 import 'api_provider.dart';
 import 'channel_provider.dart';
 import 'onboarding_provider.dart';
+import 'profile_provider.dart';
 import 'usage_provider.dart';
 
 const _kTelegramSetupSkipped = 'telegram_setup_skipped';
@@ -77,7 +78,11 @@ class InstanceNotifier extends StateNotifier<InstanceState> {
     state = state.copyWith(status: InstanceStatus.creating);
     try {
       final apiClient = _ref.read(apiClientProvider);
-      final instance = await apiClient.createInstance();
+      final profileState = _ref.read(profileProvider);
+      final profile = profileState.userName.isNotEmpty
+          ? profileState.toApiProfile()
+          : null;
+      final instance = await apiClient.createInstance(profile: profile);
       state = InstanceState(status: InstanceStatus.polling, instance: instance);
       _startPolling(instance.instanceId);
     } catch (e) {

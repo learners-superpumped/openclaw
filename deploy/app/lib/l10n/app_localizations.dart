@@ -1679,6 +1679,702 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to change default model'**
   String get changeDefaultModelError;
+
+  /// Common continue button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinue;
+
+  /// Onboarding badge text
+  ///
+  /// In en, this message translates to:
+  /// **'#1 OpenClaw App'**
+  String get onboardingBadgeTopApp;
+
+  /// Welcome landing hero title
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI agent.\nReady in 60 seconds.'**
+  String get onboardingWelcomeTitle;
+
+  /// Welcome landing subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'No setup. No API keys. No tech skills.'**
+  String get onboardingWelcomeSubtitle;
+
+  /// Welcome landing GitHub stars badge
+  ///
+  /// In en, this message translates to:
+  /// **'200K+ GitHub Stars'**
+  String get onboardingGithubStarsBadge;
+
+  /// Welcome landing powered by text
+  ///
+  /// In en, this message translates to:
+  /// **'Powered by 400+ AI models'**
+  String get onboardingPoweredByModels;
+
+  /// Sam Altman quote on welcome landing
+  ///
+  /// In en, this message translates to:
+  /// **'“A genius with amazing ideas about the future of very smart agents”'**
+  String get onboardingQuoteSamAltman;
+
+  /// Sam Altman quote attribution
+  ///
+  /// In en, this message translates to:
+  /// **'— Sam Altman, CEO of OpenAI'**
+  String get onboardingQuoteSamAltmanAttribution;
+
+  /// GitHub star count number
+  ///
+  /// In en, this message translates to:
+  /// **'200,000+'**
+  String get onboardingGithubStarCount;
+
+  /// GitHub Stars label
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub Stars'**
+  String get onboardingGithubStarsLabel;
+
+  /// GitHub fastest growing text
+  ///
+  /// In en, this message translates to:
+  /// **'The fastest-growing project in GitHub history'**
+  String get onboardingGithubFastestGrowing;
+
+  /// GitHub stars single day record
+  ///
+  /// In en, this message translates to:
+  /// **'25,310 stars in a single day'**
+  String get onboardingGithubStarsSingleDay;
+
+  /// Tweets screen section title
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted by leaders in AI & tech'**
+  String get onboardingTweetsSectionTitle;
+
+  /// Easy setup screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Setup in 60 seconds.\nNo expertise needed.'**
+  String get onboardingEasySetupTitle;
+
+  /// Easy setup screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t need to know anything technical. We handle all the rest.'**
+  String get onboardingEasySetupSubtitle;
+
+  /// Easy setup no API keys item
+  ///
+  /// In en, this message translates to:
+  /// **'No API keys required'**
+  String get onboardingEasySetupNoApiKeys;
+
+  /// Easy setup no terminal item
+  ///
+  /// In en, this message translates to:
+  /// **'No terminal or command line'**
+  String get onboardingEasySetupNoTerminal;
+
+  /// Easy setup no server item
+  ///
+  /// In en, this message translates to:
+  /// **'No Mac Mini or server'**
+  String get onboardingEasySetupNoServer;
+
+  /// Easy setup no tech knowledge item
+  ///
+  /// In en, this message translates to:
+  /// **'No technical knowledge'**
+  String get onboardingEasySetupNoTechKnowledge;
+
+  /// Safe by design screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Safe by design.\nYour data, your rules.'**
+  String get onboardingSafeByDesignTitle;
+
+  /// Safe by design Bloomberg press quote
+  ///
+  /// In en, this message translates to:
+  /// **'“ClawBox’s an AI Sensation, But Its Security a Work in Progress”'**
+  String get onboardingSafeByDesignPressQuote;
+
+  /// Safe by design subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent runs in a fully isolated AWS environment. Share only what you want. Your agent, your space.'**
+  String get onboardingSafeByDesignSubtitle;
+
+  /// Safe by design check item 1
+  ///
+  /// In en, this message translates to:
+  /// **'Fully separated cloud environment'**
+  String get onboardingSafeByDesignCheck1;
+
+  /// Safe by design check item 2
+  ///
+  /// In en, this message translates to:
+  /// **'You control what your agent accesses'**
+  String get onboardingSafeByDesignCheck2;
+
+  /// Safe by design check item 3
+  ///
+  /// In en, this message translates to:
+  /// **'Independent computing, not shared'**
+  String get onboardingSafeByDesignCheck3;
+
+  /// Common logout button text
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get commonLogout;
+
+  /// Full features screen title
+  ///
+  /// In en, this message translates to:
+  /// **'100% ClawBox.\nEvery feature included.'**
+  String get onboardingFullFeaturesTitle;
+
+  /// Full features screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Everything your computer can do, Atlas can do for you:'**
+  String get onboardingFullFeaturesSubtitle;
+
+  /// Full features example 1
+  ///
+  /// In en, this message translates to:
+  /// **'“Check my emails and draft replies for the ones that need attention”'**
+  String get onboardingFullFeaturesExample1;
+
+  /// Full features example 2
+  ///
+  /// In en, this message translates to:
+  /// **'“Reorder the milk I bought last time on Amazon”'**
+  String get onboardingFullFeaturesExample2;
+
+  /// Full features example 3
+  ///
+  /// In en, this message translates to:
+  /// **'“Plan a 5-night Vegas trip — flights, hotels — and email me the itinerary”'**
+  String get onboardingFullFeaturesExample3;
+
+  /// Full features tagline
+  ///
+  /// In en, this message translates to:
+  /// **'No limits. No learning curve. Just results.'**
+  String get onboardingFullFeaturesTagline;
+
+  /// New paywall screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock your agent\'s full power'**
+  String get newPaywallTitle;
+
+  /// New paywall screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is set up. Start using your agent now.'**
+  String get newPaywallSubtitle;
+
+  /// New paywall benefit 1
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated cloud computer — 24/7'**
+  String get newPaywallBenefit1;
+
+  /// New paywall benefit 2
+  ///
+  /// In en, this message translates to:
+  /// **'400+ AI models — unlimited'**
+  String get newPaywallBenefit2;
+
+  /// New paywall benefit 3
+  ///
+  /// In en, this message translates to:
+  /// **'100+ AgentSkills — ready to use'**
+  String get newPaywallBenefit3;
+
+  /// New paywall FAQ price question
+  ///
+  /// In en, this message translates to:
+  /// **'Why this price?'**
+  String get newPaywallFaqPriceQuestion;
+
+  /// New paywall FAQ price answer
+  ///
+  /// In en, this message translates to:
+  /// **'We allocate a dedicated cloud computer just for you — running 24/7, with unlimited access to 400+ AI models. This is the real cost of a personal AI agent that actually works.'**
+  String get newPaywallFaqPriceAnswer;
+
+  /// New paywall FAQ cheaper question
+  ///
+  /// In en, this message translates to:
+  /// **'What about cheaper alternatives?'**
+  String get newPaywallFaqCheaperQuestion;
+
+  /// New paywall FAQ cheaper answer
+  ///
+  /// In en, this message translates to:
+  /// **'A real dedicated environment with real AI model access requires real infrastructure. We don\'t cut corners — your agent runs on its own isolated cloud, not shared resources.'**
+  String get newPaywallFaqCheaperAnswer;
+
+  /// New paywall weekly period label
+  ///
+  /// In en, this message translates to:
+  /// **'/ week'**
+  String get newPaywallPeriodWeek;
+
+  /// New paywall monthly period label
+  ///
+  /// In en, this message translates to:
+  /// **'/ month'**
+  String get newPaywallPeriodMonth;
+
+  /// New paywall best value badge
+  ///
+  /// In en, this message translates to:
+  /// **'BEST VALUE'**
+  String get newPaywallBestValueBadge;
+
+  /// New paywall start now button
+  ///
+  /// In en, this message translates to:
+  /// **'Start Now'**
+  String get newPaywallStartNowButton;
+
+  /// New paywall restore purchase link
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchase'**
+  String get newPaywallRestorePurchase;
+
+  /// New paywall referral code link
+  ///
+  /// In en, this message translates to:
+  /// **'Have a referral code?'**
+  String get newPaywallHaveReferralCode;
+
+  /// New paywall social proof text
+  ///
+  /// In en, this message translates to:
+  /// **'200,000+ agents deployed'**
+  String get newPaywallSocialProof;
+
+  /// Referral code bottom sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Referral Code'**
+  String get newPaywallReferralSheetTitle;
+
+  /// Referral code input hint
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. FRIEND2024'**
+  String get newPaywallReferralHint;
+
+  /// Referral code apply button
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get newPaywallReferralApplyButton;
+
+  /// Referral code applied success message
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code applied!'**
+  String get newPaywallReferralAppliedSuccess;
+
+  /// Invalid referral code error message
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid referral code'**
+  String get newPaywallReferralInvalid;
+
+  /// User profile screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself'**
+  String get userProfileTitle;
+
+  /// User profile screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'So your agent knows who it\'s working for'**
+  String get userProfileSubtitle;
+
+  /// User profile name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Your Name'**
+  String get userProfileNameLabel;
+
+  /// User profile name field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Peter Steinberger'**
+  String get userProfileNameHint;
+
+  /// User profile call name field label
+  ///
+  /// In en, this message translates to:
+  /// **'What should we call you?'**
+  String get userProfileCallNameLabel;
+
+  /// User profile call name field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Peter'**
+  String get userProfileCallNameHint;
+
+  /// Task selection screen title
+  ///
+  /// In en, this message translates to:
+  /// **'What should your agent do?'**
+  String get taskSelectionTitle;
+
+  /// Task selection screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least 1'**
+  String get taskSelectionSubtitle;
+
+  /// Task option: Email Management
+  ///
+  /// In en, this message translates to:
+  /// **'Email Management'**
+  String get taskOptionEmailManagement;
+
+  /// Task option: Web Research
+  ///
+  /// In en, this message translates to:
+  /// **'Web Research'**
+  String get taskOptionWebResearch;
+
+  /// Task option: Task Automation
+  ///
+  /// In en, this message translates to:
+  /// **'Task Automation'**
+  String get taskOptionTaskAutomation;
+
+  /// Task option: Scheduling
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduling'**
+  String get taskOptionScheduling;
+
+  /// Task option: Social Media
+  ///
+  /// In en, this message translates to:
+  /// **'Social Media'**
+  String get taskOptionSocialMedia;
+
+  /// Task option: Writing
+  ///
+  /// In en, this message translates to:
+  /// **'Writing'**
+  String get taskOptionWriting;
+
+  /// Task option: Data Analysis
+  ///
+  /// In en, this message translates to:
+  /// **'Data Analysis'**
+  String get taskOptionDataAnalysis;
+
+  /// Task option: Smart Home
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Home'**
+  String get taskOptionSmartHome;
+
+  /// Vibe selection screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Set your agent\'s vibe'**
+  String get vibeSelectionTitle;
+
+  /// Vibe selection screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'How should your agent communicate?'**
+  String get vibeSelectionSubtitle;
+
+  /// Vibe option: Casual name
+  ///
+  /// In en, this message translates to:
+  /// **'Casual'**
+  String get vibeNameCasual;
+
+  /// Vibe option: Casual description
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxed and friendly. Like texting a smart friend.'**
+  String get vibeDescCasual;
+
+  /// Vibe option: Professional name
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get vibeNameProfessional;
+
+  /// Vibe option: Professional description
+  ///
+  /// In en, this message translates to:
+  /// **'Clear and structured. Business-ready communication.'**
+  String get vibeDescProfessional;
+
+  /// Vibe option: Friendly name
+  ///
+  /// In en, this message translates to:
+  /// **'Friendly'**
+  String get vibeNameFriendly;
+
+  /// Vibe option: Friendly description
+  ///
+  /// In en, this message translates to:
+  /// **'Warm and encouraging. Always positive and helpful.'**
+  String get vibeDescFriendly;
+
+  /// Vibe option: Direct name
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get vibeNameDirect;
+
+  /// Vibe option: Direct description
+  ///
+  /// In en, this message translates to:
+  /// **'Straight to the point. No fluff, maximum efficiency.'**
+  String get vibeDescDirect;
+
+  /// Agent creation screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Create your agent'**
+  String get agentCreationTitle;
+
+  /// Agent creation screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a look and personality for your agent'**
+  String get agentCreationSubtitle;
+
+  /// Agent creation name label
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Name'**
+  String get agentCreationNameLabel;
+
+  /// Agent creation name hint
+  ///
+  /// In en, this message translates to:
+  /// **'Atlas'**
+  String get agentCreationNameHint;
+
+  /// Agent creation creature type label
+  ///
+  /// In en, this message translates to:
+  /// **'Creature Type'**
+  String get agentCreationCreatureLabel;
+
+  /// Agent creation emoji label
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Emoji'**
+  String get agentCreationEmojiLabel;
+
+  /// Creature name: cat
+  ///
+  /// In en, this message translates to:
+  /// **'Cat'**
+  String get creatureCat;
+
+  /// Creature name: dragon
+  ///
+  /// In en, this message translates to:
+  /// **'Dragon'**
+  String get creatureDragon;
+
+  /// Creature name: fox
+  ///
+  /// In en, this message translates to:
+  /// **'Fox'**
+  String get creatureFox;
+
+  /// Creature name: owl
+  ///
+  /// In en, this message translates to:
+  /// **'Owl'**
+  String get creatureOwl;
+
+  /// Creature name: rabbit
+  ///
+  /// In en, this message translates to:
+  /// **'Rabbit'**
+  String get creatureRabbit;
+
+  /// Creature name: bear
+  ///
+  /// In en, this message translates to:
+  /// **'Bear'**
+  String get creatureBear;
+
+  /// Creature name: dino
+  ///
+  /// In en, this message translates to:
+  /// **'Dino'**
+  String get creatureDino;
+
+  /// Creature name: penguin
+  ///
+  /// In en, this message translates to:
+  /// **'Penguin'**
+  String get creaturePenguin;
+
+  /// Creature name: person
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get creaturePerson;
+
+  /// Creature name: wolf
+  ///
+  /// In en, this message translates to:
+  /// **'Wolf'**
+  String get creatureWolf;
+
+  /// Creature name: panda
+  ///
+  /// In en, this message translates to:
+  /// **'Panda'**
+  String get creaturePanda;
+
+  /// Creature name: unicorn
+  ///
+  /// In en, this message translates to:
+  /// **'Unicorn'**
+  String get creatureUnicorn;
+
+  /// Fallback call name
+  ///
+  /// In en, this message translates to:
+  /// **'friend'**
+  String get commonFallbackFriend;
+
+  /// Fallback agent name
+  ///
+  /// In en, this message translates to:
+  /// **'your agent'**
+  String get commonFallbackYourAgent;
+
+  /// Fake loading step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Profile configured'**
+  String get fakeLoadingStep1;
+
+  /// Fake loading step 2
+  ///
+  /// In en, this message translates to:
+  /// **'personality set'**
+  String get fakeLoadingStep2;
+
+  /// Fake loading step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Deploying to cloud...'**
+  String get fakeLoadingStep3;
+
+  /// Fake loading step 4
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting 400+ AI models'**
+  String get fakeLoadingStep4;
+
+  /// Fake loading step 5
+  ///
+  /// In en, this message translates to:
+  /// **'Allocating computing resources'**
+  String get fakeLoadingStep5;
+
+  /// Fake loading step 6
+  ///
+  /// In en, this message translates to:
+  /// **'Loading 100+ AgentSkills'**
+  String get fakeLoadingStep6;
+
+  /// Fake loading step 7
+  ///
+  /// In en, this message translates to:
+  /// **'Configuring agent workspace'**
+  String get fakeLoadingStep7;
+
+  /// Fake loading screen title with user name
+  ///
+  /// In en, this message translates to:
+  /// **'Hey {callName}, hang tight...'**
+  String fakeLoadingTitle(String callName);
+
+  /// Fake loading screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re setting up your agent in the cloud.\nYour personal agent is almost ready.'**
+  String get fakeLoadingSubtitle;
+
+  /// Agent complete screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Your agent is fully deployed and optimized for your tasks.'**
+  String get agentCompleteSubtitle;
+
+  /// Agent complete status 1
+  ///
+  /// In en, this message translates to:
+  /// **'24/7 Agent — always on'**
+  String get agentCompleteStatus1;
+
+  /// Agent complete status 2
+  ///
+  /// In en, this message translates to:
+  /// **'400+ AI Models — connected'**
+  String get agentCompleteStatus2;
+
+  /// Agent complete status 3
+  ///
+  /// In en, this message translates to:
+  /// **'100+ AgentSkills — loaded'**
+  String get agentCompleteStatus3;
+
+  /// Agent complete status 4
+  ///
+  /// In en, this message translates to:
+  /// **'Computing Resources — secured'**
+  String get agentCompleteStatus4;
+
+  /// Agent complete screen title
+  ///
+  /// In en, this message translates to:
+  /// **'{agentName} is ready, {callName}!'**
+  String agentCompleteTitle(String agentName, String callName);
+
+  /// Agent complete optimized for label
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIMIZED FOR'**
+  String get agentCompleteOptimizedForLabel;
+
+  /// Agent complete live hint with agent name
+  ///
+  /// In en, this message translates to:
+  /// **'{agentName} is live and waiting for you'**
+  String agentCompleteLiveHint(String agentName);
 }
 
 class _AppLocalizationsDelegate

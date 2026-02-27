@@ -821,4 +821,368 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get changeDefaultModelError => '기본 모델 변경에 실패했습니다';
+
+  @override
+  String get commonContinue => '계속';
+
+  @override
+  String get onboardingBadgeTopApp => '#1 OpenClaw 앱';
+
+  @override
+  String get onboardingWelcomeTitle => '나만의 AI 에이전트.\n60초면 준비 완료.';
+
+  @override
+  String get onboardingWelcomeSubtitle => '설정 불필요. API 키 불필요. 기술 지식 불필요.';
+
+  @override
+  String get onboardingGithubStarsBadge => 'GitHub Stars 20만+';
+
+  @override
+  String get onboardingPoweredByModels => '400개 이상의 AI 모델 지원';
+
+  @override
+  String get onboardingQuoteSamAltman =>
+      '“매우 똑똑한 에이전트의 미래에 대한 놀라운 아이디어를 가진 천재”';
+
+  @override
+  String get onboardingQuoteSamAltmanAttribution => '— Sam Altman, OpenAI CEO';
+
+  @override
+  String get onboardingGithubStarCount => '200,000+';
+
+  @override
+  String get onboardingGithubStarsLabel => 'GitHub Stars';
+
+  @override
+  String get onboardingGithubFastestGrowing => 'GitHub 역사상 가장 빠르게 성장한 프로젝트';
+
+  @override
+  String get onboardingGithubStarsSingleDay => '하루 만에 25,310 스타 달성';
+
+  @override
+  String get onboardingTweetsSectionTitle => 'AI & 테크 리더들이 신뢰하는';
+
+  @override
+  String get onboardingEasySetupTitle => '60초 만에 설정 완료.\n전문 지식이 필요 없습니다.';
+
+  @override
+  String get onboardingEasySetupSubtitle =>
+      '기술적인 지식이 전혀 필요 없습니다. 나머지는 저희가 처리합니다.';
+
+  @override
+  String get onboardingEasySetupNoApiKeys => 'API 키 불필요';
+
+  @override
+  String get onboardingEasySetupNoTerminal => '터미널이나 커맨드라인 불필요';
+
+  @override
+  String get onboardingEasySetupNoServer => 'Mac Mini나 서버 불필요';
+
+  @override
+  String get onboardingEasySetupNoTechKnowledge => '기술 지식 불필요';
+
+  @override
+  String get onboardingSafeByDesignTitle => '설계부터 안전하게.\n내 데이터, 내 규칙.';
+
+  @override
+  String get onboardingSafeByDesignPressQuote =>
+      '“ClawBox는 AI 센세이션, 하지만 보안은 아직 진행 중”';
+
+  @override
+  String get onboardingSafeByDesignSubtitle =>
+      '에이전트는 완전히 격리된 AWS 환경에서 실행됩니다. 공유할 내용은 직접 선택하세요. 나만의 에이전트, 나만의 공간.';
+
+  @override
+  String get onboardingSafeByDesignCheck1 => '완전히 분리된 클라우드 환경';
+
+  @override
+  String get onboardingSafeByDesignCheck2 => '에이전트 접근 권한을 직접 제어';
+
+  @override
+  String get onboardingSafeByDesignCheck3 => '독립적인 컴퓨팅, 공유 없음';
+
+  @override
+  String get commonLogout => '로그아웃';
+
+  @override
+  String get onboardingFullFeaturesTitle => '100% ClawBox.\n모든 기능 포함.';
+
+  @override
+  String get onboardingFullFeaturesSubtitle =>
+      '컴퓨터가 할 수 있는 모든 것, Atlas가 대신합니다:';
+
+  @override
+  String get onboardingFullFeaturesExample1 =>
+      '“이메일을 확인하고 답장이 필요한 것들에 대해 초안 작성해줘”';
+
+  @override
+  String get onboardingFullFeaturesExample2 => '“저번에 아마존에서 산 우유 다시 주문해줘”';
+
+  @override
+  String get onboardingFullFeaturesExample3 =>
+      '“라스베가스 5박 여행 계획 — 항공권, 호텔 — 일정표를 이메일로 보내줘”';
+
+  @override
+  String get onboardingFullFeaturesTagline => '제한 없음. 학습 곡선 없음. 결과만.';
+
+  @override
+  String get newPaywallTitle => '에이전트의 모든 기능을 활성화하세요';
+
+  @override
+  String get newPaywallSubtitle => '모든 준비가 완료되었습니다. 지금 에이전트를 사용하세요.';
+
+  @override
+  String get newPaywallBenefit1 => '전용 클라우드 컴퓨터 — 24시간 연중무휴';
+
+  @override
+  String get newPaywallBenefit2 => '400개 이상 AI 모델 — 무제한';
+
+  @override
+  String get newPaywallBenefit3 => '100개 이상 AgentSkills — 바로 사용 가능';
+
+  @override
+  String get newPaywallFaqPriceQuestion => '왜 이 가격인가요?';
+
+  @override
+  String get newPaywallFaqPriceAnswer =>
+      '전용 클라우드 컴퓨터를 할당하여 24시간 연중무휴로 운영하며, 400개 이상의 AI 모델에 무제한으로 접근할 수 있습니다. 이것이 실제로 작동하는 개인 AI 에이전트의 실제 비용입니다.';
+
+  @override
+  String get newPaywallFaqCheaperQuestion => '더 저렴한 대안은 없나요?';
+
+  @override
+  String get newPaywallFaqCheaperAnswer =>
+      '실제 AI 모델 접근이 가능한 전용 환경에는 실제 인프라가 필요합니다. 저희는 타협하지 않습니다 — 에이전트는 공유 자원이 아닌 격리된 전용 클라우드에서 실행됩니다.';
+
+  @override
+  String get newPaywallPeriodWeek => '/ 주';
+
+  @override
+  String get newPaywallPeriodMonth => '/ 월';
+
+  @override
+  String get newPaywallBestValueBadge => '최고 가성비';
+
+  @override
+  String get newPaywallStartNowButton => '지금 시작';
+
+  @override
+  String get newPaywallRestorePurchase => '구매 복원';
+
+  @override
+  String get newPaywallHaveReferralCode => '레퍼럴 코드가 있으신가요?';
+
+  @override
+  String get newPaywallSocialProof => '200,000개 이상의 에이전트 배포';
+
+  @override
+  String get newPaywallReferralSheetTitle => '레퍼럴 코드 입력';
+
+  @override
+  String get newPaywallReferralHint => '예: FRIEND2024';
+
+  @override
+  String get newPaywallReferralApplyButton => '적용';
+
+  @override
+  String get newPaywallReferralAppliedSuccess => '레퍼럴 코드가 적용되었습니다!';
+
+  @override
+  String get newPaywallReferralInvalid => '유효하지 않은 레퍼럴 코드';
+
+  @override
+  String get userProfileTitle => '자기소개를 해주세요';
+
+  @override
+  String get userProfileSubtitle => '에이전트가 누구를 위해 일하는지 알 수 있도록';
+
+  @override
+  String get userProfileNameLabel => '이름';
+
+  @override
+  String get userProfileNameHint => '홍길동';
+
+  @override
+  String get userProfileCallNameLabel => '어떻게 불러드릴까요?';
+
+  @override
+  String get userProfileCallNameHint => '길동';
+
+  @override
+  String get taskSelectionTitle => '에이전트가 무엇을 하면 좋겠나요?';
+
+  @override
+  String get taskSelectionSubtitle => '최소 1개 선택';
+
+  @override
+  String get taskOptionEmailManagement => '이메일 관리';
+
+  @override
+  String get taskOptionWebResearch => '웹 리서치';
+
+  @override
+  String get taskOptionTaskAutomation => '작업 자동화';
+
+  @override
+  String get taskOptionScheduling => '일정 관리';
+
+  @override
+  String get taskOptionSocialMedia => '소셜 미디어';
+
+  @override
+  String get taskOptionWriting => '글쓰기';
+
+  @override
+  String get taskOptionDataAnalysis => '데이터 분석';
+
+  @override
+  String get taskOptionSmartHome => '스마트 홈';
+
+  @override
+  String get vibeSelectionTitle => '에이전트의 분위기를 설정하세요';
+
+  @override
+  String get vibeSelectionSubtitle => '에이전트가 어떻게 소통하면 좋겠나요?';
+
+  @override
+  String get vibeNameCasual => '캐주얼';
+
+  @override
+  String get vibeDescCasual => '편안하고 친근하게. 똑똑한 친구에게 문자하듯.';
+
+  @override
+  String get vibeNameProfessional => '프로페셔널';
+
+  @override
+  String get vibeDescProfessional => '명확하고 체계적. 비즈니스에 적합한 소통.';
+
+  @override
+  String get vibeNameFriendly => '다정한';
+
+  @override
+  String get vibeDescFriendly => '따뜻하고 격려하는. 항상 긍정적이고 도움이 되는.';
+
+  @override
+  String get vibeNameDirect => '직접적';
+
+  @override
+  String get vibeDescDirect => '요점만 간결하게. 불필요한 것 없이 최대 효율.';
+
+  @override
+  String get agentCreationTitle => '에이전트 만들기';
+
+  @override
+  String get agentCreationSubtitle => '에이전트의 외형과 성격을 선택하세요';
+
+  @override
+  String get agentCreationNameLabel => '에이전트 이름';
+
+  @override
+  String get agentCreationNameHint => 'Atlas';
+
+  @override
+  String get agentCreationCreatureLabel => '캐릭터 유형';
+
+  @override
+  String get agentCreationEmojiLabel => '에이전트 이모지';
+
+  @override
+  String get creatureCat => '고양이';
+
+  @override
+  String get creatureDragon => '용';
+
+  @override
+  String get creatureFox => '여우';
+
+  @override
+  String get creatureOwl => '부엉이';
+
+  @override
+  String get creatureRabbit => '토끼';
+
+  @override
+  String get creatureBear => '곰';
+
+  @override
+  String get creatureDino => '공룡';
+
+  @override
+  String get creaturePenguin => '펭귄';
+
+  @override
+  String get creaturePerson => '사람';
+
+  @override
+  String get creatureWolf => '늑대';
+
+  @override
+  String get creaturePanda => '판다';
+
+  @override
+  String get creatureUnicorn => '유니콘';
+
+  @override
+  String get commonFallbackFriend => '친구';
+
+  @override
+  String get commonFallbackYourAgent => '에이전트';
+
+  @override
+  String get fakeLoadingStep1 => '프로필 설정 완료';
+
+  @override
+  String get fakeLoadingStep2 => '성격 설정 완료';
+
+  @override
+  String get fakeLoadingStep3 => '클라우드에 배포 중...';
+
+  @override
+  String get fakeLoadingStep4 => '400개 이상의 AI 모델 연결 중';
+
+  @override
+  String get fakeLoadingStep5 => '컴퓨팅 리소스 할당 중';
+
+  @override
+  String get fakeLoadingStep6 => '100개 이상의 AgentSkills 로딩 중';
+
+  @override
+  String get fakeLoadingStep7 => '에이전트 워크스페이스 구성 중';
+
+  @override
+  String fakeLoadingTitle(String callName) {
+    return 'Hey $callName, 잠시만 기다려주세요...';
+  }
+
+  @override
+  String get fakeLoadingSubtitle =>
+      '클라우드에서 에이전트를 설정하고 있습니다.\n개인 에이전트가 곧 준비됩니다.';
+
+  @override
+  String get agentCompleteSubtitle => '에이전트가 완전히 배포되어 작업에 최적화되었습니다.';
+
+  @override
+  String get agentCompleteStatus1 => '24/7 에이전트 — 항상 켜짐';
+
+  @override
+  String get agentCompleteStatus2 => '400개 이상의 AI 모델 — 연결됨';
+
+  @override
+  String get agentCompleteStatus3 => '100개 이상의 AgentSkills — 로드됨';
+
+  @override
+  String get agentCompleteStatus4 => '컴퓨팅 리소스 — 확보됨';
+
+  @override
+  String agentCompleteTitle(String agentName, String callName) {
+    return '$agentName 준비 완료, $callName!';
+  }
+
+  @override
+  String get agentCompleteOptimizedForLabel => '최적화 대상';
+
+  @override
+  String agentCompleteLiveHint(String agentName) {
+    return '$agentName이(가) 활성화되어 기다리고 있습니다';
+  }
 }

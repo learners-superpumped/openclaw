@@ -91,10 +91,13 @@ class ApiClient {
   }
 
   // Instances
-  Future<Instance> createInstance({String? displayName}) async {
+  Future<Instance> createInstance({
+    String? displayName,
+    Map<String, dynamic>? profile,
+  }) async {
     final response = await _dio.post(
       '/instances',
-      data: {'displayName': ?displayName},
+      data: {'displayName': ?displayName, 'profile': ?profile},
     );
     return Instance.fromJson(response.data);
   }

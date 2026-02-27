@@ -815,4 +815,362 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get changeDefaultModelError => '更改默认模型失败';
+
+  @override
+  String get commonContinue => '继续';
+
+  @override
+  String get onboardingBadgeTopApp => '#1 OpenClaw 应用';
+
+  @override
+  String get onboardingWelcomeTitle => '你的AI智能助手。\n60秒即可就绪。';
+
+  @override
+  String get onboardingWelcomeSubtitle => '无需设置。无需API密钥。无需技术技能。';
+
+  @override
+  String get onboardingGithubStarsBadge => 'GitHub Stars 20万+';
+
+  @override
+  String get onboardingPoweredByModels => '由400多个AI模型驱动';
+
+  @override
+  String get onboardingQuoteSamAltman => '“一位对超智能代理的未来有着惊人想法的天才”';
+
+  @override
+  String get onboardingQuoteSamAltmanAttribution => '— Sam Altman，OpenAI CEO';
+
+  @override
+  String get onboardingGithubStarCount => '200,000+';
+
+  @override
+  String get onboardingGithubStarsLabel => 'GitHub Stars';
+
+  @override
+  String get onboardingGithubFastestGrowing => 'GitHub历史上增长最快的项目';
+
+  @override
+  String get onboardingGithubStarsSingleDay => '单日获得25,310颗星';
+
+  @override
+  String get onboardingTweetsSectionTitle => '受AI和科技领袖信赖';
+
+  @override
+  String get onboardingEasySetupTitle => '60秒完成设置。\n无需专业知识。';
+
+  @override
+  String get onboardingEasySetupSubtitle => '你不需要任何技术知识。其余的由我们处理。';
+
+  @override
+  String get onboardingEasySetupNoApiKeys => '无需API密钥';
+
+  @override
+  String get onboardingEasySetupNoTerminal => '无需终端或命令行';
+
+  @override
+  String get onboardingEasySetupNoServer => '无需Mac Mini或服务器';
+
+  @override
+  String get onboardingEasySetupNoTechKnowledge => '无需技术知识';
+
+  @override
+  String get onboardingSafeByDesignTitle => '从设计之初就安全。\n你的数据，你的规则。';
+
+  @override
+  String get onboardingSafeByDesignPressQuote => '“ClawBox是AI界的轰动，但安全性仍在完善中”';
+
+  @override
+  String get onboardingSafeByDesignSubtitle =>
+      '你的智能助手在完全隔离的AWS环境中运行。只分享你想分享的。你的智能助手，你的空间。';
+
+  @override
+  String get onboardingSafeByDesignCheck1 => '完全独立的云环境';
+
+  @override
+  String get onboardingSafeByDesignCheck2 => '你控制智能助手的访问权限';
+
+  @override
+  String get onboardingSafeByDesignCheck3 => '独立计算，非共享';
+
+  @override
+  String get commonLogout => '退出登录';
+
+  @override
+  String get onboardingFullFeaturesTitle => '100% ClawBox。\n包含所有功能。';
+
+  @override
+  String get onboardingFullFeaturesSubtitle => '你的电脑能做的一切，Atlas都能为你完成：';
+
+  @override
+  String get onboardingFullFeaturesExample1 => '“检查我的邮件，为需要回复的邮件起草回复”';
+
+  @override
+  String get onboardingFullFeaturesExample2 => '“重新订购我上次在亚马逊买的牛奶”';
+
+  @override
+  String get onboardingFullFeaturesExample3 =>
+      '“规划一次拉斯维加斯5晚旅行 — 机票、酒店 — 把行程发邮件给我”';
+
+  @override
+  String get onboardingFullFeaturesTagline => '没有限制。没有学习曲线。只有结果。';
+
+  @override
+  String get newPaywallTitle => '解锁智能助手的全部功能';
+
+  @override
+  String get newPaywallSubtitle => '一切已准备就绪。立即开始使用你的智能助手。';
+
+  @override
+  String get newPaywallBenefit1 => '专属云计算机 — 全天候运行';
+
+  @override
+  String get newPaywallBenefit2 => '400+AI模型 — 无限使用';
+
+  @override
+  String get newPaywallBenefit3 => '100+ AgentSkills — 即用即享';
+
+  @override
+  String get newPaywallFaqPriceQuestion => '为什么是这个价格？';
+
+  @override
+  String get newPaywallFaqPriceAnswer =>
+      '我们为您分配一台专属云计算机，全天候运行，可无限访问400多个AI模型。这是一个真正有效的个人AI助手的实际成本。';
+
+  @override
+  String get newPaywallFaqCheaperQuestion => '有更便宜的替代方案吗？';
+
+  @override
+  String get newPaywallFaqCheaperAnswer =>
+      '具有真正AI模型访问权限的专用环境需要真正的基础设施。我们不偷工减料 — 您的智能助手在自己独立的云上运行，而非共享资源。';
+
+  @override
+  String get newPaywallPeriodWeek => '/ 周';
+
+  @override
+  String get newPaywallPeriodMonth => '/ 月';
+
+  @override
+  String get newPaywallBestValueBadge => '最超值';
+
+  @override
+  String get newPaywallStartNowButton => '立即开始';
+
+  @override
+  String get newPaywallRestorePurchase => '恢复购买';
+
+  @override
+  String get newPaywallHaveReferralCode => '有推荐码？';
+
+  @override
+  String get newPaywallSocialProof => '已部署200,000+个智能助手';
+
+  @override
+  String get newPaywallReferralSheetTitle => '输入推荐码';
+
+  @override
+  String get newPaywallReferralHint => '例如 FRIEND2024';
+
+  @override
+  String get newPaywallReferralApplyButton => '应用';
+
+  @override
+  String get newPaywallReferralAppliedSuccess => '推荐码已应用！';
+
+  @override
+  String get newPaywallReferralInvalid => '无效的推荐码';
+
+  @override
+  String get userProfileTitle => '介绍一下自己';
+
+  @override
+  String get userProfileSubtitle => '让智能助手知道它在为谁工作';
+
+  @override
+  String get userProfileNameLabel => '您的姓名';
+
+  @override
+  String get userProfileNameHint => '张三';
+
+  @override
+  String get userProfileCallNameLabel => '我们该怎么称呼您？';
+
+  @override
+  String get userProfileCallNameHint => '三三';
+
+  @override
+  String get taskSelectionTitle => '您希望智能助手做什么？';
+
+  @override
+  String get taskSelectionSubtitle => '至少选择1项';
+
+  @override
+  String get taskOptionEmailManagement => '邮件管理';
+
+  @override
+  String get taskOptionWebResearch => '网络调研';
+
+  @override
+  String get taskOptionTaskAutomation => '任务自动化';
+
+  @override
+  String get taskOptionScheduling => '日程安排';
+
+  @override
+  String get taskOptionSocialMedia => '社交媒体';
+
+  @override
+  String get taskOptionWriting => '写作';
+
+  @override
+  String get taskOptionDataAnalysis => '数据分析';
+
+  @override
+  String get taskOptionSmartHome => '智能家居';
+
+  @override
+  String get vibeSelectionTitle => '设置智能助手的风格';
+
+  @override
+  String get vibeSelectionSubtitle => '智能助手应该如何沟通？';
+
+  @override
+  String get vibeNameCasual => '随意';
+
+  @override
+  String get vibeDescCasual => '轻松友好。像给聪明的朋友发短信一样。';
+
+  @override
+  String get vibeNameProfessional => '专业';
+
+  @override
+  String get vibeDescProfessional => '清晰有条理。适合商务沟通。';
+
+  @override
+  String get vibeNameFriendly => '友善';
+
+  @override
+  String get vibeDescFriendly => '温暖鼓励。始终积极且乐于助人。';
+
+  @override
+  String get vibeNameDirect => '直接';
+
+  @override
+  String get vibeDescDirect => '直奔主题。不废话，最大效率。';
+
+  @override
+  String get agentCreationTitle => '创建你的智能助手';
+
+  @override
+  String get agentCreationSubtitle => '选择智能助手的外观和个性';
+
+  @override
+  String get agentCreationNameLabel => '智能助手名称';
+
+  @override
+  String get agentCreationNameHint => 'Atlas';
+
+  @override
+  String get agentCreationCreatureLabel => '角色类型';
+
+  @override
+  String get agentCreationEmojiLabel => '智能助手表情';
+
+  @override
+  String get creatureCat => '猫';
+
+  @override
+  String get creatureDragon => '龙';
+
+  @override
+  String get creatureFox => '狐狸';
+
+  @override
+  String get creatureOwl => '猫头鹰';
+
+  @override
+  String get creatureRabbit => '兔子';
+
+  @override
+  String get creatureBear => '熊';
+
+  @override
+  String get creatureDino => '恐龙';
+
+  @override
+  String get creaturePenguin => '企鹅';
+
+  @override
+  String get creaturePerson => '人';
+
+  @override
+  String get creatureWolf => '狼';
+
+  @override
+  String get creaturePanda => '熊猫';
+
+  @override
+  String get creatureUnicorn => '独角兽';
+
+  @override
+  String get commonFallbackFriend => '朋友';
+
+  @override
+  String get commonFallbackYourAgent => '智能助手';
+
+  @override
+  String get fakeLoadingStep1 => '个人资料已配置';
+
+  @override
+  String get fakeLoadingStep2 => '个性已设定';
+
+  @override
+  String get fakeLoadingStep3 => '正在部署到云端...';
+
+  @override
+  String get fakeLoadingStep4 => '连接400+AI模型';
+
+  @override
+  String get fakeLoadingStep5 => '分配计算资源';
+
+  @override
+  String get fakeLoadingStep6 => '加载100+ AgentSkills';
+
+  @override
+  String get fakeLoadingStep7 => '配置智能助手工作空间';
+
+  @override
+  String fakeLoadingTitle(String callName) {
+    return 'Hey $callName，请稍候...';
+  }
+
+  @override
+  String get fakeLoadingSubtitle => '我们正在云端设置你的智能助手。\n你的个人智能助手即将准备就绪。';
+
+  @override
+  String get agentCompleteSubtitle => '你的智能助手已完全部署并针对你的任务进行了优化。';
+
+  @override
+  String get agentCompleteStatus1 => '24/7智能助手 — 始终在线';
+
+  @override
+  String get agentCompleteStatus2 => '400+ AI模型 — 已连接';
+
+  @override
+  String get agentCompleteStatus3 => '100+ AgentSkills — 已加载';
+
+  @override
+  String get agentCompleteStatus4 => '计算资源 — 已确保';
+
+  @override
+  String agentCompleteTitle(String agentName, String callName) {
+    return '$agentName已就绪，$callName！';
+  }
+
+  @override
+  String get agentCompleteOptimizedForLabel => '优化目标';
+
+  @override
+  String agentCompleteLiveHint(String agentName) {
+    return '$agentName已上线，正等待你的使用';
+  }
 }

@@ -820,4 +820,367 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get changeDefaultModelError => 'デフォルトモデルの変更に失敗しました';
+
+  @override
+  String get commonContinue => '続ける';
+
+  @override
+  String get onboardingBadgeTopApp => '#1 OpenClawアプリ';
+
+  @override
+  String get onboardingWelcomeTitle => 'あなたのAIエージェント。\n60秒で準備完了。';
+
+  @override
+  String get onboardingWelcomeSubtitle => 'セットアップ不要。APIキー不要。技術スキル不要。';
+
+  @override
+  String get onboardingGithubStarsBadge => 'GitHub Stars 20万以上';
+
+  @override
+  String get onboardingPoweredByModels => '400以上のAIモデルを搭載';
+
+  @override
+  String get onboardingQuoteSamAltman =>
+      '“非常にスマートなエージェントの未来について素晴らしいアイデアを持つ天才”';
+
+  @override
+  String get onboardingQuoteSamAltmanAttribution => '— Sam Altman、OpenAI CEO';
+
+  @override
+  String get onboardingGithubStarCount => '200,000+';
+
+  @override
+  String get onboardingGithubStarsLabel => 'GitHub Stars';
+
+  @override
+  String get onboardingGithubFastestGrowing => 'GitHub史上最速で成長したプロジェクト';
+
+  @override
+  String get onboardingGithubStarsSingleDay => '1日で25,310スターを獲得';
+
+  @override
+  String get onboardingTweetsSectionTitle => 'AI＆テック業界のリーダーが信頼';
+
+  @override
+  String get onboardingEasySetupTitle => '60秒でセットアップ完了。\n専門知識は不要。';
+
+  @override
+  String get onboardingEasySetupSubtitle => '技術的な知識は一切不要です。残りはすべてお任せください。';
+
+  @override
+  String get onboardingEasySetupNoApiKeys => 'APIキー不要';
+
+  @override
+  String get onboardingEasySetupNoTerminal => 'ターミナルやコマンドライン不要';
+
+  @override
+  String get onboardingEasySetupNoServer => 'Mac Miniやサーバー不要';
+
+  @override
+  String get onboardingEasySetupNoTechKnowledge => '技術知識不要';
+
+  @override
+  String get onboardingSafeByDesignTitle => '設計から安全。\nあなたのデータ、あなたのルール。';
+
+  @override
+  String get onboardingSafeByDesignPressQuote =>
+      '“ClawBoxはAIセンセーション、しかしセキュリティはまだ改善途上”';
+
+  @override
+  String get onboardingSafeByDesignSubtitle =>
+      'エージェントは完全に分離されたAWS環境で実行されます。共有する内容はあなたが選択。あなたのエージェント、あなたの空間。';
+
+  @override
+  String get onboardingSafeByDesignCheck1 => '完全に分離されたクラウド環境';
+
+  @override
+  String get onboardingSafeByDesignCheck2 => 'エージェントのアクセス権限を自分で管理';
+
+  @override
+  String get onboardingSafeByDesignCheck3 => '独立したコンピューティング、共有なし';
+
+  @override
+  String get commonLogout => 'ログアウト';
+
+  @override
+  String get onboardingFullFeaturesTitle => '100% ClawBox。\nすべての機能を搭載。';
+
+  @override
+  String get onboardingFullFeaturesSubtitle =>
+      'あなたのパソコンができることすべて、Atlasがあなたの代わりにやります：';
+
+  @override
+  String get onboardingFullFeaturesExample1 =>
+      '“メールをチェックして、対応が必要なものに返信の下書きを作成して”';
+
+  @override
+  String get onboardingFullFeaturesExample2 => '“前回Amazonで買った牛乳を再注文して”';
+
+  @override
+  String get onboardingFullFeaturesExample3 =>
+      '“ラスベガス5泊の旅行を計画して — 航空券、ホテル — 旅程をメールで送って”';
+
+  @override
+  String get onboardingFullFeaturesTagline => '制限なし。学習曲線なし。結果だけ。';
+
+  @override
+  String get newPaywallTitle => 'エージェントのフルパワーを解放';
+
+  @override
+  String get newPaywallSubtitle => 'すべての準備が完了しました。今すぐエージェントを使い始めましょう。';
+
+  @override
+  String get newPaywallBenefit1 => '専用クラウドコンピューター — 24時間年中無休';
+
+  @override
+  String get newPaywallBenefit2 => '400以上のAIモデル — 無制限';
+
+  @override
+  String get newPaywallBenefit3 => '100以上のAgentSkills — すぐに使える';
+
+  @override
+  String get newPaywallFaqPriceQuestion => 'なぜこの価格？';
+
+  @override
+  String get newPaywallFaqPriceAnswer =>
+      'あなた専用のクラウドコンピューターを24時間年中無休で稼働させ、400以上のAIモデルに無制限でアクセスできます。これが実際に機能するパーソナルAIエージェントの実際のコストです。';
+
+  @override
+  String get newPaywallFaqCheaperQuestion => 'もっと安い代替手段は？';
+
+  @override
+  String get newPaywallFaqCheaperAnswer =>
+      '実際のAIモデルアクセスを備えた専用環境には、実際のインフラが必要です。妥協はしません — あなたのエージェントは共有リソースではなく、独立した専用クラウドで実行されます。';
+
+  @override
+  String get newPaywallPeriodWeek => '/ 週';
+
+  @override
+  String get newPaywallPeriodMonth => '/ 月';
+
+  @override
+  String get newPaywallBestValueBadge => '最もお得';
+
+  @override
+  String get newPaywallStartNowButton => '今すぐ開始';
+
+  @override
+  String get newPaywallRestorePurchase => '購入を復元';
+
+  @override
+  String get newPaywallHaveReferralCode => '紹介コードをお持ちですか？';
+
+  @override
+  String get newPaywallSocialProof => '200,000以上のエージェントがデプロイ済み';
+
+  @override
+  String get newPaywallReferralSheetTitle => '紹介コード入力';
+
+  @override
+  String get newPaywallReferralHint => '例: FRIEND2024';
+
+  @override
+  String get newPaywallReferralApplyButton => '適用';
+
+  @override
+  String get newPaywallReferralAppliedSuccess => '紹介コードが適用されました！';
+
+  @override
+  String get newPaywallReferralInvalid => '無効な紹介コード';
+
+  @override
+  String get userProfileTitle => 'あなたについて教えてください';
+
+  @override
+  String get userProfileSubtitle => 'エージェントが誰のために働いているか分かるように';
+
+  @override
+  String get userProfileNameLabel => 'お名前';
+
+  @override
+  String get userProfileNameHint => '山田太郎';
+
+  @override
+  String get userProfileCallNameLabel => 'なんとお呼びしますか？';
+
+  @override
+  String get userProfileCallNameHint => '太郎';
+
+  @override
+  String get taskSelectionTitle => 'エージェントに何をさせますか？';
+
+  @override
+  String get taskSelectionSubtitle => '最低1つ選択';
+
+  @override
+  String get taskOptionEmailManagement => 'メール管理';
+
+  @override
+  String get taskOptionWebResearch => 'ウェブリサーチ';
+
+  @override
+  String get taskOptionTaskAutomation => 'タスク自動化';
+
+  @override
+  String get taskOptionScheduling => 'スケジュール管理';
+
+  @override
+  String get taskOptionSocialMedia => 'ソーシャルメディア';
+
+  @override
+  String get taskOptionWriting => 'ライティング';
+
+  @override
+  String get taskOptionDataAnalysis => 'データ分析';
+
+  @override
+  String get taskOptionSmartHome => 'スマートホーム';
+
+  @override
+  String get vibeSelectionTitle => 'エージェントの雰囲気を設定';
+
+  @override
+  String get vibeSelectionSubtitle => 'エージェントにどうコミュニケーションしてほしいですか？';
+
+  @override
+  String get vibeNameCasual => 'カジュアル';
+
+  @override
+  String get vibeDescCasual => 'リラックスしてフレンドリー。賢い友達にテキストするように。';
+
+  @override
+  String get vibeNameProfessional => 'プロフェッショナル';
+
+  @override
+  String get vibeDescProfessional => '明確で体系的。ビジネスに適したコミュニケーション。';
+
+  @override
+  String get vibeNameFriendly => 'フレンドリー';
+
+  @override
+  String get vibeDescFriendly => '温かく励ましてくれる。いつもポジティブで役に立つ。';
+
+  @override
+  String get vibeNameDirect => 'ダイレクト';
+
+  @override
+  String get vibeDescDirect => '要点を端的に。無駄なし、最大効率。';
+
+  @override
+  String get agentCreationTitle => 'エージェントを作成';
+
+  @override
+  String get agentCreationSubtitle => 'エージェントの外見と性格を選択';
+
+  @override
+  String get agentCreationNameLabel => 'エージェント名';
+
+  @override
+  String get agentCreationNameHint => 'Atlas';
+
+  @override
+  String get agentCreationCreatureLabel => 'キャラクタータイプ';
+
+  @override
+  String get agentCreationEmojiLabel => 'エージェント絵文字';
+
+  @override
+  String get creatureCat => 'ネコ';
+
+  @override
+  String get creatureDragon => 'ドラゴン';
+
+  @override
+  String get creatureFox => 'キツネ';
+
+  @override
+  String get creatureOwl => 'フクロウ';
+
+  @override
+  String get creatureRabbit => 'ウサギ';
+
+  @override
+  String get creatureBear => 'クマ';
+
+  @override
+  String get creatureDino => '恐竜';
+
+  @override
+  String get creaturePenguin => 'ペンギン';
+
+  @override
+  String get creaturePerson => '人';
+
+  @override
+  String get creatureWolf => 'オオカミ';
+
+  @override
+  String get creaturePanda => 'パンダ';
+
+  @override
+  String get creatureUnicorn => 'ユニコーン';
+
+  @override
+  String get commonFallbackFriend => '友達';
+
+  @override
+  String get commonFallbackYourAgent => 'エージェント';
+
+  @override
+  String get fakeLoadingStep1 => 'プロフィール設定完了';
+
+  @override
+  String get fakeLoadingStep2 => 'パーソナリティ設定完了';
+
+  @override
+  String get fakeLoadingStep3 => 'クラウドにデプロイ中...';
+
+  @override
+  String get fakeLoadingStep4 => '400以上のAIモデルを接続';
+
+  @override
+  String get fakeLoadingStep5 => 'コンピューティングリソースを割り当て';
+
+  @override
+  String get fakeLoadingStep6 => '100以上のAgentSkillsをロード';
+
+  @override
+  String get fakeLoadingStep7 => 'エージェントワークスペースを構成';
+
+  @override
+  String fakeLoadingTitle(String callName) {
+    return 'Hey $callName、しばらくお待ちください...';
+  }
+
+  @override
+  String get fakeLoadingSubtitle =>
+      'クラウドでエージェントを設定しています。\nパーソナルエージェントの準備がほぼ完了しました。';
+
+  @override
+  String get agentCompleteSubtitle => 'エージェントは完全にデプロイされ、タスクに最適化されています。';
+
+  @override
+  String get agentCompleteStatus1 => '24時間エージェント — 常時稼働';
+
+  @override
+  String get agentCompleteStatus2 => '400以上のAIモデル — 接続済み';
+
+  @override
+  String get agentCompleteStatus3 => '100以上のAgentSkills — ロード済み';
+
+  @override
+  String get agentCompleteStatus4 => 'コンピューティングリソース — 確保済み';
+
+  @override
+  String agentCompleteTitle(String agentName, String callName) {
+    return '$agentNameの準備ができました、$callName！';
+  }
+
+  @override
+  String get agentCompleteOptimizedForLabel => '最適化対象';
+
+  @override
+  String agentCompleteLiveHint(String agentName) {
+    return '$agentNameは稼働中で、あなたを待っています';
+  }
 }

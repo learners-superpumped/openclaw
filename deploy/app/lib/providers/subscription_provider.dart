@@ -77,3 +77,12 @@ final isProProvider = StateNotifierProvider<SubscriptionNotifier, bool>((ref) {
   final storage = ref.watch(secureStorageProvider);
   return SubscriptionNotifier(storage);
 });
+
+/// RevenueCat offerings를 미리 로드하는 FutureProvider
+final offeringsProvider = FutureProvider<Offerings?>((ref) async {
+  try {
+    return await Purchases.getOfferings();
+  } catch (_) {
+    return null;
+  }
+});

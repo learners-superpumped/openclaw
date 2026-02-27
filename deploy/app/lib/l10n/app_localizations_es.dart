@@ -856,4 +856,392 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get changeDefaultModelError =>
       'Error al cambiar el modelo predeterminado';
+
+  @override
+  String get commonContinue => 'Continuar';
+
+  @override
+  String get onboardingBadgeTopApp => '#1 App OpenClaw';
+
+  @override
+  String get onboardingWelcomeTitle =>
+      'Tu agente de IA.\nListo en 60 segundos.';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Sin configuración. Sin claves API. Sin conocimientos técnicos.';
+
+  @override
+  String get onboardingGithubStarsBadge => '200K+ estrellas en GitHub';
+
+  @override
+  String get onboardingPoweredByModels =>
+      'Impulsado por más de 400 modelos de IA';
+
+  @override
+  String get onboardingQuoteSamAltman =>
+      '“Un genio con ideas asombrosas sobre el futuro de agentes muy inteligentes”';
+
+  @override
+  String get onboardingQuoteSamAltmanAttribution =>
+      '— Sam Altman, CEO de OpenAI';
+
+  @override
+  String get onboardingGithubStarCount => '200,000+';
+
+  @override
+  String get onboardingGithubStarsLabel => 'Estrellas en GitHub';
+
+  @override
+  String get onboardingGithubFastestGrowing =>
+      'El proyecto de más rápido crecimiento en la historia de GitHub';
+
+  @override
+  String get onboardingGithubStarsSingleDay =>
+      '25,310 estrellas en un solo día';
+
+  @override
+  String get onboardingTweetsSectionTitle =>
+      'Respaldado por líderes en IA y tecnología';
+
+  @override
+  String get onboardingEasySetupTitle =>
+      'Configuración en 60 segundos.\nNo se necesita experiencia.';
+
+  @override
+  String get onboardingEasySetupSubtitle =>
+      'No necesitas saber nada técnico. Nosotros nos encargamos del resto.';
+
+  @override
+  String get onboardingEasySetupNoApiKeys => 'Sin claves API necesarias';
+
+  @override
+  String get onboardingEasySetupNoTerminal =>
+      'Sin terminal ni línea de comandos';
+
+  @override
+  String get onboardingEasySetupNoServer => 'Sin Mac Mini ni servidor';
+
+  @override
+  String get onboardingEasySetupNoTechKnowledge => 'Sin conocimientos técnicos';
+
+  @override
+  String get onboardingSafeByDesignTitle =>
+      'Seguro por diseño.\nTus datos, tus reglas.';
+
+  @override
+  String get onboardingSafeByDesignPressQuote =>
+      '“ClawBox es una sensación de IA, pero su seguridad sigue en desarrollo”';
+
+  @override
+  String get onboardingSafeByDesignSubtitle =>
+      'Tu agente se ejecuta en un entorno AWS completamente aislado. Comparte solo lo que quieras. Tu agente, tu espacio.';
+
+  @override
+  String get onboardingSafeByDesignCheck1 =>
+      'Entorno de nube completamente separado';
+
+  @override
+  String get onboardingSafeByDesignCheck2 =>
+      'Tú controlas a qué accede tu agente';
+
+  @override
+  String get onboardingSafeByDesignCheck3 =>
+      'Computación independiente, no compartida';
+
+  @override
+  String get commonLogout => 'Cerrar sesión';
+
+  @override
+  String get onboardingFullFeaturesTitle =>
+      '100% ClawBox.\nTodas las funciones incluidas.';
+
+  @override
+  String get onboardingFullFeaturesSubtitle =>
+      'Todo lo que tu ordenador puede hacer, Atlas lo hace por ti:';
+
+  @override
+  String get onboardingFullFeaturesExample1 =>
+      '“Revisa mis correos y redacta respuestas para los que necesiten atención”';
+
+  @override
+  String get onboardingFullFeaturesExample2 =>
+      '“Vuelve a pedir la leche que compré la última vez en Amazon”';
+
+  @override
+  String get onboardingFullFeaturesExample3 =>
+      '“Planifica un viaje de 5 noches a Las Vegas — vuelos, hoteles — y envíame el itinerario por correo”';
+
+  @override
+  String get onboardingFullFeaturesTagline =>
+      'Sin límites. Sin curva de aprendizaje. Solo resultados.';
+
+  @override
+  String get newPaywallTitle => 'Desbloquea todo el poder de tu agente';
+
+  @override
+  String get newPaywallSubtitle =>
+      'Todo está configurado. Empieza a usar tu agente ahora.';
+
+  @override
+  String get newPaywallBenefit1 => 'Ordenador en la nube dedicado — 24/7';
+
+  @override
+  String get newPaywallBenefit2 => 'Más de 400 modelos de IA — ilimitado';
+
+  @override
+  String get newPaywallBenefit3 => 'Más de 100 AgentSkills — listas para usar';
+
+  @override
+  String get newPaywallFaqPriceQuestion => '¿Por qué este precio?';
+
+  @override
+  String get newPaywallFaqPriceAnswer =>
+      'Asignamos un ordenador en la nube dedicado solo para ti, funcionando 24/7, con acceso ilimitado a más de 400 modelos de IA. Este es el coste real de un agente de IA personal que realmente funciona.';
+
+  @override
+  String get newPaywallFaqCheaperQuestion => '¿Hay alternativas más baratas?';
+
+  @override
+  String get newPaywallFaqCheaperAnswer =>
+      'Un entorno dedicado real con acceso real a modelos de IA requiere infraestructura real. No escatimamos — tu agente funciona en su propia nube aislada, no en recursos compartidos.';
+
+  @override
+  String get newPaywallPeriodWeek => '/ semana';
+
+  @override
+  String get newPaywallPeriodMonth => '/ mes';
+
+  @override
+  String get newPaywallBestValueBadge => 'MEJOR VALOR';
+
+  @override
+  String get newPaywallStartNowButton => 'Empezar ahora';
+
+  @override
+  String get newPaywallRestorePurchase => 'Restaurar compra';
+
+  @override
+  String get newPaywallHaveReferralCode => '¿Tienes un código de referencia?';
+
+  @override
+  String get newPaywallSocialProof => 'Más de 200.000 agentes desplegados';
+
+  @override
+  String get newPaywallReferralSheetTitle => 'Ingresar código de referencia';
+
+  @override
+  String get newPaywallReferralHint => 'ej. FRIEND2024';
+
+  @override
+  String get newPaywallReferralApplyButton => 'Aplicar';
+
+  @override
+  String get newPaywallReferralAppliedSuccess =>
+      '¡Código de referencia aplicado!';
+
+  @override
+  String get newPaywallReferralInvalid => 'Código de referencia inválido';
+
+  @override
+  String get userProfileTitle => 'Cuéntanos sobre ti';
+
+  @override
+  String get userProfileSubtitle =>
+      'Para que tu agente sepa para quién trabaja';
+
+  @override
+  String get userProfileNameLabel => 'Tu nombre';
+
+  @override
+  String get userProfileNameHint => 'Juan García';
+
+  @override
+  String get userProfileCallNameLabel => '¿Cómo deberíamos llamarte?';
+
+  @override
+  String get userProfileCallNameHint => 'Juan';
+
+  @override
+  String get taskSelectionTitle => '¿Qué debería hacer tu agente?';
+
+  @override
+  String get taskSelectionSubtitle => 'Selecciona al menos 1';
+
+  @override
+  String get taskOptionEmailManagement => 'Gestión de correo';
+
+  @override
+  String get taskOptionWebResearch => 'Investigación web';
+
+  @override
+  String get taskOptionTaskAutomation => 'Automatización de tareas';
+
+  @override
+  String get taskOptionScheduling => 'Programación';
+
+  @override
+  String get taskOptionSocialMedia => 'Redes sociales';
+
+  @override
+  String get taskOptionWriting => 'Escritura';
+
+  @override
+  String get taskOptionDataAnalysis => 'Análisis de datos';
+
+  @override
+  String get taskOptionSmartHome => 'Hogar inteligente';
+
+  @override
+  String get vibeSelectionTitle => 'Define el estilo de tu agente';
+
+  @override
+  String get vibeSelectionSubtitle => '¿Cómo debería comunicarse tu agente?';
+
+  @override
+  String get vibeNameCasual => 'Casual';
+
+  @override
+  String get vibeDescCasual =>
+      'Relajado y amigable. Como enviar mensajes a un amigo inteligente.';
+
+  @override
+  String get vibeNameProfessional => 'Profesional';
+
+  @override
+  String get vibeDescProfessional =>
+      'Claro y estructurado. Comunicación lista para negocios.';
+
+  @override
+  String get vibeNameFriendly => 'Amigable';
+
+  @override
+  String get vibeDescFriendly => 'Cálido y alentador. Siempre positivo y útil.';
+
+  @override
+  String get vibeNameDirect => 'Directo';
+
+  @override
+  String get vibeDescDirect =>
+      'Directo al grano. Sin rodeos, máxima eficiencia.';
+
+  @override
+  String get agentCreationTitle => 'Crea tu agente';
+
+  @override
+  String get agentCreationSubtitle =>
+      'Elige un aspecto y personalidad para tu agente';
+
+  @override
+  String get agentCreationNameLabel => 'Nombre del agente';
+
+  @override
+  String get agentCreationNameHint => 'Atlas';
+
+  @override
+  String get agentCreationCreatureLabel => 'Tipo de criatura';
+
+  @override
+  String get agentCreationEmojiLabel => 'Emoji del agente';
+
+  @override
+  String get creatureCat => 'Gato';
+
+  @override
+  String get creatureDragon => 'Dragón';
+
+  @override
+  String get creatureFox => 'Zorro';
+
+  @override
+  String get creatureOwl => 'Búho';
+
+  @override
+  String get creatureRabbit => 'Conejo';
+
+  @override
+  String get creatureBear => 'Oso';
+
+  @override
+  String get creatureDino => 'Dinosaurio';
+
+  @override
+  String get creaturePenguin => 'Pingüino';
+
+  @override
+  String get creaturePerson => 'Persona';
+
+  @override
+  String get creatureWolf => 'Lobo';
+
+  @override
+  String get creaturePanda => 'Panda';
+
+  @override
+  String get creatureUnicorn => 'Unicornio';
+
+  @override
+  String get commonFallbackFriend => 'amigo';
+
+  @override
+  String get commonFallbackYourAgent => 'tu agente';
+
+  @override
+  String get fakeLoadingStep1 => 'Perfil configurado';
+
+  @override
+  String get fakeLoadingStep2 => 'Personalidad establecida';
+
+  @override
+  String get fakeLoadingStep3 => 'Desplegando en la nube...';
+
+  @override
+  String get fakeLoadingStep4 => 'Conectando más de 400 modelos de IA';
+
+  @override
+  String get fakeLoadingStep5 => 'Asignando recursos de computación';
+
+  @override
+  String get fakeLoadingStep6 => 'Cargando más de 100 AgentSkills';
+
+  @override
+  String get fakeLoadingStep7 => 'Configurando espacio de trabajo del agente';
+
+  @override
+  String fakeLoadingTitle(String callName) {
+    return 'Hey $callName, espera un momento...';
+  }
+
+  @override
+  String get fakeLoadingSubtitle =>
+      'Estamos configurando tu agente en la nube.\nTu agente personal está casi listo.';
+
+  @override
+  String get agentCompleteSubtitle =>
+      'Tu agente está completamente desplegado y optimizado para tus tareas.';
+
+  @override
+  String get agentCompleteStatus1 => 'Agente 24/7 — siempre activo';
+
+  @override
+  String get agentCompleteStatus2 => 'Más de 400 modelos de IA — conectados';
+
+  @override
+  String get agentCompleteStatus3 => 'Más de 100 AgentSkills — cargados';
+
+  @override
+  String get agentCompleteStatus4 => 'Recursos de computación — asegurados';
+
+  @override
+  String agentCompleteTitle(String agentName, String callName) {
+    return '¡$agentName está listo, $callName!';
+  }
+
+  @override
+  String get agentCompleteOptimizedForLabel => 'OPTIMIZADO PARA';
+
+  @override
+  String agentCompleteLiveHint(String agentName) {
+    return '$agentName está activo y esperándote';
+  }
 }

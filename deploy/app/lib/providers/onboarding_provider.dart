@@ -7,7 +7,19 @@ import 'subscription_provider.dart';
 enum OnboardingStep {
   initializing,
   auth,
-  paywall,
+  welcomeLanding,
+  userProfile,
+  agentCreation,
+  vibeSelection,
+  taskSelection,
+  githubPress,
+  tweets,
+  easySetup,
+  safeByDesign,
+  fullFeatures,
+  fakeLoading,
+  agentComplete,
+  newPaywall,
   aiDisclosure,
   instanceLoading,
   telegramSetup,
@@ -22,6 +34,14 @@ final appInitializedProvider = StateProvider<bool>((ref) => false);
 /// AI disclosure 동의 여부
 final aiDisclosureAcceptedProvider = StateProvider<bool>((ref) => false);
 
+/// 온보딩 프로필 완료 여부 (새 온보딩 플로우를 이미 마친 사용자는 skip)
+final profileCompletedProvider = StateProvider<bool>((ref) => false);
+
+/// 온보딩 서브 화면 추적 (welcomeLanding ~ agentComplete)
+final onboardingScreenProvider = StateProvider<OnboardingStep>((ref) {
+  return OnboardingStep.welcomeLanding;
+});
+
 /// 인스턴스 ready 이후 setup 진행 상태를 추적
 final setupProgressProvider = StateProvider<OnboardingStep>((ref) {
   return OnboardingStep.telegramSetup;
@@ -32,15 +52,19 @@ final onboardingStepProvider = Provider<OnboardingStep>((ref) {
   if (!initialized) return OnboardingStep.initializing;
 
   final authState = ref.watch(authProvider);
-  final isPro = ref.watch(isProProvider);
-  final instanceState = ref.watch(instanceProvider);
-  final setupProgress = ref.watch(setupProgressProvider);
-
   if (authState.status != AuthStatus.authenticated) return OnboardingStep.auth;
-  if (!isPro) return OnboardingStep.paywall;
+
+  final profileCompleted = ref.watch(profileCompletedProvider);
+  if (!profileCompleted) return ref.watch(onboardingScreenProvider);
+
+  final isPro = ref.watch(isProProvider);
+  if (!isPro) return OnboardingStep.newPaywall;
 
   final aiDisclosureAccepted = ref.watch(aiDisclosureAcceptedProvider);
   if (!aiDisclosureAccepted) return OnboardingStep.aiDisclosure;
+
+  final instanceState = ref.watch(instanceProvider);
+  final setupProgress = ref.watch(setupProgressProvider);
 
   switch (instanceState.status) {
     case InstanceStatus.idle:

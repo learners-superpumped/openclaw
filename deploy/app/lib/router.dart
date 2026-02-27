@@ -13,7 +13,6 @@ import 'screens/skill_detail_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/instance_loading_screen.dart';
 import 'screens/onboarding_shell.dart';
-import 'screens/paywall_screen.dart';
 import 'screens/setup_complete_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/telegram_detail_screen.dart';
@@ -22,6 +21,19 @@ import 'screens/telegram_setup_screen.dart';
 import 'screens/discord_detail_screen.dart';
 import 'screens/discord_setup_screen.dart';
 import 'screens/discord_pairing_screen.dart';
+import 'screens/onboarding/agent_complete_screen.dart';
+import 'screens/onboarding/agent_creation_screen.dart';
+import 'screens/onboarding/easy_setup_screen.dart';
+import 'screens/onboarding/fake_loading_screen.dart';
+import 'screens/onboarding/full_features_screen.dart';
+import 'screens/onboarding/github_press_screen.dart';
+import 'screens/onboarding/new_paywall_screen.dart';
+import 'screens/onboarding/safe_by_design_screen.dart';
+import 'screens/onboarding/task_selection_screen.dart';
+import 'screens/onboarding/tweets_screen.dart';
+import 'screens/onboarding/user_profile_screen.dart';
+import 'screens/onboarding/vibe_selection_screen.dart';
+import 'screens/onboarding/welcome_landing_screen.dart';
 import 'screens/vnc_screen.dart';
 import 'screens/whatsapp_detail_screen.dart';
 
@@ -39,6 +51,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (step == OnboardingStep.auth && currentPath.startsWith('/auth')) {
         return null;
       }
+      if (_isOnboardingStep(step) && currentPath.startsWith('/onboarding/')) {
+        return null;
+      }
       if (step == OnboardingStep.dashboard &&
           currentPath.startsWith('/dashboard')) {
         return null;
@@ -54,8 +69,56 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: '/paywall',
-        builder: (context, state) => const PaywallScreen(),
+        path: '/onboarding/welcome',
+        builder: (context, state) => const WelcomeLandingScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/profile',
+        builder: (context, state) => const UserProfileScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/agent',
+        builder: (context, state) => const AgentCreationScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/vibe',
+        builder: (context, state) => const VibeSelectionScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/tasks',
+        builder: (context, state) => const TaskSelectionScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/github',
+        builder: (context, state) => const GithubPressScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/tweets',
+        builder: (context, state) => const TweetsScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/easy-setup',
+        builder: (context, state) => const EasySetupScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/safe',
+        builder: (context, state) => const SafeByDesignScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/features',
+        builder: (context, state) => const FullFeaturesScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/loading',
+        builder: (context, state) => const FakeLoadingScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/complete',
+        builder: (context, state) => const AgentCompleteScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/paywall',
+        builder: (context, state) => const NewPaywallScreen(),
       ),
       GoRoute(
         path: '/auth',
@@ -195,14 +258,56 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
+const _onboardingSteps = {
+  OnboardingStep.welcomeLanding,
+  OnboardingStep.userProfile,
+  OnboardingStep.agentCreation,
+  OnboardingStep.vibeSelection,
+  OnboardingStep.taskSelection,
+  OnboardingStep.githubPress,
+  OnboardingStep.tweets,
+  OnboardingStep.easySetup,
+  OnboardingStep.safeByDesign,
+  OnboardingStep.fullFeatures,
+  OnboardingStep.fakeLoading,
+  OnboardingStep.agentComplete,
+  OnboardingStep.newPaywall,
+};
+
+bool _isOnboardingStep(OnboardingStep step) => _onboardingSteps.contains(step);
+
 String _locationForStep(OnboardingStep step) {
   switch (step) {
     case OnboardingStep.initializing:
       return '/splash';
-    case OnboardingStep.paywall:
-      return '/paywall';
     case OnboardingStep.auth:
       return '/auth';
+    case OnboardingStep.welcomeLanding:
+      return '/onboarding/welcome';
+    case OnboardingStep.userProfile:
+      return '/onboarding/profile';
+    case OnboardingStep.agentCreation:
+      return '/onboarding/agent';
+    case OnboardingStep.vibeSelection:
+      return '/onboarding/vibe';
+    case OnboardingStep.taskSelection:
+      return '/onboarding/tasks';
+    case OnboardingStep.githubPress:
+      return '/onboarding/github';
+    case OnboardingStep.tweets:
+      return '/onboarding/tweets';
+    case OnboardingStep.easySetup:
+      return '/onboarding/easy-setup';
+    case OnboardingStep.safeByDesign:
+      return '/onboarding/safe';
+    case OnboardingStep.fullFeatures:
+      return '/onboarding/features';
+    case OnboardingStep.fakeLoading:
+      return '/onboarding/loading';
+    case OnboardingStep.agentComplete:
+      return '/onboarding/complete';
+    case OnboardingStep.newPaywall:
+      return '/onboarding/paywall';
     case OnboardingStep.aiDisclosure:
       return '/setup/ai-disclosure';
     case OnboardingStep.instanceLoading:

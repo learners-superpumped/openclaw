@@ -842,4 +842,386 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeDefaultModelError => 'Failed to change default model';
+
+  @override
+  String get commonContinue => 'Continue';
+
+  @override
+  String get onboardingBadgeTopApp => '#1 OpenClaw App';
+
+  @override
+  String get onboardingWelcomeTitle => 'Your AI agent.\nReady in 60 seconds.';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'No setup. No API keys. No tech skills.';
+
+  @override
+  String get onboardingGithubStarsBadge => '200K+ GitHub Stars';
+
+  @override
+  String get onboardingPoweredByModels => 'Powered by 400+ AI models';
+
+  @override
+  String get onboardingQuoteSamAltman =>
+      '“A genius with amazing ideas about the future of very smart agents”';
+
+  @override
+  String get onboardingQuoteSamAltmanAttribution =>
+      '— Sam Altman, CEO of OpenAI';
+
+  @override
+  String get onboardingGithubStarCount => '200,000+';
+
+  @override
+  String get onboardingGithubStarsLabel => 'GitHub Stars';
+
+  @override
+  String get onboardingGithubFastestGrowing =>
+      'The fastest-growing project in GitHub history';
+
+  @override
+  String get onboardingGithubStarsSingleDay => '25,310 stars in a single day';
+
+  @override
+  String get onboardingTweetsSectionTitle => 'Trusted by leaders in AI & tech';
+
+  @override
+  String get onboardingEasySetupTitle =>
+      'Setup in 60 seconds.\nNo expertise needed.';
+
+  @override
+  String get onboardingEasySetupSubtitle =>
+      'You don\'t need to know anything technical. We handle all the rest.';
+
+  @override
+  String get onboardingEasySetupNoApiKeys => 'No API keys required';
+
+  @override
+  String get onboardingEasySetupNoTerminal => 'No terminal or command line';
+
+  @override
+  String get onboardingEasySetupNoServer => 'No Mac Mini or server';
+
+  @override
+  String get onboardingEasySetupNoTechKnowledge => 'No technical knowledge';
+
+  @override
+  String get onboardingSafeByDesignTitle =>
+      'Safe by design.\nYour data, your rules.';
+
+  @override
+  String get onboardingSafeByDesignPressQuote =>
+      '“ClawBox’s an AI Sensation, But Its Security a Work in Progress”';
+
+  @override
+  String get onboardingSafeByDesignSubtitle =>
+      'Your agent runs in a fully isolated AWS environment. Share only what you want. Your agent, your space.';
+
+  @override
+  String get onboardingSafeByDesignCheck1 =>
+      'Fully separated cloud environment';
+
+  @override
+  String get onboardingSafeByDesignCheck2 =>
+      'You control what your agent accesses';
+
+  @override
+  String get onboardingSafeByDesignCheck3 =>
+      'Independent computing, not shared';
+
+  @override
+  String get commonLogout => 'Logout';
+
+  @override
+  String get onboardingFullFeaturesTitle =>
+      '100% ClawBox.\nEvery feature included.';
+
+  @override
+  String get onboardingFullFeaturesSubtitle =>
+      'Everything your computer can do, Atlas can do for you:';
+
+  @override
+  String get onboardingFullFeaturesExample1 =>
+      '“Check my emails and draft replies for the ones that need attention”';
+
+  @override
+  String get onboardingFullFeaturesExample2 =>
+      '“Reorder the milk I bought last time on Amazon”';
+
+  @override
+  String get onboardingFullFeaturesExample3 =>
+      '“Plan a 5-night Vegas trip — flights, hotels — and email me the itinerary”';
+
+  @override
+  String get onboardingFullFeaturesTagline =>
+      'No limits. No learning curve. Just results.';
+
+  @override
+  String get newPaywallTitle => 'Unlock your agent\'s full power';
+
+  @override
+  String get newPaywallSubtitle =>
+      'Everything is set up. Start using your agent now.';
+
+  @override
+  String get newPaywallBenefit1 => 'Dedicated cloud computer — 24/7';
+
+  @override
+  String get newPaywallBenefit2 => '400+ AI models — unlimited';
+
+  @override
+  String get newPaywallBenefit3 => '100+ AgentSkills — ready to use';
+
+  @override
+  String get newPaywallFaqPriceQuestion => 'Why this price?';
+
+  @override
+  String get newPaywallFaqPriceAnswer =>
+      'We allocate a dedicated cloud computer just for you — running 24/7, with unlimited access to 400+ AI models. This is the real cost of a personal AI agent that actually works.';
+
+  @override
+  String get newPaywallFaqCheaperQuestion => 'What about cheaper alternatives?';
+
+  @override
+  String get newPaywallFaqCheaperAnswer =>
+      'A real dedicated environment with real AI model access requires real infrastructure. We don\'t cut corners — your agent runs on its own isolated cloud, not shared resources.';
+
+  @override
+  String get newPaywallPeriodWeek => '/ week';
+
+  @override
+  String get newPaywallPeriodMonth => '/ month';
+
+  @override
+  String get newPaywallBestValueBadge => 'BEST VALUE';
+
+  @override
+  String get newPaywallStartNowButton => 'Start Now';
+
+  @override
+  String get newPaywallRestorePurchase => 'Restore Purchase';
+
+  @override
+  String get newPaywallHaveReferralCode => 'Have a referral code?';
+
+  @override
+  String get newPaywallSocialProof => '200,000+ agents deployed';
+
+  @override
+  String get newPaywallReferralSheetTitle => 'Enter Referral Code';
+
+  @override
+  String get newPaywallReferralHint => 'e.g. FRIEND2024';
+
+  @override
+  String get newPaywallReferralApplyButton => 'Apply';
+
+  @override
+  String get newPaywallReferralAppliedSuccess => 'Referral code applied!';
+
+  @override
+  String get newPaywallReferralInvalid => 'Invalid referral code';
+
+  @override
+  String get userProfileTitle => 'Tell us about yourself';
+
+  @override
+  String get userProfileSubtitle => 'So your agent knows who it\'s working for';
+
+  @override
+  String get userProfileNameLabel => 'Your Name';
+
+  @override
+  String get userProfileNameHint => 'Peter Steinberger';
+
+  @override
+  String get userProfileCallNameLabel => 'What should we call you?';
+
+  @override
+  String get userProfileCallNameHint => 'Peter';
+
+  @override
+  String get taskSelectionTitle => 'What should your agent do?';
+
+  @override
+  String get taskSelectionSubtitle => 'Select at least 1';
+
+  @override
+  String get taskOptionEmailManagement => 'Email Management';
+
+  @override
+  String get taskOptionWebResearch => 'Web Research';
+
+  @override
+  String get taskOptionTaskAutomation => 'Task Automation';
+
+  @override
+  String get taskOptionScheduling => 'Scheduling';
+
+  @override
+  String get taskOptionSocialMedia => 'Social Media';
+
+  @override
+  String get taskOptionWriting => 'Writing';
+
+  @override
+  String get taskOptionDataAnalysis => 'Data Analysis';
+
+  @override
+  String get taskOptionSmartHome => 'Smart Home';
+
+  @override
+  String get vibeSelectionTitle => 'Set your agent\'s vibe';
+
+  @override
+  String get vibeSelectionSubtitle => 'How should your agent communicate?';
+
+  @override
+  String get vibeNameCasual => 'Casual';
+
+  @override
+  String get vibeDescCasual =>
+      'Relaxed and friendly. Like texting a smart friend.';
+
+  @override
+  String get vibeNameProfessional => 'Professional';
+
+  @override
+  String get vibeDescProfessional =>
+      'Clear and structured. Business-ready communication.';
+
+  @override
+  String get vibeNameFriendly => 'Friendly';
+
+  @override
+  String get vibeDescFriendly =>
+      'Warm and encouraging. Always positive and helpful.';
+
+  @override
+  String get vibeNameDirect => 'Direct';
+
+  @override
+  String get vibeDescDirect =>
+      'Straight to the point. No fluff, maximum efficiency.';
+
+  @override
+  String get agentCreationTitle => 'Create your agent';
+
+  @override
+  String get agentCreationSubtitle =>
+      'Choose a look and personality for your agent';
+
+  @override
+  String get agentCreationNameLabel => 'Agent Name';
+
+  @override
+  String get agentCreationNameHint => 'Atlas';
+
+  @override
+  String get agentCreationCreatureLabel => 'Creature Type';
+
+  @override
+  String get agentCreationEmojiLabel => 'Agent Emoji';
+
+  @override
+  String get creatureCat => 'Cat';
+
+  @override
+  String get creatureDragon => 'Dragon';
+
+  @override
+  String get creatureFox => 'Fox';
+
+  @override
+  String get creatureOwl => 'Owl';
+
+  @override
+  String get creatureRabbit => 'Rabbit';
+
+  @override
+  String get creatureBear => 'Bear';
+
+  @override
+  String get creatureDino => 'Dino';
+
+  @override
+  String get creaturePenguin => 'Penguin';
+
+  @override
+  String get creaturePerson => 'Person';
+
+  @override
+  String get creatureWolf => 'Wolf';
+
+  @override
+  String get creaturePanda => 'Panda';
+
+  @override
+  String get creatureUnicorn => 'Unicorn';
+
+  @override
+  String get commonFallbackFriend => 'friend';
+
+  @override
+  String get commonFallbackYourAgent => 'your agent';
+
+  @override
+  String get fakeLoadingStep1 => 'Profile configured';
+
+  @override
+  String get fakeLoadingStep2 => 'personality set';
+
+  @override
+  String get fakeLoadingStep3 => 'Deploying to cloud...';
+
+  @override
+  String get fakeLoadingStep4 => 'Connecting 400+ AI models';
+
+  @override
+  String get fakeLoadingStep5 => 'Allocating computing resources';
+
+  @override
+  String get fakeLoadingStep6 => 'Loading 100+ AgentSkills';
+
+  @override
+  String get fakeLoadingStep7 => 'Configuring agent workspace';
+
+  @override
+  String fakeLoadingTitle(String callName) {
+    return 'Hey $callName, hang tight...';
+  }
+
+  @override
+  String get fakeLoadingSubtitle =>
+      'We\'re setting up your agent in the cloud.\nYour personal agent is almost ready.';
+
+  @override
+  String get agentCompleteSubtitle =>
+      'Your agent is fully deployed and optimized for your tasks.';
+
+  @override
+  String get agentCompleteStatus1 => '24/7 Agent — always on';
+
+  @override
+  String get agentCompleteStatus2 => '400+ AI Models — connected';
+
+  @override
+  String get agentCompleteStatus3 => '100+ AgentSkills — loaded';
+
+  @override
+  String get agentCompleteStatus4 => 'Computing Resources — secured';
+
+  @override
+  String agentCompleteTitle(String agentName, String callName) {
+    return '$agentName is ready, $callName!';
+  }
+
+  @override
+  String get agentCompleteOptimizedForLabel => 'OPTIMIZED FOR';
+
+  @override
+  String agentCompleteLiveHint(String agentName) {
+    return '$agentName is live and waiting for you';
+  }
 }

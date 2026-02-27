@@ -45,12 +45,21 @@ class _ClawBoxAppState extends ConsumerState<ClawBoxApp> {
           await ref.read(isProProvider.notifier).refresh();
         } catch (_) {}
         await ref.read(instanceProvider.notifier).loadExisting();
+        // 기존 인스턴스가 있으면 온보딩 스킵
+        if (ref.read(instanceProvider).instance != null) {
+          ref.read(profileCompletedProvider.notifier).state = true;
+        }
       }
 
       final storage = ref.read(secureStorageProvider);
       final consent = await storage.read(key: 'ai_data_consent_v2');
       if (consent == 'true') {
         ref.read(aiDisclosureAcceptedProvider.notifier).state = true;
+      }
+
+      final onboardingDone = await storage.read(key: 'onboarding_completed');
+      if (onboardingDone == 'true') {
+        ref.read(profileCompletedProvider.notifier).state = true;
       }
 
       ref.read(appInitializedProvider.notifier).state = true;
