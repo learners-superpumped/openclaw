@@ -2,6 +2,7 @@ import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/profile_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
@@ -20,6 +21,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'user_profile');
     _nameController = TextEditingController();
     _callNameController = TextEditingController();
     _nameController.addListener(_onChanged);

@@ -3,9 +3,11 @@ import 'dart:math' as math;
 
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/profile_provider.dart';
 
@@ -47,6 +49,7 @@ class _FakeLoadingScreenState extends ConsumerState<FakeLoadingScreen>
     _statuses[0] = _StepStatus.done;
 
     _scheduleSteps();
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'fake_loading');
   }
 
   void _scheduleSteps() {
@@ -72,6 +75,8 @@ class _FakeLoadingScreenState extends ConsumerState<FakeLoadingScreen>
     _timers.add(
       Timer(const Duration(milliseconds: 5000), () {
         if (!mounted) return;
+        HapticFeedback.mediumImpact();
+        ref.read(analyticsProvider).logOnboardingFakeLoadingCompleted();
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.agentComplete;
       }),

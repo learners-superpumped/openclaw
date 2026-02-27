@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/subscription_provider.dart'; // for offeringsProvider prefetch
 
@@ -160,6 +162,9 @@ class _WelcomeLandingScreenState extends ConsumerState<WelcomeLandingScreen>
     super.initState();
     // Prefetch RevenueCat offerings so paywall loads instantly
     ref.read(offeringsProvider);
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepViewed(step: 'welcome_landing');
     _controller1 = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 30),
@@ -452,6 +457,10 @@ class _WelcomeLandingScreenState extends ConsumerState<WelcomeLandingScreen>
                       height: 48,
                       child: FilledButton(
                         onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          ref
+                              .read(analyticsProvider)
+                              .logOnboardingGetStartedTapped();
                           ref.read(onboardingScreenProvider.notifier).state =
                               OnboardingStep.userProfile;
                         },
