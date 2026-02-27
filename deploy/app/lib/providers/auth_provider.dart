@@ -253,7 +253,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {}
     final authService = _ref.read(authServiceProvider);
     await authService.signOut();
+    // secure storage 온보딩 관련 값 삭제
+    final storage = _ref.read(secureStorageProvider);
+    await Future.wait([
+      storage.delete(key: 'onboarding_completed'),
+      storage.delete(key: 'ai_data_consent_v2'),
+      storage.delete(key: 'telegram_setup_skipped'),
+    ]);
     _ref.read(instanceProvider.notifier).resetState();
+    _ref.read(profileProvider.notifier).reset();
+    _ref.read(profileCompletedProvider.notifier).state = false;
+    _ref.read(onboardingScreenProvider.notifier).state =
+        OnboardingStep.welcomeLanding;
+    _ref.read(setupProgressProvider.notifier).state =
+        OnboardingStep.telegramSetup;
+    _ref.read(aiDisclosureAcceptedProvider.notifier).state = false;
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 }
