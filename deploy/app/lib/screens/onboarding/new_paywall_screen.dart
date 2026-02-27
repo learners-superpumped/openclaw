@@ -24,6 +24,12 @@ class _NewPaywallScreenState extends ConsumerState<NewPaywallScreen> {
   _PlanType _selectedPlan = _PlanType.monthly; // ignore: prefer_final_fields
   bool _isPurchasing = false;
 
+  @override
+  void initState() {
+    super.initState();
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'new_paywall');
+  }
+
   Package? _getPackage(
     PackageType type,
     AsyncValue<Offerings?> offeringsAsync,
@@ -44,6 +50,9 @@ class _NewPaywallScreenState extends ConsumerState<NewPaywallScreen> {
     setState(() => _isPurchasing = true);
     try {
       HapticFeedback.mediumImpact();
+      ref
+          .read(analyticsProvider)
+          .logPaywallPurchaseTapped(productId: package.storeProduct.identifier);
       final params = PurchaseParams.package(package);
       await Purchases.purchase(params);
       ref.read(isProProvider.notifier).refresh();

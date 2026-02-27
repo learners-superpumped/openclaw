@@ -1,5 +1,6 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/api_provider.dart';
@@ -42,6 +43,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       _callNameController.text.trim().isNotEmpty;
 
   void _onContinue() {
+    HapticFeedback.lightImpact();
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepCompleted(step: 'user_profile');
     if (!_isValid) return;
     ref
         .read(profileProvider.notifier)
@@ -60,6 +65,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'user_profile');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.welcomeLanding;
       },

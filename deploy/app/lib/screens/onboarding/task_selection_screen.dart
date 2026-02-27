@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/profile_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
@@ -25,7 +27,17 @@ class TaskSelectionScreen extends ConsumerStatefulWidget {
 class _TaskSelectionScreenState extends ConsumerState<TaskSelectionScreen> {
   final Set<String> _selectedTasks = {};
 
+  @override
+  void initState() {
+    super.initState();
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'task_selection');
+  }
+
   void _onContinue() {
+    HapticFeedback.lightImpact();
+    ref
+        .read(analyticsProvider)
+        .logOnboardingStepCompleted(step: 'task_selection');
     if (_selectedTasks.isEmpty) return;
     for (final task in _selectedTasks) {
       ref.read(profileProvider.notifier).toggleTask(task);
@@ -64,6 +76,10 @@ class _TaskSelectionScreenState extends ConsumerState<TaskSelectionScreen> {
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'task_selection');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.vibeSelection;
       },
@@ -201,13 +217,18 @@ class _TaskSelectionScreenState extends ConsumerState<TaskSelectionScreen> {
     final isSelected = _selectedTasks.contains(task.label);
     return GestureDetector(
       onTap: () {
+        HapticFeedback.selectionClick();
+        final wasSelected = isSelected;
         setState(() {
-          if (isSelected) {
+          if (wasSelected) {
             _selectedTasks.remove(task.label);
           } else {
             _selectedTasks.add(task.label);
           }
         });
+        ref
+            .read(analyticsProvider)
+            .logOnboardingTaskToggled(task: task.label, selected: !wasSelected);
       },
       child: Container(
         width: double.infinity,

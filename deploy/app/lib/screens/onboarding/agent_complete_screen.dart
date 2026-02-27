@@ -43,6 +43,8 @@ class AgentCompleteScreen extends ConsumerWidget {
         profile.agentEmoji ?? _getCreatureEmoji(profile.creature);
     final tasks = profile.tasks;
 
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'agent_complete');
+
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A0B),
       body: Stack(
@@ -182,7 +184,12 @@ class AgentCompleteScreen extends ConsumerWidget {
                             ),
                           ),
                           onPressed: () async {
-                            HapticFeedback.lightImpact();
+                            HapticFeedback.mediumImpact();
+                            ref
+                                .read(analyticsProvider)
+                                .logOnboardingStepCompleted(
+                                  step: 'agent_complete',
+                                );
                             await ref
                                 .read(secureStorageProvider)
                                 .write(
