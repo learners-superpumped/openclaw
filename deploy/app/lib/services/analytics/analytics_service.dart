@@ -16,6 +16,17 @@ abstract class AnalyticsService {
   Future<void> logOnboardingComplete();
   Future<void> logAiDisclosureAccepted();
   Future<void> logTelegramSetupSkipped();
+  Future<void> logOnboardingGetStartedTapped();
+  Future<void> logOnboardingCreatureSelected({required String creature});
+  Future<void> logOnboardingEmojiSelected({required String emoji});
+  Future<void> logOnboardingVibeSelected({required String vibe});
+  Future<void> logOnboardingTaskToggled({
+    required String task,
+    required bool selected,
+  });
+  Future<void> logOnboardingFakeLoadingCompleted();
+  Future<void> logOnboardingStepCompleted({required String step});
+  Future<void> logOnboardingBackTapped({required String fromStep});
 
   // ── Paywall ──
   Future<void> logPaywallPurchaseTapped({String? productId});

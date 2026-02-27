@@ -65,6 +65,55 @@ class CompositeAnalyticsService implements AnalyticsService {
       Future.wait(_services.map((s) => s.logTelegramSetupSkipped()));
 
   @override
+  Future<void> logOnboardingGetStartedTapped() =>
+      Future.wait(_services.map((s) => s.logOnboardingGetStartedTapped()));
+
+  @override
+  Future<void> logOnboardingCreatureSelected({required String creature}) =>
+      Future.wait(
+        _services.map(
+          (s) => s.logOnboardingCreatureSelected(creature: creature),
+        ),
+      );
+
+  @override
+  Future<void> logOnboardingEmojiSelected({required String emoji}) =>
+      Future.wait(
+        _services.map((s) => s.logOnboardingEmojiSelected(emoji: emoji)),
+      );
+
+  @override
+  Future<void> logOnboardingVibeSelected({required String vibe}) => Future.wait(
+    _services.map((s) => s.logOnboardingVibeSelected(vibe: vibe)),
+  );
+
+  @override
+  Future<void> logOnboardingTaskToggled({
+    required String task,
+    required bool selected,
+  }) => Future.wait(
+    _services.map(
+      (s) => s.logOnboardingTaskToggled(task: task, selected: selected),
+    ),
+  );
+
+  @override
+  Future<void> logOnboardingFakeLoadingCompleted() =>
+      Future.wait(_services.map((s) => s.logOnboardingFakeLoadingCompleted()));
+
+  @override
+  Future<void> logOnboardingStepCompleted({required String step}) =>
+      Future.wait(
+        _services.map((s) => s.logOnboardingStepCompleted(step: step)),
+      );
+
+  @override
+  Future<void> logOnboardingBackTapped({required String fromStep}) =>
+      Future.wait(
+        _services.map((s) => s.logOnboardingBackTapped(fromStep: fromStep)),
+      );
+
+  @override
   Future<void> logPaywallPurchaseTapped({String? productId}) => Future.wait(
     _services.map((s) => s.logPaywallPurchaseTapped(productId: productId)),
   );

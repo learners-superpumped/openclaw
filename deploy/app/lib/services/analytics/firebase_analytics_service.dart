@@ -76,6 +76,52 @@ class FirebaseAnalyticsService implements AnalyticsService {
   Future<void> logTelegramSetupSkipped() =>
       _analytics.logEvent(name: 'telegram_setup_skipped');
 
+  @override
+  Future<void> logOnboardingGetStartedTapped() =>
+      _analytics.logEvent(name: 'onboarding_get_started_tapped');
+
+  @override
+  Future<void> logOnboardingCreatureSelected({required String creature}) =>
+      _analytics.logEvent(
+        name: 'onboarding_creature_selected',
+        parameters: {'creature': creature},
+      );
+
+  @override
+  Future<void> logOnboardingEmojiSelected({required String emoji}) =>
+      _analytics.logEvent(
+        name: 'onboarding_emoji_selected',
+        parameters: {'emoji': emoji},
+      );
+
+  @override
+  Future<void> logOnboardingVibeSelected({required String vibe}) => _analytics
+      .logEvent(name: 'onboarding_vibe_selected', parameters: {'vibe': vibe});
+
+  @override
+  Future<void> logOnboardingTaskToggled({
+    required String task,
+    required bool selected,
+  }) => _analytics.logEvent(
+    name: 'onboarding_task_toggled',
+    parameters: {'task': task, 'selected': selected.toString()},
+  );
+
+  @override
+  Future<void> logOnboardingFakeLoadingCompleted() =>
+      _analytics.logEvent(name: 'onboarding_fake_loading_completed');
+
+  @override
+  Future<void> logOnboardingStepCompleted({required String step}) => _analytics
+      .logEvent(name: 'onboarding_step_completed', parameters: {'step': step});
+
+  @override
+  Future<void> logOnboardingBackTapped({required String fromStep}) =>
+      _analytics.logEvent(
+        name: 'onboarding_back_tapped',
+        parameters: {'from_step': fromStep},
+      );
+
   // ── Paywall ──
 
   @override
