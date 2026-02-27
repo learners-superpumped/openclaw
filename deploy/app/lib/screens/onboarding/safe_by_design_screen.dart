@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
 
@@ -19,15 +21,24 @@ class SafeByDesignScreen extends ConsumerWidget {
       l10n.onboardingSafeByDesignCheck2,
       l10n.onboardingSafeByDesignCheck3,
     ];
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'safe_by_design');
     return OnboardingScaffold(
       showBackButton: true,
       showLogo: false,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'safe_by_design');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.easySetup;
       },
       buttonText: l10n.commonContinue,
       onButtonPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingStepCompleted(step: 'safe_by_design');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.fullFeatures;
       },

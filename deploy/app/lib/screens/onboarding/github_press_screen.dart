@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
 
@@ -44,15 +46,24 @@ class GithubPressScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'github_press');
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'github_press');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.taskSelection;
       },
       showLogo: false,
       buttonText: l10n.commonContinue,
       onButtonPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingStepCompleted(step: 'github_press');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.tweets;
       },

@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
 
@@ -12,15 +14,24 @@ class EasySetupScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'easy_setup');
     return OnboardingScaffold(
       showBackButton: true,
       showLogo: false,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'easy_setup');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.tweets;
       },
       buttonText: l10n.getStarted,
       onButtonPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingStepCompleted(step: 'easy_setup');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.safeByDesign;
       },

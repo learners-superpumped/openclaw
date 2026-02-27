@@ -1,7 +1,9 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
 
@@ -125,15 +127,20 @@ class TweetsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'tweets');
     return OnboardingScaffold(
       showBackButton: true,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref.read(analyticsProvider).logOnboardingBackTapped(fromStep: 'tweets');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.githubPress;
       },
       showLogo: false,
       buttonText: l10n.commonContinue,
       onButtonPressed: () {
+        HapticFeedback.lightImpact();
+        ref.read(analyticsProvider).logOnboardingStepCompleted(step: 'tweets');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.easySetup;
       },

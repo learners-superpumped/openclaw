@@ -1,8 +1,10 @@
 import 'package:clawbox/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../providers/api_provider.dart';
 import '../../providers/onboarding_provider.dart';
 import 'widgets/onboarding_scaffold.dart';
 
@@ -35,15 +37,25 @@ class FullFeaturesScreen extends ConsumerWidget {
       ),
     ];
 
+    ref.read(analyticsProvider).logOnboardingStepViewed(step: 'full_features');
+
     return OnboardingScaffold(
       showBackButton: true,
       showLogo: false,
       onBackPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingBackTapped(fromStep: 'full_features');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.safeByDesign;
       },
       buttonText: l10n.commonContinue,
       onButtonPressed: () {
+        HapticFeedback.lightImpact();
+        ref
+            .read(analyticsProvider)
+            .logOnboardingStepCompleted(step: 'full_features');
         ref.read(onboardingScreenProvider.notifier).state =
             OnboardingStep.fakeLoading;
       },
